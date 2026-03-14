@@ -1,556 +1,207 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useLanguage } from '../i18n/LanguageContext';
 
-:root {
-  --primary: #581c87;
-  --primary-hover: #4c1d95;
-  --primary-light: #f3e8ff;
-  --bg-main: #f8fafc;
-  --text-dark: #111827;
-  --text-muted: #6b7280;
-  --border: #e2e8f0;
-  --white: #ffffff;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --warning: #ea580c;
-  --warning-bg: #ffedd5;
-  --danger: #dc2626;
-  --danger-bg: #fee2e2;
+type LogStatus = 'completed' | 'processing' | 'failed';
+
+interface LogEntry {
+  id: string;
+  name: string;
+  sku: string;
+  image: string;
+  date: string;
+  score: number | null;
+  status: LogStatus;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+const initialLogs: LogEntry[] = [
+  { id: '1', name: 'Ergonomic Office Chair', sku: 'SKU-88291', image: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=40&q=80', date: 'Oct 24, 2023 14:22', score: 84, status: 'completed' },
+  { id: '2', name: 'Minimalist Desk Lamp', sku: 'SKU-44023', image: 'https://images.unsplash.com/photo-1543922596-b3bbaba80649?auto=format&fit=crop&w=40&q=80', date: 'Oct 23, 2023 09:15', score: 62, status: 'completed' },
+  { id: '3', name: 'Mechanical Keyboard v2', sku: 'SKU-99012', image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=40&q=80', date: 'Oct 23, 2023 08:00', score: null, status: 'processing' },
+  { id: '4', name: 'Noise-Cancelling Headphones', sku: 'SKU-11203', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=40&q=80', date: 'Oct 22, 2023 17:44', score: 91, status: 'completed' },
+  { id: '5', name: 'Portable Standing Desk', sku: 'SKU-55678', image: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=40&q=80', date: 'Oct 21, 2023 11:10', score: null, status: 'processing' },
+];
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg-main);
-  color: var(--text-dark);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+const SystemLogs = () => {
+  const { t, language, toggleLanguage } = useLanguage();
+  const isRtl = language === 'ar';
 
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
+  const [logs, setLogs] = useState<LogEntry[]>(initialLogs);
 
-a:hover {
-  text-decoration: underline;
-}
+  const handleDelete = (id: string) => {
+    setLogs(logs.filter(log => log.id !== id));
+  };
 
-/* Typography */
-h1 { font-size: 24px; font-weight: 700; color: var(--text-dark); }
-h2 { font-size: 18px; font-weight: 600; color: var(--text-dark); }
-h3 { font-size: 14px; font-weight: 600; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.05em; }
-p { color: var(--text-muted); font-size: 14px; }
-.text-sm { font-size: 14px; }
-.text-xs { font-size: 12px; }
-.text-lg { font-size: 18px; }
-.font-medium { font-weight: 500; }
-.font-bold { font-weight: 700; }
-.text-muted { color: var(--text-muted); }
-.text-primary { color: var(--primary); }
-.text-danger { color: var(--danger); }
-.text-success { color: var(--success); }
+  return (
+    <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      {/* Sidebar */}
+      <aside className="sidebar" style={{ borderInlineEnd: '1px solid var(--border)', ...(isRtl ? { left: 'auto', right: 0, borderLeft: '1px solid var(--border)', borderRight: 'none' } : {}) }}>
+        <div className="sidebar-logo flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div style={{ width: '28px', height: '28px', background: '#6c2bd9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            </div>
+            PASlytics
+          </div>
+          <button onClick={toggleLanguage} className="btn" style={{ padding: '4px 8px', fontSize: '10px' }}>
+            {isRtl ? 'EN' : 'AR'}
+          </button>
+        </div>
 
-/* Layouts */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.items-start { align-items: flex-start; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.gap-4 { gap: 16px; }
-.gap-6 { gap: 24px; }
-.gap-8 { gap: 32px; }
-.w-full { width: 100%; }
+        <nav className="sidebar-nav mt-4" style={{ flex: 1 }}>
+          <Link to="/dashboard" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            {t('dashboard')}
+          </Link>
+          <Link to="/logs" className="nav-item active" style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '-24px', top: 0, bottom: 0, width: '4px', background: 'var(--primary)', borderRadius: isRtl ? '4px 0 0 4px' : '0 4px 4px 0' }}></div>
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            {t('logs')}
+          </Link>
+          <Link to="/management" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            {t('admin')}
+          </Link>
+          <Link to="/admin/payment-settings" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            {t('paysettings_nav')}
+          </Link>
+          <Link to="/admin/content" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            {t('content_manager_nav')}
+          </Link>
+        </nav>
 
-/* Margins & Paddings */
-.mb-2 { margin-bottom: 8px; }
-.mb-4 { margin-bottom: 16px; }
-.mb-6 { margin-bottom: 24px; }
-.mb-8 { margin-bottom: 32px; }
-.mt-4 { margin-top: 16px; }
-.mt-auto { margin-top: auto; }
-.p-6 { padding: 24px; }
-.p-8 { padding: 32px; }
+        <nav className="sidebar-nav mt-auto" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
+          <Link to="/settings" className="nav-item mb-4">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            {t('settings')}
+          </Link>
+          <Link to="/login" className="nav-item" style={{ color: '#ef4444' }}>
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            {t('logout') || 'Log Out'}
+          </Link>
+        </nav>
+      </aside>
 
-/* Components */
-.card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
+      {/* Main Content */}
+      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0, marginLeft: isRtl ? 0 : undefined, marginRight: isRtl ? '260px' : undefined }}>
+        <div style={{ maxWidth: '1200px' }}>
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-}
+          {/* Page Header */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '4px' }}>{t('analysis_logs')}</h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{t('logs_desc')}</p>
+            </div>
+            <button className="btn btn-primary" style={{ background: '#6c2bd9' }} onClick={() => alert('Starting new analysis...')}>{t('new_analysis')}</button>
+          </div>
 
-.btn-primary {
-  background-color: var(--primary);
-  color: var(--white);
-}
+          {/* Filters & Table */}
+          <div className="card mb-8">
+            <div className="flex gap-4 p-4" style={{ borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, minWidth: '180px', position: 'relative' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" style={{ position: 'absolute', insetInlineStart: '12px', top: '11px' }}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" className="input" placeholder={t('search_products')} style={{ paddingInlineStart: '38px', textAlign: isRtl ? 'right' : 'left', width: '100%' }} />
+              </div>
+              <div className="select-wrapper">
+                <select style={{ minWidth: '130px' }} defaultValue="all">
+                  <option value="all">{t('status_all')}</option>
+                  <option value="completed">{t('completed')}</option>
+                  <option value="processing">{t('processing')}</option>
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <button className="btn btn-outline" onClick={() => alert('Exporting Data...')}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginInlineEnd: '6px' }}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  {t('export')}
+                </button>
+                <button className="btn btn-outline" style={{ borderColor: '#ef4444', color: '#dc2626' }} onClick={() => alert('Exporting to PDF...')}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginInlineEnd: '6px' }}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  {t('export_pdf')}
+                </button>
+              </div>
+            </div>
 
-.btn-primary:hover {
-  background-color: var(--primary-hover);
-  text-decoration: none;
-}
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('product')}</th>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('date_analyzed')}</th>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('pas_score')}</th>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('status')}</th>
+                    <th style={{ textAlign: isRtl ? 'left' : 'right' }}>{t('actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.length === 0 ? (
+                    <tr><td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No logs available.</td></tr>
+                  ) : (
+                    logs.map((log) => (
+                      <tr key={log.id}>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <img src={log.image} alt={log.name} style={{ width: '40px', height: '40px', borderRadius: '6px', objectFit: 'cover' }} />
+                            <div>
+                              <div style={{ fontWeight: 500, fontSize: '14px', color: 'var(--text-dark)' }}>{log.name}</div>
+                              <div style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>{log.sku}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ color: '#64748b', fontSize: '13px' }}>{log.date}</td>
+                        <td>
+                          {log.score !== null ? (
+                            <><span style={{ fontWeight: 700, color: log.score > 70 ? '#16a34a' : log.score > 50 ? '#d97706' : '#dc2626', fontSize: '14px' }}>{log.score}</span>{' '}<span style={{ fontSize: '12px', color: '#94a3b8' }}>/ 100</span></>
+                          ) : (
+                            <span style={{ color: '#94a3b8', fontSize: '14px' }}>-</span>
+                          )}
+                        </td>
+                        <td>
+                          {log.status === 'completed'
+                            ? <span className="badge badge-outline-green">{t('completed')}</span>
+                            : <span style={{ background: '#f3e8ff', color: '#6c2bd9', border: '1px solid #e9d5ff', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 600 }}>{t('processing')}</span>
+                          }
+                        </td>
+                        <td style={{ textAlign: isRtl ? 'left' : 'right' }}>
+                          <div className="flex items-center gap-3" style={{ justifyContent: isRtl ? 'flex-start' : 'flex-end' }}>
+                            <Link to="#" style={{ color: log.status === 'completed' ? '#6c2bd9' : '#94a3b8', fontWeight: 500, fontSize: '13px', textDecoration: 'none' }}>
+                              {log.status === 'completed' ? t('view_report') : t('cancel')}
+                            </Link>
+                            <button onClick={() => handleDelete(log.id)} className="btn" style={{ padding: '4px 8px', color: '#dc2626', fontSize: '13px', fontWeight: 500 }}>
+                              {t('delete')}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-.btn-outline {
-  background-color: var(--white);
-  border-color: var(--border);
-  color: var(--text-dark);
-}
+            <div className="flex items-center justify-between" style={{ padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '13px', color: '#64748b' }}>Showing 1 to {logs.length} of {logs.length} results</p>
+              <div className="flex gap-2">
+                <button className="btn btn-outline" onClick={() => alert('Previous Page')} style={{ minWidth: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={isRtl ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6'}></path></svg>
+                </button>
+                <button className="btn btn-primary" onClick={() => alert('Page 1')} style={{ background: '#6c2bd9', minWidth: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</button>
+                <button className="btn btn-outline" onClick={() => alert('Page 2')} style={{ minWidth: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</button>
+                <button className="btn btn-outline" onClick={() => alert('Next Page')} style={{ minWidth: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={isRtl ? 'M15 18l-6-6 6-6' : 'M9 18l6-6-6-6'}></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
 
-.btn-outline:hover {
-  background-color: #f1f5f9;
-  text-decoration: none;
-}
+          <div style={{ textAlign: 'center', color: '#94a3b8', fontSize: '12px', marginTop: '40px' }}>
+            © {new Date().getFullYear()} PASlytics Analysis Platform. {t('all_rights_reserved')}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
 
-.input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
-  color: var(--text-dark);
-  font-family: inherit;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
-}
-
-.input::placeholder {
-  color: #94a3b8;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-dark);
-  margin-bottom: 6px;
-}
-
-/* Badge */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.badge-purple { background: var(--primary-light); color: var(--primary); }
-.badge-red { background: var(--danger-bg); color: var(--danger); }
-.badge-orange { background: var(--warning-bg); color: var(--warning); }
-.badge-green { background: var(--success-bg); color: var(--success); }
-.badge-gray { background: #f1f5f9; color: var(--text-muted); }
-.badge-outline-green { border: 1px solid #bbf7d0; background: #f0fdf4; color: var(--success); text-transform: none; border-radius: 20px;}
-.badge-outline-orange { border: 1px solid #fed7aa; background: #fff7ed; color: var(--warning); text-transform: none; border-radius: 20px;}
-.badge-outline-purple { border: 1px solid #e9d5ff; background: #faf5ff; color: var(--primary); text-transform: none; border-radius: 20px;}
-.badge-outline-red { border: 1px solid #fecaca; background: #fef2f2; color: var(--danger); text-transform: none; border-radius: 20px;}
-
-/* Checkbox Toggle */
-.checkbox-toggle {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  appearance: none;
-  background-color: var(--white);
-  border: 2px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  display: inline-block;
-}
-.checkbox-toggle:checked {
-  background-color: var(--primary);
-  border-color: var(--primary);
-}
-.checkbox-toggle:checked::after {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 1px;
-  width: 4px;
-  height: 9px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-/* Sidebar Layout */
-.app-layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 260px;
-  background: var(--white);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.sidebar-logo {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--text-dark);
-  margin-bottom: 40px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  border-radius: 6px;
-  color: var(--text-muted);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.nav-item:hover {
-  background-color: #f8fafc;
-  color: var(--text-dark);
-  text-decoration: none;
-}
-
-.nav-item.active {
-  background-color: var(--primary-light);
-  color: var(--primary);
-}
-
-.nav-item svg {
-  width: 18px;
-  height: 18px;
-}
-
-.main-content {
-  flex: 1;
-  margin-left: 260px;
-  padding: 40px;
-}
-
-/* Full Width Sub-Layout for Top Nav */
-.top-nav-layout .main-content-full {
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.topbar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  height: 70px;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  justify-content: space-between;
-}
-
-.topbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-
-.topbar-nav a {
-  color: var(--text-muted);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 24px 0;
-  border-bottom: 2px solid transparent;
-}
-.topbar-nav a.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-}
-
-/* Specific page overrides */
-.login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f5f7fb;
-  padding: 20px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 440px;
-  padding: 40px;
-  text-align: center;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: #cbd5e1;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 24px 0;
-}
-.divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--border);
-}
-.divider:not(:empty)::before { margin-right: 16px; }
-.divider:not(:empty)::after { margin-left: 16px; }
-
-/* Table */
-.table-container {
-  overflow-x: auto;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-th {
-  text-align: left;
-  padding: 16px 24px;
-  color: var(--text-dark);
-  font-weight: 600;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-td {
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-muted);
-  vertical-align: middle;
-}
-tr:last-child td {
-  border-bottom: none;
-}
-.product-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.product-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  object-fit: cover;
-  background: var(--border);
-}
-
-/* User Card */
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Progress bar */
-.progress-bg {
-  width: 100%;
-  height: 8px;
-  background: #f1f5f9;
-  border-radius: 4px;
-  margin-top: 12px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-/* Select Box */
-.select-wrapper {
-  position: relative;
-}
-.select-wrapper select {
-  appearance: none;
-  background: white;
-  padding: 8px 32px 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
-  color: var(--text-dark);
-  cursor: pointer;
-  outline: none;
-}
-.select-wrapper::after {
-  content: '';
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #94a3b8;
-  pointer-events: none;
-}
-
-/* Landing Page Styles */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.landing-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 0;
-}
-
-.landing-nav-links {
-  display: flex;
-  gap: 32px;
-  align-items: center;
-}
-
-.landing-nav-links a {
-  color: var(--text-dark);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.landing-nav-links a:hover {
-  text-decoration: none;
-  color: var(--primary);
-}
-
-.hero-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  padding: 80px 0;
-}
-
-.hero-image-placeholder {
-  background: var(--white);
-  border-radius: 16px;
-  width: 100%;
-  aspect-ratio: 4/4.5;
-  box-shadow: 0 25px 50px -12px rgba(88, 28, 135, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.features-section {
-  padding: 100px 0;
-  text-align: center;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 60px;
-  text-align: left;
-}
-
-.feature-icon-wrapper {
-  width: 40px;
-  height: 40px;
-  background: var(--primary-light);
-  color: var(--primary);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.cta-section {
-  background-color: #f3e8ff;
-  border-radius: 24px;
-  padding: 80px 40px;
-  text-align: center;
-  margin: 40px 0 100px;
-}
-
-.footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 0;
-}
-
-.avatar-group {
-  display: flex;
-  align-items: center;
-}
-
-.avatar-group .avatar-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid #f8fafc;
-  margin-left: -10px;
-  background: #cbd5e1;
-}
-
-.avatar-group .avatar-circle:first-child {
-  margin-left: 0;
-  background: #e2e8f0;
-}
-.avatar-group .avatar-circle:nth-child(3) {
-  background: #94a3b8;
-}
+export default SystemLogs;
