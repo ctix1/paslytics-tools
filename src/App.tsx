@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Pricing from './pages/Pricing';
 import AboutPage from './pages/AboutPage';
 import Checkout from './pages/Checkout';
@@ -14,6 +16,36 @@ import ContentManager from './pages/ContentManager';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
+import { supabase } from './lib/supabase';
+
+// Simple Auth Provider & Protected Route Wrapper for App.tsx
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const [session, setSession] = useState<any>(undefined);
+  
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (session === undefined) {
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>; // Still checking
+  }
+
+  if (!session) {
+    return <Navigate to="/login" replace />; // Not logged in
+  }
+
+  return <>{children}</>;
+};
 
 function App() {
   return (
@@ -24,11 +56,18 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/checkout/:plan" element={<Checkout />} />
+              
+              {/* Protected Routes */}
+              <Route path="/checkout/:plan" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
 
-              <Route element={<DashboardLayout />}>
+              <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/logs" element={<SystemLogs />} />
                 <Route path="/management" element={<SiteManagement />} />
