@@ -1,7 +1,48 @@
-import { Outlet } from 'react-router-dom';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { translations, TranslationKey } from './translations';
 
-const DashboardLayout = () => {
-  return <Outlet />;
+type Language = 'en' | 'ar';
+
+interface LanguageContextType {
+  language: Language;
+  toggleLanguage: () => void;
+  t: (key: TranslationKey) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<Language>(() => {
+    const savedLang = localStorage.getItem('paslytics_lang');
+    return (savedLang === 'ar' || savedLang === 'en') ? savedLang : 'en';
+  });
+
+  useEffect(() => {
+    // Set Document Direction and Language
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+    localStorage.setItem('paslytics_lang', language);
+  }, [language]);
+
+  const toggleLanguage = () => {
+    setLanguage((prev) => (prev === 'en' ? 'ar' : 'en'));
+  };
+
+  const t = (key: TranslationKey): string => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 };
 
-export default DashboardLayout;
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+};
