@@ -1,175 +1,29 @@
-/* RTL Support for Base Layout */
-[dir="rtl"] .main-content {
-  margin-left: 0 !important;
-  margin-right: 260px !important;
-}
+import { Link } from 'react-router-dom';
+import { LayoutDashboard } from 'lucide-react';
 
-[dir="rtl"] .sidebar {
-  left: auto !important;
-  right: 0 !important;
-}
+const Navbar = () => {
+  return (
+    <nav className="flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
+      <div className="flex items-center gap-2">
+        <div className="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
+          <LayoutDashboard className="text-white w-5 h-5" />
+        </div>
+        <span className="text-xl font-bold text-slate-900 tracking-tight">PASlytics</span>
+      </div>
+      
+      <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-500 uppercase tracking-wider">
+        <Link to="/pricing" className="hover:text-violet-600 transition-colors">Plan</Link>
+        <Link to="/about" className="hover:text-violet-600 transition-colors">About</Link>
+      </div>
 
-/* Responsive Overrides */
-@media (max-width: 1024px) {
-  .hero-section {
-    grid-template-columns: 1fr !important;
-    gap: 40px !important;
-    text-align: center;
-    padding: 40px 0 !important;
-  }
-  .hero-section p {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .hero-section .flex {
-    justify-content: center;
-  }
-  .feature-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .cta-section {
-    padding: 40px 20px !important;
-  }
-  
-  /* Dashboard specific grids */
-  .main-content > div > div[style*="display: grid"] {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-  }
-}
+      <div className="flex items-center gap-4">
+        <Link to="/login" className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-violet-600 transition-colors">Log in</Link>
+        <Link to="/login" className="px-6 py-2.5 text-sm font-bold text-white bg-violet-600 rounded-xl hover:bg-violet-700 transition-all shadow-lg shadow-violet-100">
+          Get Started
+        </Link>
+      </div>
+    </nav>
+  );
+};
 
-@media (max-width: 768px) {
-  .container {
-    padding: 0 16px !important;
-  }
-  .landing-nav {
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px 0 !important;
-    margin-bottom: 24px !important;
-  }
-  .landing-nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px !important;
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    width: 70px !important;
-    padding: 16px 8px !important;
-    align-items: center;
-    z-index: 50;
-  }
-  .sidebar-logo {
-    justify-content: center !important;
-    margin-bottom: 24px !important;
-  }
-  .sidebar-logo > div:last-child {
-    display: none !important;
-  }
-  .sidebar-logo > button {
-    display: none !important;
-  }
-  .nav-item {
-    justify-content: center !important;
-    padding: 10px !important;
-    font-size: 0 !important; /* Hide text */
-  }
-  .nav-item svg {
-    margin: 0 !important;
-  }
-  .sidebar .flex.items-center.gap-3 > div:last-child {
-    display: none !important;
-  }
-  
-  .main-content {
-    margin-left: 70px !important;
-    padding: 24px 16px !important;
-  }
-  [dir="rtl"] .main-content {
-    margin-left: 0 !important;
-    margin-right: 70px !important;
-  }
-  
-  /* Topbar */
-  .topbar {
-    padding: 16px !important;
-    height: auto !important;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .topbar .flex {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .topbar-nav {
-    gap: 16px !important;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .topbar-nav a {
-    padding: 12px 0 !important;
-  }
-  
-  /* Cards & Forms */
-  .card {
-    padding: 20px !important;
-  }
-  .card.mb-6.flex.items-center.gap-6 {
-    flex-direction: column;
-    text-align: center;
-  }
-  .card .flex.gap-4 {
-    flex-direction: column !important;
-  }
-  
-  /* Specific Rows */
-  .flex.gap-6.mb-8 {
-    flex-direction: column !important;
-    gap: 16px !important;
-  }
-  .card > .flex.gap-4.p-4 {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-  
-  /* Typography */
-  h1 { font-size: 20px !important; }
-  h2 { font-size: 20px !important; }
-  .hero-section h1 { font-size: 32px !important; }
-}
-
-@media (max-width: 480px) {
-  .hero-section .flex.items-center.gap-4 {
-    flex-direction: column !important;
-    width: 100%;
-  }
-  .hero-section .btn {
-    width: 100% !important;
-  }
-  
-  .login-card {
-    padding: 24px !important;
-  }
-  
-  .cta-section h2 {
-    font-size: 24px !important;
-  }
-  .cta-section .flex {
-    flex-direction: column !important;
-  }
-  .cta-section .btn {
-    width: 100% !important;
-  }
-  
-  .footer {
-    flex-direction: column !important;
-    gap: 24px !important;
-    text-align: center;
-  }
-  .footer .flex.gap-8 {
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-}
+export default Navbar;
