@@ -28,7 +28,7 @@ const SiteManagement = () => {
   const handleRemoveUser = (id: string) => {
     const userToRemove = users.find(u => u.id === id);
     if (!userToRemove) return;
-    if (window.confirm(`Are you sure you want to remove ${userToRemove.name} from the team?`)) {
+    if (window.confirm(t('remove_user_confirm').replace('{name}', userToRemove.name))) {
       setUsers(users.filter(user => user.id !== id));
     }
   };
@@ -90,8 +90,8 @@ const SiteManagement = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0, marginLeft: isRtl ? 0 : undefined, marginRight: isRtl ? '260px' : undefined }}>
-        <div style={{ maxWidth: '1200px' }}>
+      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
 
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
@@ -135,7 +135,7 @@ const SiteManagement = () => {
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
-                    <tr><td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No users found.</td></tr>
+                    <tr><td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>{t('no_users')}</td></tr>
                   ) : (
                     users.map((user) => (
                       <tr key={user.id}>
@@ -177,11 +177,13 @@ const SiteManagement = () => {
               </table>
             </div>
 
-            <div className="flex items-center justify-between" style={{ padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
-              <p style={{ fontSize: '13px', color: '#64748b' }}>Showing 1 to {users.length} of {users.length + 21} users</p>
-              <div className="flex gap-2">
-                <button className="btn btn-outline" onClick={() => alert('Previous Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Previous</button>
-                <button className="btn btn-outline" onClick={() => alert('Next Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Next</button>
+            <div className="flex items-center justify-between" style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', flexDirection: isRtl ? 'row-reverse' : 'row' }}>
+              <p style={{ fontSize: '13px', color: '#64748b' }}>
+                {t('showing')} 1 {t('to')} {users.length} {t('of')} {users.length + 21} {t('users_label')}
+              </p>
+              <div className="flex gap-2" style={{ flexDirection: isRtl ? 'row-reverse' : 'row' }}>
+                <button className="btn btn-outline" onClick={() => alert('Previous Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>{t('previous')}</button>
+                <button className="btn btn-outline" onClick={() => alert('Next Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>{t('next')}</button>
               </div>
             </div>
           </div>

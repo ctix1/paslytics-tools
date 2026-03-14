@@ -10,7 +10,7 @@ const LandingPage = () => {
 
   return (
     <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div className="container" style={{ margin: '0 auto', maxWidth: '1200px' }}>
+      <div className="container" style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
         
         {/* Top Nav */}
         <header className="landing-nav" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
@@ -22,7 +22,7 @@ const LandingPage = () => {
           </div>
           
           <div className="landing-nav-links" style={{ display: 'flex', gap: '32px' }}>
-            <a href="#features" onClick={(e) => { e.preventDefault(); }} style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('features')}</a>
+            <Link to="/" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('home')}</Link>
             <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
             <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </div>
@@ -79,29 +79,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="features-section" style={{ padding: '80px 0' }}>
-          <h2 style={{ fontSize: '28px', marginBottom: '16px', color: 'var(--text-dark)' }}>{t('transform_strategy')}</h2>
-          <p style={{ fontSize: '15px', maxWidth: '600px', margin: '0 0 40px 0', color: '#475569' }}>
-            {t('transform_desc')}
-          </p>
-          
-          <div className="feature-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
-            {[
-              { iconPath: <><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></>, title: get(homepage.f1Title_en, homepage.f1Title_ar), desc: get(homepage.f1Desc_en, homepage.f1Desc_ar) },
-              { iconPath: <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>, title: get(homepage.f2Title_en, homepage.f2Title_ar), desc: get(homepage.f2Desc_en, homepage.f2Desc_ar) },
-              { iconPath: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></>, title: get(homepage.f3Title_en, homepage.f3Title_ar), desc: get(homepage.f3Desc_en, homepage.f3Desc_ar) },
-            ].map((f, i) => (
-              <div key={i} className="card p-8" style={{ background: '#ffffff', borderColor: 'var(--border)' }}>
-                <div className="feature-icon-wrapper" style={{ backgroundColor: '#f3e8ff', color: '#6c2bd9', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{f.iconPath}</svg>
-                </div>
-                <h3 style={{ textTransform: 'none', fontSize: '16px', marginBottom: '12px', border: 'none', letterSpacing: 'normal' }}>{f.title}</h3>
-                <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+
 
         {/* CTA Section */}
         <section className="cta-section" style={{ padding: '80px 0', textAlign: 'center', background: '#f8fafc', borderRadius: '24px', border: '1px solid var(--border)' }}>

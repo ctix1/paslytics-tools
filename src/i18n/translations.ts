@@ -217,10 +217,11 @@ export const translations = {
     next: 'Next',
     platform_name: 'PASlytics Analysis Platform.',
     save_success: 'Settings saved successfully!',
+    remove_user_confirm: 'Are you sure you want to remove {name} from the team?',
 
     // Checkout Page
     checkout_title: 'Complete Your Purchase',
-    checkout_back: 'Back to Pricing',
+    checkout_back: 'Back to Plan',
     checkout_order_summary: 'Order Summary',
     checkout_proceed: 'Continue to Payment',
     checkout_secure: 'Secured & Encrypted',
@@ -550,10 +551,11 @@ export const translations = {
     next: 'التالي',
     platform_name: 'منصة تحليلات PASlytics.',
     save_success: 'تم حفظ الإعدادات بنجاح!',
+    remove_user_confirm: 'هل أنت متأكد أنك تريد إزالة {name} من الفريق؟',
 
     // Checkout Page
     checkout_title: 'أكمل عملية الشراء',
-    checkout_back: 'العودة إلى الأسعار',
+    checkout_back: 'العودة للخطة',
     checkout_order_summary: 'ملخص الطلب',
     checkout_proceed: 'المتابعة إلى الدفع',
     checkout_secure: 'آمن ومشفر',

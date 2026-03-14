@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "./responsive.css";
 
@@ -33,7 +34,6 @@
   @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --primary: #581c87;
