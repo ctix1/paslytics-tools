@@ -12,6 +12,7 @@ interface SubscriptionContextType {
   subscription: Subscription;
   subscribe: (plan: 'monthly' | 'annual') => void;
   cancel: () => void;
+  hasActivePlan: boolean;
 }
 
 const defaultSubscription: Subscription = { plan: 'none', activatedAt: null, renewsAt: null };
@@ -53,8 +54,10 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const hasActivePlan = subscription.plan !== 'none';
+
   return (
-    <SubscriptionContext.Provider value={{ subscription, subscribe, cancel }}>
+    <SubscriptionContext.Provider value={{ subscription, subscribe, cancel, hasActivePlan }}>
       {children}
     </SubscriptionContext.Provider>
   );

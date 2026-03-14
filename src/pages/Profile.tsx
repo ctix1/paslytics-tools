@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
+import { supabase } from '../lib/supabase';
 
 const Profile = () => {
   const { t, language, toggleLanguage } = useLanguage();
@@ -9,8 +10,9 @@ const Profile = () => {
   const { subscription, cancel } = useSubscription();
 
   // State
-  const [firstName, setFirstName] = useState('Alex');
-  const [lastName, setLastName] = useState('Thompson');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [desktopNotif, setDesktopNotif] = useState(false);
@@ -18,6 +20,33 @@ const Profile = () => {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelledMsg, setCancelledMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 1. Try local storage
+    try {
+      const profileRaw = localStorage.getItem('user_profile');
+      if (profileRaw) {
+        const profile = JSON.parse(profileRaw);
+        const names = profile.name?.split(' ') || [];
+        setFirstName(names[0] || '');
+        setLastName(names.slice(1).join(' ') || '');
+        setEmail(profile.email || '');
+      }
+    } catch (e) {
+      console.warn('Profile: Error parsing user_profile', e);
+    }
+
+    // 2. Fetch from Supabase
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const full_name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || '';
+        const names = full_name.split(' ');
+        setFirstName(names[0] || '');
+        setLastName(names.slice(1).join(' ') || '');
+        setEmail(session.user.email || '');
+      }
+    });
+  }, []);
 
 
   const handleSave = () => {
@@ -60,7 +89,7 @@ const Profile = () => {
         </nav>
         
         <nav className="sidebar-nav mt-auto border-t" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
-          <Link to="/login" className="nav-item">
+          <Link to="/logout" className="nav-item">
             <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             {t('logout')}
           </Link>
@@ -108,7 +137,7 @@ const Profile = () => {
                 <h2 style={{ fontSize: '22px' }}>{firstName} {lastName}</h2>
                 <span className="badge badge-purple">{t('analyst_role')}</span>
               </div>
-              <p className="mb-2">alex.thompson@datastore-app.com</p>
+              <p className="mb-2">{email || 'user@example.com'}</p>
               <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>{t('member_since')}</p>
             </div>
           </div>

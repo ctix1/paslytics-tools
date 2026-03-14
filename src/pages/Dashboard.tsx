@@ -11,9 +11,34 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { hasActivePlan } = useSubscription();
 
-  // Check generic user profile role
-  const profileRaw = localStorage.getItem('user_profile');
-  const userProfile = profileRaw ? JSON.parse(profileRaw) : null;
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  useEffect(() => {
+    // 1. First, attempt to securely parse Local Storage
+    try {
+      const profileRaw = localStorage.getItem('user_profile');
+      if (profileRaw && profileRaw !== 'undefined' && profileRaw !== '[object Object]') {
+        setUserProfile(JSON.parse(profileRaw));
+      }
+    } catch (e) {
+      console.warn('Error parsing user_profile from localStorage', e);
+      localStorage.removeItem('user_profile'); // Clear corrupt data
+    }
+
+    // 2. Always override/verify with actual Supabase DB authentication to be perfectly safe
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const profile = {
+          email: session.user.email,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
+          role: session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
+        };
+        setUserProfile(profile);
+        localStorage.setItem('user_profile', JSON.stringify(profile));
+      }
+    });
+  }, []);
+
   const isAdmin = userProfile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
 
@@ -200,16 +225,13 @@ ${t('mm_budget')}
               </div>
             )}
             
-            <button 
+            <Link 
+              to="/logout"
               className="btn btn-outline" 
-              style={{ padding: '6px 12px', fontSize: '12px', width: 'fit-content' }}
-              onClick={() => {
-                localStorage.removeItem('user_profile');
-                navigate('/login');
-              }}
+              style={{ padding: '6px 12px', fontSize: '12px', width: 'fit-content', textDecoration: 'none', textAlign: 'center' }}
             >
               {t('logout')}
-            </button>
+            </Link>
           </div>
         </nav>
       </aside>

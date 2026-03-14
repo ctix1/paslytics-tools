@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 const LoginPage = () => {
@@ -8,6 +8,20 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) navigate('/dashboard');
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate('/dashboard');
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);

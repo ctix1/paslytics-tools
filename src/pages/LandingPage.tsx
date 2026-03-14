@@ -1,12 +1,29 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useContent } from '../context/ContentContext';
+import { supabase } from '../lib/supabase';
 
 const LandingPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
   const { homepage } = useContent();
   const isRtl = language === 'ar';
   const get = (en: string, ar: string) => isRtl ? ar : en;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) navigate('/dashboard');
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate('/dashboard');
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   return (
     <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>

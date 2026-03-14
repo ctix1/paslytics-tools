@@ -13,6 +13,7 @@ import SiteManagement from './pages/SiteManagement';
 import Profile from './pages/Profile';
 import PaymentSettings from './pages/PaymentSettings';
 import ContentManager from './pages/ContentManager';
+import Logout from './pages/Logout';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
@@ -20,17 +21,29 @@ import { supabase } from './lib/supabase';
 
 // Simple Auth Provider & Protected Route Wrapper for App.tsx
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<any>(undefined);
+  const [session, setSession] = useState<any | null>(undefined);
   
   useEffect(() => {
+    const syncProfile = (sessionData: any | null) => {
+      if (sessionData?.user) {
+        localStorage.setItem('user_profile', JSON.stringify({
+          email: sessionData.user.email,
+          name: sessionData.user.user_metadata?.full_name || sessionData.user.email?.split('@')[0],
+          role: sessionData.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
+        }));
+      }
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      syncProfile(session);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      syncProfile(session);
     });
 
     return () => subscription.unsubscribe();
@@ -59,6 +72,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/logout" element={<Logout />} />
               
               {/* Protected Routes */}
               <Route path="/checkout/:plan" element={
