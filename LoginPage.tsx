@@ -1,193 +1,150 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useContent } from '../context/ContentContext';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
-const AboutPage = () => {
+const LoginPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
-  const { about } = useContent();
-  const isRtl = language === 'ar';
+  const navigate = useNavigate();
 
-  const get = (en: string, ar: string) => isRtl ? ar : en;
+  const [isLoading, setIsLoading] = useState(false);
 
-  const features = [
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2" />
-          <path d="M12 8v4l3 3" />
-        </svg>
-      ),
-      title: isRtl ? 'الاستخدام الذكي للذكاء الاصطناعي' : 'AI Smart Usage',
-      desc: isRtl ? 'تستخدم تقنيات متقدمة لتحليل الصور والنصوص' : 'Uses advanced technology for image and text analysis',
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
-        </svg>
-      ),
-      title: isRtl ? 'الموثوق PAS إطار عمل' : 'Trusted PAS Framework',
-      desc: isRtl ? 'تستخدم إطار عمل المشكلة - الإثارة - الحل لإنشاء محتوى فعّال' : 'Uses the Problem-Agitation-Solution framework for effective content',
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
-        </svg>
-      ),
-      title: isRtl ? 'تسجيل شامل للتحليلات' : 'Comprehensive Logs',
-      desc: isRtl ? 'تقوم بتسجيل جميع التحليلات لمساعدتك في متابعة التقدم' : 'Records all analyses to help you follow progress',
-    },
-  ];
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) navigate('/dashboard');
+    });
 
-  const team = [
-    { nameEn: about.tm1Name_en, nameAr: about.tm1Name_ar, roleEn: about.tm1Role_en, roleAr: about.tm1Role_ar, bioEn: about.tm1Bio_en, bioAr: about.tm1Bio_ar },
-    { nameEn: about.tm2Name_en, nameAr: about.tm2Name_ar, roleEn: about.tm2Role_en, roleAr: about.tm2Role_ar, bioEn: about.tm2Bio_en, bioAr: about.tm2Bio_ar },
-    { nameEn: about.tm3Name_en, nameAr: about.tm3Name_ar, roleEn: about.tm3Role_en, roleAr: about.tm3Role_ar, bioEn: about.tm3Bio_en, bioAr: about.tm3Bio_ar },
-  ];
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate('/dashboard');
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/dashboard'
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Error with Google Auth:', error);
+      alert(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = (document.getElementById('email') as HTMLInputElement)?.value;
+    const password = (document.getElementById('password') as HTMLInputElement)?.value;
+    
+    if (!email || !password) return;
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        localStorage.setItem('user_profile', JSON.stringify({
+          email: data.session.user.email,
+          name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0],
+          role: data.session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
+        }));
+        navigate('/dashboard');
+      }
+
+    } catch (error: any) {
+      console.error('Error during login:', error);
+      alert(error.message);
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
+    <div className="login-page" style={{ direction: language === 'ar' ? 'rtl' : 'ltr', position: 'relative' }}>
+      
+      {/* Language Toggle */}
+      <div style={{ position: 'absolute', top: '24px', right: language === 'ar' ? 'auto' : '24px', left: language === 'ar' ? '24px' : 'auto' }}>
+        <button onClick={toggleLanguage} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
+          {language === 'ar' ? 'English' : 'العربية'}
+        </button>
+      </div>
 
-        {/* Nav */}
-        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            <div style={{ width: '24px', height: '24px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      <div style={{ width: '100%', maxWidth: '460px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        
+        {/* Logo & Header */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ marginBottom: '20px' }}>
+            <rect width="48" height="48" rx="12" fill="#581c87"/>
+            <rect x="14" y="24" width="4" height="12" rx="2" fill="white"/>
+            <rect x="22" y="18" width="4" height="18" rx="2" fill="white"/>
+            <rect x="30" y="12" width="4" height="24" rx="2" fill="white"/>
+          </svg>
+          <h1 style={{ fontSize: '28px', marginBottom: '8px', fontWeight: 700 }}>{t('pas_analysis_title')}</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '15px', maxWidth: '320px', margin: '0 auto', lineHeight: '1.4' }}>
+            {t('login_desc')}
+          </p>
+        </div>
+
+        {/* Login Card */}
+        <div className="card p-8" style={{ width: '100%', marginBottom: '40px' }}>
+          <button disabled={isLoading} type="button" className="btn btn-outline w-full" onClick={handleGoogleLogin} style={{ height: '44px', marginBottom: '8px', opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ marginInlineEnd: '8px' }}>
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            {t('sign_in_google')}
+          </button>
+
+          <div className="divider">{t('or_email')}</div>
+
+          <form onSubmit={handleEmailLogin}>
+            <label htmlFor="email">{t('work_email')}</label>
+            <input type="email" id="email" className="input mb-4" placeholder="name@company.com" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
+
+            <div className="flex justify-between items-center" style={{ marginBottom: '6px' }}>
+              <label htmlFor="password" style={{ margin: 0 }}>{t('password')}</label>
+              <button type="button" onClick={(e) => { e.preventDefault(); alert('Opening Password Reset Flow...'); }} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>{t('forgot')}</button>
             </div>
-            <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
-          </Link>
+            <input type="password" id="password" className="input mb-6" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
 
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
-            <Link to="/about" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('about')}</Link>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button onClick={toggleLanguage} className="btn" style={{ background: 'transparent', padding: '8px 12px', fontSize: '14px', fontWeight: 600 }}>
-              {isRtl ? 'English' : 'العربية'}
+            <button disabled={isLoading} type="submit" className="btn btn-primary w-full" style={{ height: '44px', justifyContent: 'center', opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}>
+              {isLoading ? (language === 'ar' ? 'جاري التحميل...' : 'Loading...') : t('sign_in_pas')}
             </button>
-            <Link to="/login" className="btn" style={{ background: '#f1f5f9', color: '#1e293b' }}>{t('login')}</Link>
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9' }}>{t('get_started')}</Link>
-          </div>
-        </header>
+          </form>
 
-        {/* Hero */}
-        <section style={{ textAlign: 'center', padding: '40px 0 60px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 18px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '20px', fontSize: '13px', fontWeight: 600, marginBottom: '20px' }}>
-            {get(about.badge_en, about.badge_ar)}
+          <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px' }}>
+            <span className="text-muted">{t('new_to_pas')}</span> 
+            <Link to="/register" style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, marginInlineStart: '6px', textDecoration: 'none' }}>{t('create_account')}</Link>
           </div>
-          <h1 style={{ fontSize: '42px', fontWeight: 800, color: '#1e293b', marginBottom: '20px', lineHeight: 1.2 }}>
-            {get(about.heading_en, about.heading_ar)}
-          </h1>
-          <p style={{ fontSize: '16px', color: '#475569', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>
-            {get(about.subheading_en, about.subheading_ar)}
-          </p>
-        </section>
+        </div>
 
-        {/* Vision & Features */}
-        <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', padding: '40px 0 80px', alignItems: 'start' }}>
-          {/* Left: Vision + Mission */}
-          <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-              {get(about.visionTitle_en, about.visionTitle_ar)}
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8, marginBottom: '32px' }}>
-              {get(about.visionText_en, about.visionText_ar)}
-            </p>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-              {get(about.missionTitle_en, about.missionTitle_ar)}
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8 }}>
-              {get(about.missionText_en, about.missionText_ar)}
-            </p>
-          </div>
-
-          {/* Right: Feature Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {features.map((f, i) => (
-              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 24px', display: 'flex', alignItems: 'flex-start', gap: '16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-                <div style={{ width: '40px', height: '40px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {f.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#6c2bd9', marginBottom: '4px' }}>{f.title}</div>
-                  <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>{f.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section style={{ padding: '60px 0', background: '#f8fafc', borderRadius: '24px', marginBottom: '60px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-            {get(about.teamTitle_en, about.teamTitle_ar)}
-          </h2>
-          <p style={{ fontSize: '15px', color: '#64748b', marginBottom: '48px' }}>
-            {get(about.teamSubtitle_en, about.teamSubtitle_ar)}
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', padding: '0 40px' }}>
-            {team.map((member, i) => (
-              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '32px 24px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <div style={{ width: '72px', height: '72px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#6c2bd9' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
-                <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}>
-                  {get(member.nameEn, member.nameAr)}
-                </div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: '#6c2bd9', marginBottom: '10px' }}>
-                  {get(member.roleEn, member.roleAr)}
-                </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6 }}>
-                  {get(member.bioEn, member.bioAr)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section style={{ padding: '80px 0', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#1e293b', marginBottom: '16px' }}>
-            {get(about.ctaTitle_en, about.ctaTitle_ar)}
-          </h2>
-          <p style={{ fontSize: '15px', color: '#475569', maxWidth: '500px', margin: '0 auto 40px', lineHeight: 1.7 }}>
-            {get(about.ctaDesc_en, about.ctaDesc_ar)}
-          </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9', padding: '12px 32px', fontSize: '14px', borderRadius: '8px' }}>
-              {isRtl ? 'اتصل بنا' : 'Contact Us'}
-            </Link>
-            <button className="btn btn-outline" onClick={() => alert('Opening demo...')} style={{ padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: '#ffffff' }}>
-              {isRtl ? 'شاهد عرضنا تقديمي' : 'Watch our demo'}
-            </button>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer style={{ padding: '40px 0', borderTop: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '20px', height: '20px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
-          </div>
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('privacy_policy')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('terms_of_service')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('contact')}</a>
-          </div>
-          <div style={{ fontSize: '12px', color: '#94a3b8' }}>© {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}</div>
-        </footer>
+        {/* Footer Secure */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: '#94a3b8', fontSize: '13px' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          {t('secure_env')}
+        </div>
 
       </div>
     </div>
   );
 };
 
-export default AboutPage;
+export default LoginPage;
