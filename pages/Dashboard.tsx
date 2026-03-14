@@ -99,7 +99,10 @@ ${t('mm_budget')}
         });
         
         setUploadProgress(85);
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase Function Error Details:", error);
+          throw new Error(error.message || "Failed to connect to analysis service.");
+        }
         
         setPasOutput({
           problem: data.problem || '',
@@ -108,8 +111,11 @@ ${t('mm_budget')}
           ai_quick_take: data.ai_quick_take || '',
           emotional_score: data.emotional_score || 88
         });
-      } catch (err) {
+      } catch (err: any) {
         console.error("AI Analysis Failed:", err);
+        // Show the real error message to the user for debugging
+        alert(`Analysis Error: ${err.message || "Unknown error"}\n\nPlease check your OpenAI credits or Edge Function logs if this persists.`);
+        
         // Fallback gracefully so UI doesn't break if edge function isn't deployed yet
         setPasOutput({
           problem: t('problem_text') || 'Fallback problem text.',
