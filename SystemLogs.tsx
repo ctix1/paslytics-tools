@@ -1,62 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useState } from 'react';
-import { supabase } from '../lib/supabase';
 
 const LoginPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
-  const navigate = useNavigate();
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/dashboard'
-        }
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('Error with Google Auth:', error);
-      alert(error.message);
-      setIsLoading(false);
-    }
-  };
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = (document.getElementById('email') as HTMLInputElement)?.value;
-    const password = (document.getElementById('password') as HTMLInputElement)?.value;
-    
-    if (!email || !password) return;
-
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) throw error;
-
-      if (data.session) {
-        localStorage.setItem('user_profile', JSON.stringify({
-          email: data.session.user.email,
-          name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0],
-          role: data.session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
-        }));
-        navigate('/dashboard');
-      }
-
-    } catch (error: any) {
-      console.error('Error during login:', error);
-      alert(error.message);
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="login-page" style={{ direction: language === 'ar' ? 'rtl' : 'ltr', position: 'relative' }}>
@@ -86,7 +32,7 @@ const LoginPage = () => {
 
         {/* Login Card */}
         <div className="card p-8" style={{ width: '100%', marginBottom: '40px' }}>
-          <button disabled={isLoading} type="button" className="btn btn-outline w-full" onClick={handleGoogleLogin} style={{ height: '44px', marginBottom: '8px', opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}>
+          <button className="btn btn-outline w-full" onClick={() => alert('Initiating Google Login...')} style={{ height: '44px', marginBottom: '8px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ marginInlineEnd: '8px' }}>
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -98,24 +44,24 @@ const LoginPage = () => {
 
           <div className="divider">{t('or_email')}</div>
 
-          <form onSubmit={handleEmailLogin}>
+          <form action="/dashboard" method="get">
             <label htmlFor="email">{t('work_email')}</label>
             <input type="email" id="email" className="input mb-4" placeholder="name@company.com" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
 
             <div className="flex justify-between items-center" style={{ marginBottom: '6px' }}>
               <label htmlFor="password" style={{ margin: 0 }}>{t('password')}</label>
-              <button type="button" onClick={(e) => { e.preventDefault(); alert('Opening Password Reset Flow...'); }} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>{t('forgot')}</button>
+              <button onClick={(e) => { e.preventDefault(); alert('Opening Password Reset Flow...'); }} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>{t('forgot')}</button>
             </div>
-            <input type="password" id="password" className="input mb-6" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
+            <input type="password" id="password" className="input mb-6" defaultValue="••••••••" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
 
-            <button disabled={isLoading} type="submit" className="btn btn-primary w-full" style={{ height: '44px', justifyContent: 'center', opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}>
-              {isLoading ? (language === 'ar' ? 'جاري التحميل...' : 'Loading...') : t('sign_in_pas')}
-            </button>
+            <Link to="/dashboard" className="btn btn-primary w-full" style={{ height: '44px', justifyContent: 'center' }}>
+              {t('sign_in_pas')}
+            </Link>
           </form>
 
           <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px' }}>
             <span className="text-muted">{t('new_to_pas')}</span> 
-            <Link to="/register" style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, marginInlineStart: '6px', textDecoration: 'none' }}>{t('create_account')}</Link>
+            <button onClick={() => alert('Opening Registration Form...')} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, marginInlineStart: '6px' }}>{t('create_account')}</button>
           </div>
         </div>
 

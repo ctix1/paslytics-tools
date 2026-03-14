@@ -1,672 +1,193 @@
-export const translations = {
-  en: {
-    // Shared
-    app_name: 'PASlytics',
-    login: 'Login',
-    logout: 'Logout',
-    get_started: 'Get Started',
-    dashboard: 'Dashboard',
-    analytics: 'Analytics',
-    logs: 'Logs',
-    admin: 'Admin',
-    settings: 'Settings',
-    profile_settings: 'Profile & Settings',
+import { Link } from 'react-router-dom';
+import { useLanguage } from '../i18n/LanguageContext';
+import { useContent } from '../context/ContentContext';
 
-    // Landing Page
-    home: 'Home',
-    features: 'Features',
-    pricing: 'Pricing',
-    plan: 'Plan',
-    about: 'About',
-    next_gen: 'NEXT-GEN MARKETING TOOL',
-    hero_title_1: 'AI-Powered Product ',
-    hero_title_2: 'Analysis',
-    hero_desc: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by advanced artificial intelligence. Transform features into emotional benefits.',
-    start_analyzing: 'Start Analyzing Now',
-    watch_demo: 'Watch Demo',
-    trusted_by: 'Trusted by 500+ product marketers',
-    transform_strategy: 'Transform Your Product Strategy',
-    transform_desc: 'Our tool leverages cutting-edge computer vision and NLP to provide actionable analysis that resonates with your customers.',
-    feature_1_title: 'AI Image Analysis',
-    feature_1_desc: 'Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.',
-    feature_2_title: 'PAS Framework Output',
-    feature_2_desc: 'Generate high-converting copy structures based on the proven Problem-Agitation-Solution framework used by top direct-response marketers.',
-    feature_3_title: 'Comprehensive Logs',
-    feature_3_desc: 'Keep track of every analysis with detailed historical logs and performance metrics. Compare different versions of product copy over time.',
-    ready_to: 'Ready to revolutionize your product marketing?',
-    join_hundreds: 'Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.',
-    start_free_trial: 'Start Free Trial',
-    contact_sales: 'Contact Sales',
-    privacy_policy: 'Privacy Policy',
-    terms_of_service: 'Terms of Service',
-    contact: 'Contact',
-    all_rights_reserved: 'All rights reserved.',
+const AboutPage = () => {
+  const { t, language, toggleLanguage } = useLanguage();
+  const { about } = useContent();
+  const isRtl = language === 'ar';
 
-    // Login Page
-    pas_analysis_title: 'PAS Analysis',
-    login_desc: 'Next-generation product analysis platform for data-driven decisions.',
-    sign_in_google: 'Sign in with Google',
-    or_email: 'OR EMAIL LOGIN',
-    work_email: 'Work Email',
-    password: 'Password',
-    forgot: 'Forgot?',
-    sign_in_pas: 'Sign in to PAS',
-    new_to_pas: 'New to PAS?',
-    create_account: 'Create an account',
-    secure_env: 'Secure, encrypted data analysis environment',
+  const get = (en: string, ar: string) => isRtl ? ar : en;
 
-    // Dashboard
-    pro_plan: 'Pro Plan',
-    export_report: 'Export Report',
-    run_new_analysis: 'Run New Analysis',
-    upload_title: 'Upload product images for analysis',
-    upload_desc: 'Supports JPG, PNG, WEBP (Max 10MB)',
-    select_files: 'Select Files',
-    pas_output: 'PAS Framework Output',
-    problem: 'PROBLEM',
-    agitation: 'AGITATION',
-    solution: 'SOLUTION',
-    problem_text: 'Small business owners spend over 15 hours a week manually reconciling invoices... The current manual process is slow and prevents founders from focusing on strategic growth.',
-    agitation_text: 'Every single mistake in those spreadsheets isn\'t just a number—it\'s lost profit. As the business scales, this bottleneck becomes a chokehold...',
-    solution_text: 'Enter SmartLedger: The AI-driven reconciliation engine that syncs your accounts in seconds. Automate 99% of manual entries with bank-grade security...',
-    emotional_resonance: 'EMOTIONAL RESONANCE',
-    score: 'SCORE:',
-    agitation_scores: 'The "Agitation" phase scores highly for emotional keywords (92nd percentile).',
-    engagement_pulse: 'ENGAGEMENT PULSE',
-    ai_quick_take: 'AI QUICK TAKE',
-    quick_take_text: 'Strong PAS alignment detected. The agitation points effectively target the core user demographic pain points.',
+  const features = [
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2" />
+          <path d="M12 8v4l3 3" />
+        </svg>
+      ),
+      title: isRtl ? 'الاستخدام الذكي للذكاء الاصطناعي' : 'AI Smart Usage',
+      desc: isRtl ? 'تستخدم تقنيات متقدمة لتحليل الصور والنصوص' : 'Uses advanced technology for image and text analysis',
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
+        </svg>
+      ),
+      title: isRtl ? 'الموثوق PAS إطار عمل' : 'Trusted PAS Framework',
+      desc: isRtl ? 'تستخدم إطار عمل المشكلة - الإثارة - الحل لإنشاء محتوى فعّال' : 'Uses the Problem-Agitation-Solution framework for effective content',
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      ),
+      title: isRtl ? 'تسجيل شامل للتحليلات' : 'Comprehensive Logs',
+      desc: isRtl ? 'تقوم بتسجيل جميع التحليلات لمساعدتك في متابعة التقدم' : 'Records all analyses to help you follow progress',
+    },
+  ];
 
-    // Logs
-    analysis_logs: 'Analysis Logs',
-    logs_desc: 'View and manage your historical product analysis data.',
-    new_analysis: 'New Analysis',
-    search_products: 'Search products by name or SKU...',
-    status_all: 'Status: All',
-    score_any: 'Score: Any',
-    export: 'Export',
-    export_pdf: 'Export PDF',
-    product: 'Product',
-    date_analyzed: 'Date Analyzed',
-    pas_score: 'PAS Score',
-    status: 'Status',
-    actions: 'Actions',
-    completed: 'Completed',
-    processing: 'Processing...',
-    view_report: 'View Report',
-    cancel: 'Cancel',
-    delete: 'Delete',
+  const team = [
+    { nameEn: about.tm1Name_en, nameAr: about.tm1Name_ar, roleEn: about.tm1Role_en, roleAr: about.tm1Role_ar, bioEn: about.tm1Bio_en, bioAr: about.tm1Bio_ar },
+    { nameEn: about.tm2Name_en, nameAr: about.tm2Name_ar, roleEn: about.tm2Role_en, roleAr: about.tm2Role_ar, bioEn: about.tm2Bio_en, bioAr: about.tm2Bio_ar },
+    { nameEn: about.tm3Name_en, nameAr: about.tm3Name_ar, roleEn: about.tm3Role_en, roleAr: about.tm3Role_ar, bioEn: about.tm3Bio_en, bioAr: about.tm3Bio_ar },
+  ];
 
-    // Management
-    user_management: 'User Management',
-    manage_team: 'Manage team members, roles, and product analysis permissions.',
-    add_user: 'Add User',
-    total_users: 'Total Users',
-    active_analysts: 'Active Analysts',
-    pending_invites: 'Pending Invites',
-    name: 'Name',
-    email: 'Email',
-    permissions: 'Permissions',
-    remove: 'Remove',
-    admin_role: 'Admin',
-    analyst_role: 'Analyst',
-    informed_member: 'Informed Member',
+  return (
+    <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
+      <div style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
 
-    // Profile Settings
-    account_settings: 'Account Settings',
-    manage_profile: 'Manage your profile, notifications, and security preferences.',
-    save_changes: 'Save Changes',
-    member_since: 'Member since January 2023',
-    personal_info: 'Personal Information',
-    first_name: 'First Name',
-    last_name: 'Last Name',
-    biography: 'Biography',
-    tell_us: 'Tell us a bit about yourself...',
-    notification_pref: 'Notification Preferences',
-    email_alerts: 'Email Alerts',
-    email_alerts_desc: 'Receive weekly digests and important system updates.',
-    desktop_notif: 'Desktop Notifications',
-    desktop_notif_desc: 'Real-time alerts for shared reports and team comments.',
-    security: 'Security',
-    last_changed: 'Last changed 3 months ago.',
-    change_password: 'Change Password',
+        {/* Nav */}
+        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <div style={{ width: '24px', height: '24px', color: '#6c2bd9' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </div>
+            <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
+          </Link>
 
-    // Pricing Page
-    pricing_plans_badge: 'PRICING PLANS',
-    pricing_title_1: 'Simple,',
-    pricing_title_2: 'transparent',
-    pricing_title_3: 'pricing',
-    pricing_subtitle: 'Choose the perfect plan to optimize your PAS marketing framework with our advanced AI analytics.',
-    plan_monthly_title: 'Monthly Subscription',
-    plan_monthly_desc: 'Perfect for solo marketers and small projects.',
-    plan_annual_title: 'Annual Subscription',
-    plan_annual_desc: 'For professional teams looking to scale results.',
-    per_month: '/month',
-    per_year: '/year',
-    annual_savings: 'Equates to $17/month (Save $24/year)',
-    choose_plan: 'Choose Plan',
-    whats_included: "WHAT'S INCLUDED",
-    everything_monthly_plus: 'EVERYTHING IN MONTHLY, PLUS',
-    best_value: 'BEST VALUE',
-    pricing_feature_image: 'AI Image Analysis',
-    pricing_feature_pas: 'PAS Framework Output',
-    pricing_feature_logs: 'Full Analysis Logs',
-    pricing_feature_team: 'Team Management',
-    pricing_feature_support: 'Priority Support',
-    plan_chosen_alert: 'Redirecting to checkout...',
-    faq_title: 'Frequently Asked Questions',
-    faq_cancel_q: 'Can I cancel my subscription?',
-    faq_cancel_a: 'Yes, you can cancel at any time from your account settings. Your access will continue until the end of the billing period.',
-    faq_pas_q: 'What is the PAS framework?',
-    faq_pas_a: 'PAS stands for Problem–Agitation–Solution. It is a proven copywriting framework used by direct-response marketers to create emotionally resonant product messaging.',
-    faq_enterprise_q: 'Do you offer custom enterprise plans?',
-    faq_enterprise_a: 'Yes. Please reach out via Contact Sales and our team will tailor a plan to your organization\'s requirements.',
+          <div style={{ display: 'flex', gap: '32px' }}>
+            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
+            <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
+            <Link to="/about" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('about')}</Link>
+          </div>
 
-    // Marketing Manager
-    mm_title: 'Marketing Manager',
-    mm_desc: 'Generate a targeted marketing plan based on your product analysis',
-    mm_product_desc: 'Product Description',
-    mm_product_placeholder: 'Describe your product or service...',
-    mm_age_range: 'Target Age Range:',
-    mm_gender_split: 'Gender Split:',
-    mm_men: 'Men',
-    mm_women: 'Women',
-    mm_generate: '📊 Generate Marketing Plan',
-    mm_alert_empty: 'Please enter a product description first.',
-    mm_plan_title: '📊 Marketing Plan for:',
-    mm_target_audience: '🎯 Target Audience:',
-    mm_age_range_label: 'Age Range:',
-    mm_gender_split_label: 'Gender Split:',
-    mm_channels: '📣 Recommended Channels:',
-    mm_email_young: 'Email marketing to millennials and Gen Z',
-    mm_email_older: 'Email marketing to adults 35+',
-    mm_content_strategy: '📦 Content Strategy:',
-    mm_highlight_male: 'Highlight product benefits for the male-dominant audience',
-    mm_highlight_female: 'Highlight product benefits for the female-dominant audience',
-    mm_ab_tests: 'Run A/B tests on age group',
-    mm_budget: '💡 Budget Allocation:',
-    mm_budget_digital: '40% Digital Ads',
-    mm_budget_content: '30% Content Creation',
-    mm_budget_influencer: '20% Influencer Partnerships',
-    mm_budget_analytics: '10% Analytics & Tracking',
-    mm_years: 'years',
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button onClick={toggleLanguage} className="btn" style={{ background: 'transparent', padding: '8px 12px', fontSize: '14px', fontWeight: 600 }}>
+              {isRtl ? 'English' : 'العربية'}
+            </button>
+            <Link to="/login" className="btn" style={{ background: '#f1f5f9', color: '#1e293b' }}>{t('login')}</Link>
+            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9' }}>{t('get_started')}</Link>
+          </div>
+        </header>
 
-    // Product Calculator
-    pc_title: 'Product Price Calculator',
-    pc_desc: 'Base cost + Import duties + Profit margin + Marketing = Final price',
-    pc_base_cost: 'Base Product Cost ($)',
-    pc_duties: 'Import Duties & Taxes',
-    pc_duty_percent: '% of base',
-    pc_duty_fixed: 'fixed $',
-    pc_profit_margin: 'Desired Profit Margin (%)',
-    pc_marketing_budget: 'Marketing Budget ($)',
-    pc_final_price: 'Estimated Final Price',
-    pc_base_label: 'Base Cost:',
-    pc_duties_label: 'Duties:',
-    pc_profit_label: 'Profit',
-    pc_marketing_label: 'Marketing:',
+        {/* Hero */}
+        <section style={{ textAlign: 'center', padding: '40px 0 60px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 18px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '20px', fontSize: '13px', fontWeight: 600, marginBottom: '20px' }}>
+            {get(about.badge_en, about.badge_ar)}
+          </div>
+          <h1 style={{ fontSize: '42px', fontWeight: 800, color: '#1e293b', marginBottom: '20px', lineHeight: 1.2 }}>
+            {get(about.heading_en, about.heading_ar)}
+          </h1>
+          <p style={{ fontSize: '16px', color: '#475569', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>
+            {get(about.subheading_en, about.subheading_ar)}
+          </p>
+        </section>
 
-    // Shared UI
-    no_logs: 'No logs available.',
-    showing: 'Showing',
-    to: 'to',
-    of: 'of',
-    results: 'results',
-    users_label: 'users',
-    no_users: 'No users found.',
-    previous: 'Previous',
-    next: 'Next',
-    platform_name: 'PASlytics Analysis Platform.',
-    save_success: 'Settings saved successfully!',
-    remove_user_confirm: 'Are you sure you want to remove {name} from the team?',
+        {/* Vision & Features */}
+        <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', padding: '40px 0 80px', alignItems: 'start' }}>
+          {/* Left: Vision + Mission */}
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
+              {get(about.visionTitle_en, about.visionTitle_ar)}
+            </h2>
+            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8, marginBottom: '32px' }}>
+              {get(about.visionText_en, about.visionText_ar)}
+            </p>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
+              {get(about.missionTitle_en, about.missionTitle_ar)}
+            </h2>
+            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8 }}>
+              {get(about.missionText_en, about.missionText_ar)}
+            </p>
+          </div>
 
-    // Checkout Page
-    checkout_title: 'Complete Your Purchase',
-    checkout_back: 'Back to Plan',
-    checkout_order_summary: 'Order Summary',
-    checkout_proceed: 'Continue to Payment',
-    checkout_secure: 'Secured & Encrypted',
-    checkout_tab_card: 'Credit / Debit Card',
-    checkout_tab_bank: 'Bank Transfer',
-    checkout_cardholder: 'Cardholder Name',
-    checkout_card_number: 'Card Number',
-    checkout_expiry: 'Expiry Date',
-    checkout_cvv: 'CVV',
-    checkout_pay_now: '🔒 Pay Now',
-    checkout_confirm_transfer: 'Confirm Bank Transfer',
-    checkout_privacy_note: 'Your payment details are never stored or transmitted. All data is cleared immediately after submission.',
-    checkout_bank_title: 'Bank Transfer Instructions',
-    checkout_bank_name: 'Account Name',
-    checkout_bank_iban: 'IBAN',
-    checkout_bank_swift: 'SWIFT / BIC',
-    checkout_bank_ref: 'Payment Reference',
-    checkout_bank_amount: 'Amount',
-    checkout_bank_note: 'Please include the Payment Reference in your transfer description. Your subscription will be activated within 1–2 business days after payment confirmation.',
-    checkout_subtotal: 'Subtotal',
-    checkout_tax: 'Tax',
-    checkout_total: 'Total',
-    checkout_cancel_note: 'You can cancel your subscription at any time from your Profile settings. No questions asked.',
-    checkout_processing: 'Processing Payment…',
-    checkout_processing_desc: 'Please wait while we securely process your payment.',
-    checkout_success_title: 'Subscription Activated! 🎉',
-    checkout_success_desc: 'Your plan is now active. You have full access to all features included in your plan.',
-    checkout_go_dashboard: 'Go to Dashboard',
-    checkout_view_subscription: 'View subscription details',
-    checkout_err_name: 'Please enter the cardholder name.',
-    checkout_err_card: 'Please enter a valid 16-digit card number.',
-    checkout_err_expiry: 'Please enter a valid future expiry date (MM/YY).',
-    checkout_err_cvv: 'Please enter a valid CVV.',
+          {/* Right: Feature Cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {features.map((f, i) => (
+              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 24px', display: 'flex', alignItems: 'flex-start', gap: '16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                <div style={{ width: '40px', height: '40px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  {f.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#6c2bd9', marginBottom: '4px' }}>{f.title}</div>
+                  <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-    // Admin Payment Settings
-    paysettings_nav: 'Payment Settings',
-    paysettings_title: 'Payment Settings',
-    paysettings_desc: 'Configure payment recipient details and view active subscriptions.',
-    paysettings_encrypted_title: 'AES-256 Encrypted Storage',
-    paysettings_encrypted_desc: 'All payment credentials are encrypted with AES-GCM before being saved locally. Your data is never sent to any server.',
-    paysettings_recipient_title: 'Recipient Payment Details',
-    paysettings_edit: 'Edit',
-    paysettings_bank_name: 'Bank / Account Name',
-    paysettings_bank_name_ph: 'e.g. PASlytics Ltd.',
-    paysettings_swift: 'SWIFT / BIC Code',
-    paysettings_iban: 'IBAN',
-    paysettings_stripe_key: 'Stripe Publishable Key',
-    paysettings_stripe_note: 'Enter your Stripe publishable key (pk_live_...) for card payment integration.',
-    paysettings_save_btn: '🔐 Save Encrypted',
-    paysettings_clear: 'Clear All',
-    paysettings_saved: 'Saved securely',
-    paysettings_error: 'Save failed. Please try again.',
-    paysettings_confirm_clear: 'Are you sure you want to clear all payment settings? This cannot be undone.',
-    paysettings_subs_title: 'Active Subscriptions',
-    paysettings_no_subs: 'No active subscriptions at this time.',
-    paysettings_active_plan: 'Active Plan',
-    paysettings_activated: 'Activated On',
-    paysettings_renews: 'Renews On',
+        {/* Team Section */}
+        <section style={{ padding: '60px 0', background: '#f8fafc', borderRadius: '24px', marginBottom: '60px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
+            {get(about.teamTitle_en, about.teamTitle_ar)}
+          </h2>
+          <p style={{ fontSize: '15px', color: '#64748b', marginBottom: '48px' }}>
+            {get(about.teamSubtitle_en, about.teamSubtitle_ar)}
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', padding: '0 40px' }}>
+            {team.map((member, i) => (
+              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '32px 24px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+                <div style={{ width: '72px', height: '72px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#6c2bd9' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}>
+                  {get(member.nameEn, member.nameAr)}
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: '#6c2bd9', marginBottom: '10px' }}>
+                  {get(member.roleEn, member.roleAr)}
+                </div>
+                <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6 }}>
+                  {get(member.bioEn, member.bioAr)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-    // Content Manager Admin
-    content_manager_nav: 'Content Manager',
-    content_manager_title: 'Content Manager',
-    content_manager_desc: 'Edit homepage and About page content in English and Arabic.',
-    content_tab_home: 'Homepage',
-    content_tab_about: 'About Page',
-    content_save_btn: 'Save Changes',
-    content_saved: 'Saved!',
-    content_reset_btn: 'Reset to Defaults',
-    content_live_note: 'Changes are saved to your browser and reflected live on the public pages.',
-    content_section_hero: 'Hero Section',
-    content_section_features: 'Features Section',
-    content_section_cta: 'CTA Section',
-    content_section_vision: 'Vision & Mission',
-    content_section_team: 'Team Section',
-    content_hero_title1: 'Hero Title (Part 1)',
-    content_hero_title2: 'Hero Title (Part 2 — highlighted)',
-    content_hero_desc: 'Hero Description',
-    content_cta_heading: 'CTA Heading',
-    content_cta_desc: 'CTA Description',
-    content_feature_title: 'Feature Title',
-    content_feature_desc: 'Feature Description',
-    content_badge: 'Badge Text',
-    content_heading: 'Main Heading',
-    content_subheading: 'Subheading',
-    content_vision_title: 'Vision Title',
-    content_vision_text: 'Vision Text',
-    content_mission_title: 'Mission Title',
-    content_mission_text: 'Mission Text',
-    content_team_title: 'Team Section Title',
-    content_team_subtitle: 'Team Subtitle',
-    content_team_member: 'Team Member',
-    content_name: 'Name',
-    content_role: 'Role / Title',
-    content_bio: 'Bio',
+        {/* CTA Section */}
+        <section style={{ padding: '80px 0', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#1e293b', marginBottom: '16px' }}>
+            {get(about.ctaTitle_en, about.ctaTitle_ar)}
+          </h2>
+          <p style={{ fontSize: '15px', color: '#475569', maxWidth: '500px', margin: '0 auto 40px', lineHeight: 1.7 }}>
+            {get(about.ctaDesc_en, about.ctaDesc_ar)}
+          </p>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9', padding: '12px 32px', fontSize: '14px', borderRadius: '8px' }}>
+              {isRtl ? 'اتصل بنا' : 'Contact Us'}
+            </Link>
+            <button className="btn btn-outline" onClick={() => alert('Opening demo...')} style={{ padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: '#ffffff' }}>
+              {isRtl ? 'شاهد عرضنا تقديمي' : 'Watch our demo'}
+            </button>
+          </div>
+        </section>
 
-    // Subscription in Profile
-    sub_section_title: 'Subscription',
-    sub_current_plan: 'Current Plan',
-    sub_activated: 'Activated On',
-    sub_renews: 'Renews On',
-    sub_cancel_btn: 'Cancel Subscription',
-    sub_no_plan: 'No active subscription.',
-    sub_choose_plan: 'Choose a Plan',
-    sub_cancel_confirm: 'Cancel your subscription?',
-    sub_cancel_disclaimer: 'Your subscription will be cancelled immediately. You are fully responsible for this decision and the site bears no liability. Any unused period will not be refunded.',
-    sub_cancel_proceed: 'Yes, Cancel Subscription',
-    sub_cancelled_msg: 'Your subscription has been successfully cancelled.',
+        {/* Footer */}
+        <footer style={{ padding: '40px 0', borderTop: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '20px', height: '20px', color: '#6c2bd9' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </div>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
+          </div>
+          <div style={{ display: 'flex', gap: '32px' }}>
+            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('privacy_policy')}</a>
+            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('terms_of_service')}</a>
+            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('contact')}</a>
+          </div>
+          <div style={{ fontSize: '12px', color: '#94a3b8' }}>© {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}</div>
+        </footer>
 
-    language_ar: 'العربية',
-    language_en: 'English'
-  },
-  ar: {
-    // Shared
-    app_name: 'PASlytics',
-    login: 'تسجيل الدخول',
-    logout: 'تسجيل الخروج',
-    get_started: 'ابدأ الآن',
-    dashboard: 'لوحة القيادة',
-    analytics: 'التحليلات',
-    logs: 'السجلات',
-    admin: 'المسؤول',
-    settings: 'الإعدادات',
-    profile_settings: 'الملف الشخصي والإعدادات',
-
-    // Landing Page
-    home: 'الرئيسية',
-    features: 'الميزات',
-    pricing: 'الأسعار',
-    plan: 'الخطة',
-    about: 'حول',
-    next_gen: 'أداة التسويق للجيل القادم',
-    hero_title_1: 'تحليل المنتجات المدعوم ',
-    hero_title_2: 'بالذكاء الاصطناعي',
-    hero_desc: 'اكتشف رؤى المستهلكين العميقة باستخدام نموذج PAS (المشكلة-التهيج-الحل) المدفوع بالذكاء الاصطناعي المتقدم. حوّل الميزات إلى فوائد عاطفية.',
-    start_analyzing: 'ابدأ التحليل الآن',
-    watch_demo: 'شاهد العرض',
-    trusted_by: 'موثوق به من قبل أكثر من 500 مسوق للمنتجات',
-    transform_strategy: 'حوّل استراتيجية منتجك',
-    transform_desc: 'تستفيد أداتنا من أحدث تقنيات الرؤية الحاسوبية ومعالجة اللغات الطبيعية لتوفير تحليلات قابلة للتنفيذ تتردد صداها مع عملائك.',
-    feature_1_title: 'تحليل الصور بالذكاء الاصطناعي',
-    feature_1_desc: 'قم بتحميل صور المنتج ودع الذكاء الاصطناعي لدينا يحدد تلقائيًا نقاط البيع المرئية الرئيسية والسمات المادية التي تحفز نية الشراء.',
-    feature_2_title: 'مخرجات إطار عمل PAS',
-    feature_2_desc: 'قم بإنشاء هياكل نصية عالية التحويل بناءً على نموذج المشكلة-التهيج-الحل المثبت استخدامه من قبل كبار مسوقي الاستجابة المباشرة.',
-    feature_3_title: 'سجلات شاملة',
-    feature_3_desc: 'تتبع كل تحليل باستخدام سجلات تاريخية مفصلة ومقاييس الأداء. قارن بين الإصدارات المختلفة لنصوص المنتجات بمرور الوقت.',
-    ready_to: 'جاهز لإحداث ثورة في تسويق منتجك؟',
-    join_hundreds: 'انضم إلى مئات من مديري المنتجات الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
-    start_free_trial: 'ابدأ التجربة المجانية',
-    contact_sales: 'اتصل بالمبيعات',
-    privacy_policy: 'سياسة الخصوصية',
-    terms_of_service: 'شروط الخدمة',
-    contact: 'اتصل بنا',
-    all_rights_reserved: 'جميع الحقوق محفوظة.',
-
-    // Login Page
-    pas_analysis_title: 'تحليل PAS',
-    login_desc: 'منصة الجيل القادم لتحليل المنتجات لاتخاذ قرارات قائمة على البيانات.',
-    sign_in_google: 'تسجيل الدخول باستخدام جوجل',
-    or_email: 'أو تسجيل الدخول بالبريد الإلكتروني',
-    work_email: 'بريد العمل',
-    password: 'كلمة المرور',
-    forgot: 'نسيت؟',
-    sign_in_pas: 'تسجيل الدخول إلى PAS',
-    new_to_pas: 'جديد في PAS؟',
-    create_account: 'إنشاء حساب',
-    secure_env: 'بيئة تحليل بيانات آمنة ومشفرة',
-
-    // Dashboard
-    pro_plan: 'خطة احترافية',
-    export_report: 'تصدير التقرير',
-    run_new_analysis: 'تشغيل تحليل جديد',
-    upload_title: 'تحميل صور المنتجات للتحليل',
-    upload_desc: 'يدعم JPG، PNG، WEBP (بحد أقصى 10 ميغابايت)',
-    select_files: 'اختر الملفات',
-    pas_output: 'مخرجات إطار عمل PAS',
-    problem: 'المشكلة',
-    agitation: 'التهيج',
-    solution: 'الحل',
-    problem_text: 'يقضي أصحاب الشركات الصغيرة أكثر من 15 ساعة أسبوعيًا في تسوية الفواتير يدويًا... العملية اليدوية الحالية بطيئة وتمنع المؤسسين من التركيز على النمو الاستراتيجي.',
-    agitation_text: 'كل خطأ واحد في تلك الجداول ليس مجرد رقم - إنه ربح ضائع. ومع توسع الأعمال، يصبح هذا العنق الزجاجة خنقًا...',
-    solution_text: 'أدخل SmartLedger: محرك التسوية المدفوع بالذكاء الاصطناعي الذي يزامن حساباتك في ثوانٍ. قم بأتمتة 99٪ من الإدخالات اليدوية...',
-    emotional_resonance: 'الرنين العاطفي',
-    score: 'النتيجة:',
-    agitation_scores: 'مرحلة "التهيج" تسجل درجات عالية للكلمات الرئيسية العاطفية (المئين الثاني والتسعين).',
-    engagement_pulse: 'نبض التفاعل',
-    ai_quick_take: 'نظرة سريعة للذكاء الاصطناعي',
-    quick_take_text: 'تم اكتشاف توافق قوي مع PAS. نقاط التهييج تستهدف بفعالية نقاط الألم للديموغرافية الأساسية للمستخدمين.',
-
-    // Logs
-    analysis_logs: 'سجلات التحليل',
-    logs_desc: 'عرض وإدارة بيانات تحليل المنتجات التاريخية الخاصة بك.',
-    new_analysis: 'تحليل جديد',
-    search_products: 'ابحث عن المنتجات بالاسم أو رمز SKU...',
-    status_all: 'الحالة: الكل',
-    score_any: 'النتيجة: أي',
-    export: 'تصدير',
-    export_pdf: 'تصدير PDF',
-    product: 'المنتج',
-    date_analyzed: 'تاريخ التحليل',
-    pas_score: 'درجة PAS',
-    status: 'الحالة',
-    actions: 'الإجراءات',
-    completed: 'مكتمل',
-    processing: 'جارٍ المعالجة...',
-    view_report: 'عرض التقرير',
-    cancel: 'إلغاء',
-    delete: 'حذف',
-
-    // Management
-    user_management: 'إدارة المستخدمين',
-    manage_team: 'إدارة أعضاء الفريق، والأدوار، وصلاحيات تحليل المنتجات.',
-    add_user: 'إضافة مستخدم',
-    total_users: 'إجمالي المستخدمين',
-    active_analysts: 'المحللون النشطون',
-    pending_invites: 'الدعوات المعلقة',
-    name: 'الاسم',
-    email: 'البريد الإلكتروني',
-    permissions: 'الصلاحيات',
-    remove: 'إزالة',
-    admin_role: 'مسؤول',
-    analyst_role: 'محلل',
-    informed_member: 'عضو مطلع',
-
-    // Profile Settings
-    account_settings: 'إعدادات الحساب',
-    manage_profile: 'إدارة ملفك الشخصي والإشعارات وتفضيلات الأمان.',
-    save_changes: 'حفظ التغييرات',
-    member_since: 'عضو منذ يناير 2023',
-    personal_info: 'المعلومات الشخصية',
-    first_name: 'الاسم الأول',
-    last_name: 'اسم العائلة',
-    biography: 'السيرة الذاتية',
-    tell_us: 'أخبرنا قليلاً عن نفسك...',
-    notification_pref: 'تفضيلات الإشعارات',
-    email_alerts: 'تنبيهات البريد الإلكتروني',
-    email_alerts_desc: 'تلقي ملخصات أسبوعية وتحديثات مهمة للنظام.',
-    desktop_notif: 'إشعارات سطح المكتب',
-    desktop_notif_desc: 'تنبيهات في الوقت الفعلي للتقارير المشتركة وتعليقات الفريق.',
-    security: 'الأمان',
-    last_changed: 'آخر تغيير منذ 3 أشهر.',
-    change_password: 'تغيير كلمة المرور',
-
-    // Pricing Page
-    pricing_plans_badge: 'خطط الأسعار',
-    pricing_title_1: 'أسعار',
-    pricing_title_2: 'شفافة',
-    pricing_title_3: 'وبسيطة',
-    pricing_subtitle: 'اختر الخطة المثالية لتحسين إطار عمل PAS التسويقي الخاص بك مع تحليلات الذكاء الاصطناعي المتقدمة.',
-    plan_monthly_title: 'الاشتراك الشهري',
-    plan_monthly_desc: 'مثالي للمسوقين المستقلين والمشاريع الصغيرة.',
-    plan_annual_title: 'الاشتراك السنوي',
-    plan_annual_desc: 'للفرق الاحترافية الساعية إلى تحقيق نتائج قابلة للتوسع.',
-    per_month: '/شهر',
-    per_year: '/سنة',
-    annual_savings: 'يعادل $17/شهر (وفر $24/سنة)',
-    choose_plan: 'اختر الخطة',
-    whats_included: 'ما يشمله الاشتراك',
-    everything_monthly_plus: 'كل ما في الشهري، بالإضافة إلى',
-    best_value: 'أفضل قيمة',
-    pricing_feature_image: 'تحليل الصور بالذكاء الاصطناعي',
-    pricing_feature_pas: 'مخرجات إطار عمل PAS',
-    pricing_feature_logs: 'سجلات التحليل الكاملة',
-    pricing_feature_team: 'إدارة الفريق',
-    pricing_feature_support: 'الدعم الأولوي',
-    plan_chosen_alert: 'جارٍ التحويل إلى صفحة الدفع...',
-    faq_title: 'الأسئلة الشائعة',
-    faq_cancel_q: 'هل يمكنني إلغاء اشتراكي؟',
-    faq_cancel_a: 'نعم، يمكنك الإلغاء في أي وقت من إعدادات حسابك. سيستمر وصولك حتى نهاية فترة الفوترة.',
-    faq_pas_q: 'ما هو إطار عمل PAS؟',
-    faq_pas_a: 'PAS اختصار لـ المشكلة-التهيج-الحل. إنه إطار كتابة إعلانية مثبت يستخدمه مسوقو الاستجابة المباشرة لصياغة رسائل منتجات ذات صدى عاطفي.',
-    faq_enterprise_q: 'هل تقدمون خططًا مخصصة للمؤسسات؟',
-    faq_enterprise_a: 'نعم. يرجى التواصل معنا عبر قسم اتصل بالمبيعات وسيقوم فريقنا بتصميم خطة تناسب متطلبات مؤسستك.',
-
-    // Marketing Manager
-    mm_title: 'مدير التسويق',
-    mm_desc: 'إنشاء خطة تسويقية مستهدفة بناءً على تحليل منتجك',
-    mm_product_desc: 'وصف المنتج',
-    mm_product_placeholder: 'صف منتجك أو خدمتك...',
-    mm_age_range: 'الفئة العمرية المستهدفة:',
-    mm_gender_split: 'توزيع الجنس:',
-    mm_men: 'رجال',
-    mm_women: 'نساء',
-    mm_generate: '📊 إنشاء خطة تسويقية',
-    mm_alert_empty: 'الرجاء إدخال وصف المنتج أولاً.',
-    mm_plan_title: '📊 خطة تسويقية لـ:',
-    mm_target_audience: '🎯 الجمهور المستهدف:',
-    mm_age_range_label: 'الفئة العمرية:',
-    mm_gender_split_label: 'توزيع الجنس:',
-    mm_channels: '📣 القنوات الموصى بها:',
-    mm_email_young: 'التسويق عبر البريد الإلكتروني لجيل الألفية والجيل Z',
-    mm_email_older: 'التسويق عبر البريد الإلكتروني للبالغين +35',
-    mm_content_strategy: '📦 استراتيجية المحتوى:',
-    mm_highlight_male: 'إبراز فوائد المنتج للجمهور ذو الغالبية الذكورية',
-    mm_highlight_female: 'إبراز فوائد المنتج للجمهور ذو الغالبية الأنثوية',
-    mm_ab_tests: 'إجراء اختبارات A/B على الفئة العمرية',
-    mm_budget: '💡 توزيع الميزانية:',
-    mm_budget_digital: '40% إعلانات رقمية',
-    mm_budget_content: '30% إنشاء المحتوى',
-    mm_budget_influencer: '20% شراكات المؤثرين',
-    mm_budget_analytics: '10% التحليلات والتتبع',
-    mm_years: 'سنة',
-
-    // Product Calculator
-    pc_title: 'حاسبة أسعار المنتجات',
-    pc_desc: 'التكلفة الأساسية + الرسوم الجمركية + هامش الربح + التسويق = السعر النهائي',
-    pc_base_cost: 'تكلفة المنتج الأساسية ($)',
-    pc_duties: 'الرسوم الجمركية والضرائب',
-    pc_duty_percent: '% من الأساس',
-    pc_duty_fixed: 'مبلغ ثابت $',
-    pc_profit_margin: 'هامش الربح المطلوب (%)',
-    pc_marketing_budget: 'ميزانية التسويق ($)',
-    pc_final_price: 'السعر النهائي المقدر',
-    pc_base_label: 'التكلفة الأساسية:',
-    pc_duties_label: 'الرسوم:',
-    pc_profit_label: 'الربح',
-    pc_marketing_label: 'التسويق:',
-
-    // Shared UI
-    no_logs: 'لا توجد سجلات متاحة.',
-    showing: 'عرض',
-    to: 'إلى',
-    of: 'من',
-    results: 'نتائج',
-    users_label: 'مستخدمين',
-    no_users: 'لم يتم العثور على مستخدمين.',
-    previous: 'السابق',
-    next: 'التالي',
-    platform_name: 'منصة تحليلات PASlytics.',
-    save_success: 'تم حفظ الإعدادات بنجاح!',
-    remove_user_confirm: 'هل أنت متأكد أنك تريد إزالة {name} من الفريق؟',
-
-    // Checkout Page
-    checkout_title: 'أكمل عملية الشراء',
-    checkout_back: 'العودة للخطة',
-    checkout_order_summary: 'ملخص الطلب',
-    checkout_proceed: 'المتابعة إلى الدفع',
-    checkout_secure: 'آمن ومشفر',
-    checkout_tab_card: 'بطاقة ائتمان / خصم',
-    checkout_tab_bank: 'تحويل بنكي',
-    checkout_cardholder: 'اسم حامل البطاقة',
-    checkout_card_number: 'رقم البطاقة',
-    checkout_expiry: 'تاريخ الانتهاء',
-    checkout_cvv: 'رمز CVV',
-    checkout_pay_now: '🔒 ادفع الآن',
-    checkout_confirm_transfer: 'تأكيد التحويل البنكي',
-    checkout_privacy_note: 'لا يتم تخزين بيانات الدفع أو نقلها أبدًا. يتم مسح جميع البيانات فورًا بعد الإرسال.',
-    checkout_bank_title: 'تعليمات التحويل البنكي',
-    checkout_bank_name: 'اسم الحساب',
-    checkout_bank_iban: 'رقم IBAN',
-    checkout_bank_swift: 'رمز SWIFT / BIC',
-    checkout_bank_ref: 'مرجع الدفع',
-    checkout_bank_amount: 'المبلغ',
-    checkout_bank_note: 'من فضلك اذكر مرجع الدفع في وصف التحويل. سيتم تفعيل اشتراكك خلال 1-2 يوم عمل بعد تأكيد الدفع.',
-    checkout_subtotal: 'المجموع الفرعي',
-    checkout_tax: 'الضريبة',
-    checkout_total: 'الإجمالي',
-    checkout_cancel_note: 'يمكنك إلغاء اشتراكك في أي وقت من إعدادات ملفك الشخصي. بدون أي أسئلة.',
-    checkout_processing: 'جارٍ معالجة الدفع…',
-    checkout_processing_desc: 'يرجى الانتظار بينما نعالج دفعتك بأمان.',
-    checkout_success_title: 'تم تفعيل الاشتراك! 🎉',
-    checkout_success_desc: 'خطتك نشطة الآن. لديك وصول كامل إلى جميع الميزات المضمنة في خطتك.',
-    checkout_go_dashboard: 'الذهاب إلى لوحة القيادة',
-    checkout_view_subscription: 'عرض تفاصيل الاشتراك',
-    checkout_err_name: 'يرجى إدخال اسم حامل البطاقة.',
-    checkout_err_card: 'يرجى إدخال رقم بطاقة صالح مكون من 16 رقمًا.',
-    checkout_err_expiry: 'يرجى إدخال تاريخ انتهاء صالح في المستقبل (MM/YY).',
-    checkout_err_cvv: 'يرجى إدخال رمز CVV صالح.',
-
-    // Admin Payment Settings
-    paysettings_nav: 'إعدادات الدفع',
-    paysettings_title: 'إعدادات الدفع',
-    paysettings_desc: 'تكوين بيانات المستفيد من المدفوعات وعرض الاشتراكات النشطة.',
-    paysettings_encrypted_title: 'تخزين مشفر AES-256',
-    paysettings_encrypted_desc: 'يتم تشفير جميع بيانات الدفع باستخدام AES-GCM قبل حفظها محليًا. لا يتم إرسال بياناتك إلى أي خادم.',
-    paysettings_recipient_title: 'بيانات المستفيد من المدفوعات',
-    paysettings_edit: 'تعديل',
-    paysettings_bank_name: 'البنك / اسم الحساب',
-    paysettings_bank_name_ph: 'مثل: PASlytics Ltd.',
-    paysettings_swift: 'رمز SWIFT / BIC',
-    paysettings_iban: 'رقم IBAN',
-    paysettings_stripe_key: 'مفتاح Stripe العام',
-    paysettings_stripe_note: 'أدخل مفتاح Stripe العام (pk_live_...) لتكامل دفع البطاقة.',
-    paysettings_save_btn: '🔐 حفظ مشفرًا',
-    paysettings_clear: 'مسح الكل',
-    paysettings_saved: 'تم الحفظ بأمان',
-    paysettings_error: 'فشل الحفظ. يرجى المحاولة مرة أخرى.',
-    paysettings_confirm_clear: 'هل أنت متأكد من مسح جميع إعدادات الدفع؟ لا يمكن التراجع عن هذا الإجراء.',
-    paysettings_subs_title: 'الاشتراكات النشطة',
-    paysettings_no_subs: 'لا توجد اشتراكات نشطة في الوقت الحالي.',
-    paysettings_active_plan: 'الخطة النشطة',
-    paysettings_activated: 'تاريخ التفعيل',
-    paysettings_renews: 'تاريخ التجديد',
-
-    // Content Manager Admin
-    content_manager_nav: 'مدير المحتوى',
-    content_manager_title: 'مدير المحتوى',
-    content_manager_desc: 'تعديل محتوى الصفحة الرئيسية وصفحة «حول» بالعربية والإنجليزية.',
-    content_tab_home: 'الصفحة الرئيسية',
-    content_tab_about: 'صفحة حول',
-    content_save_btn: 'حفظ التغييرات',
-    content_saved: 'تم الحفظ!',
-    content_reset_btn: 'إعادة الضبط',
-    content_live_note: 'يتم حفظ التغييرات في متصفحك وتظهر فورًا على الصفحات العامة.',
-    content_section_hero: 'قسم البطل',
-    content_section_features: 'قسم الميزات',
-    content_section_cta: 'قسم الدعوة للعمل',
-    content_section_vision: 'الرؤية والرسالة',
-    content_section_team: 'قسم الفريق',
-    content_hero_title1: 'عنوان البطل (الجزء 1)',
-    content_hero_title2: 'عنوان البطل (الجزء 2 — مميز)',
-    content_hero_desc: 'وصف البطل',
-    content_cta_heading: 'عنوان الدعوة',
-    content_cta_desc: 'وصف الدعوة',
-    content_feature_title: 'عنوان الميزة',
-    content_feature_desc: 'وصف الميزة',
-    content_badge: 'نص الشارة',
-    content_heading: 'العنوان الرئيسي',
-    content_subheading: 'العنوان الفرعي',
-    content_vision_title: 'عنوان الرؤية',
-    content_vision_text: 'نص الرؤية',
-    content_mission_title: 'عنوان الرسالة',
-    content_mission_text: 'نص الرسالة',
-    content_team_title: 'عنوان قسم الفريق',
-    content_team_subtitle: 'عنوان فرعي للفريق',
-    content_team_member: 'عضو الفريق',
-    content_name: 'الاسم',
-    content_role: 'الدور / الوظيفة',
-    content_bio: 'نبذة',
-
-    // Subscription in Profile
-    sub_section_title: 'الاشتراك',
-    sub_current_plan: 'الخطة الحالية',
-    sub_activated: 'تاريخ التفعيل',
-    sub_renews: 'تاريخ التجديد',
-    sub_cancel_btn: 'إلغاء الاشتراك',
-    sub_no_plan: 'لا يوجد اشتراك نشط.',
-    sub_choose_plan: 'اختر خطة',
-    sub_cancel_confirm: 'إلغاء اشتراكك؟',
-    sub_cancel_disclaimer: 'سيتم إلغاء اشتراكك فورًا. أنت المسؤول الكامل عن هذا القرار ولا تتحمل المنصة أي مسؤولية. لن يتم استرداد الفترة غير المستخدمة.',
-    sub_cancel_proceed: 'نعم، إلغاء الاشتراك',
-    sub_cancelled_msg: 'تم إلغاء اشتراكك بنجاح.',
-
-    language_ar: 'العربية',
-    language_en: 'English'
-  }
+      </div>
+    </div>
+  );
 };
 
-export type TranslationKey = keyof typeof translations.en;
+export default AboutPage;

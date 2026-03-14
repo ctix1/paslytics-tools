@@ -3,157 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Management</title>
+  <title>Analysis Logs - ProductLog</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .stat-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-      flex: 1;
-    }
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .stat-value {
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
+    .topbar-layout { display: flex; flex-direction: column; min-height: 100vh; }
   </style>
 </head>
-<body style="background: #f8fafc; padding: 40px;">
+<body class="topbar-layout">
 
-  <div style="max-width: 1200px; margin: 0 auto;">
-    
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
-      <div>
-        <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 4px;">User Management</h1>
-        <p style="color: var(--text-muted); font-size: 14px;">Manage team members, roles, and product analysis permissions.</p>
-      </div>
-      <button class="btn btn-primary" style="background: #6c2bd9;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"></path></svg>
-        Add User
-      </button>
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="flex items-center gap-3">
+      <div style="width: 32px; height: 32px; background: #6c2bd9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px;">P</div>
+      <span style="font-size: 18px; font-weight: 600; color: var(--text-dark);">ProductLog</span>
     </div>
 
-    <!-- Stats -->
-    <div class="flex gap-6 mb-8">
-      <div class="stat-card">
-        <div class="stat-label">Total Users</div>
-        <div class="stat-value">24</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Active Analysts</div>
-        <div class="stat-value" style="color: #6c2bd9;">12</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Pending Invites</div>
-        <div class="stat-value">3</div>
+    <div class="flex items-center gap-8">
+      <nav class="topbar-nav" style="gap: 32px;">
+        <a href="index.html" style="color: #64748b; font-weight: 500; font-size: 14px; text-decoration: none;">Dashboard</a>
+        <a href="logs.html" class="active" style="color: #6c2bd9; font-weight: 500; font-size: 14px; text-decoration: none; border-bottom: 2px solid #6c2bd9; padding-bottom: 22px; padding-top: 24px;">Analysis Logs</a>
+      </nav>
+      <div class="avatar" style="width: 34px; height: 34px;">
+        <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Admin&backgroundColor=fbebc8" alt="Profile">
       </div>
     </div>
+  </header>
 
-    <!-- Table Card -->
-    <div class="card" style="border-radius: 12px;">
-      <div class="table-container">
-        <table>
-          <thead style="background: #f1f5f9;">
-            <tr>
-              <th style="width: 30%;">Name</th>
-              <th style="width: 35%;">Email</th>
-              <th style="width: 20%;">Permissions</th>
-              <th style="width: 15%;"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="flex items-center gap-3">
-                  <div class="avatar" style="width: 36px; height: 36px;">
-                    <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Jane&backgroundColor=cbd5e1" alt="Jane">
-                  </div>
-                  <span style="font-size: 14px; font-weight: 500; color: var(--text-dark);">Jane Doe</span>
-                </div>
-              </td>
-              <td style="color: #64748b;">jane.doe@example.com</td>
-              <td>
-                <div class="select-wrapper">
-                  <select style="width: 100%;">
-                    <option selected>Admin</option>
-                    <option>Analyst</option>
-                    <option>Informed Member</option>
-                  </select>
-                </div>
-              </td>
-              <td style="text-align: right;">
-                <button class="btn" style="color: #dc2626; font-size: 13px; font-weight: 600; padding: 6px 12px;">Remove</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="flex items-center gap-3">
-                  <div class="avatar" style="width: 36px; height: 36px;">
-                    <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Mark&backgroundColor=e2e8f0" alt="Mark">
-                  </div>
-                  <span style="font-size: 14px; font-weight: 500; color: var(--text-dark);">Mark Smith</span>
-                </div>
-              </td>
-              <td style="color: #64748b;">m.smith@product-tool.io</td>
-              <td>
-                <div class="select-wrapper">
-                  <select style="width: 100%;">
-                    <option>Admin</option>
-                    <option selected>Analyst</option>
-                    <option>Informed Member</option>
-                  </select>
-                </div>
-              </td>
-              <td style="text-align: right;">
-                <button class="btn" style="color: #dc2626; font-size: 13px; font-weight: 600; padding: 6px 12px;">Remove</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="flex items-center gap-3">
-                  <div class="avatar" style="width: 36px; height: 36px;">
-                    <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Alice&backgroundColor=f1f5f9" alt="Alice">
-                  </div>
-                  <span style="font-size: 14px; font-weight: 500; color: var(--text-dark);">Alice Lundberg</span>
-                </div>
-              </td>
-              <td style="color: #64748b;">alice.l@example.com</td>
-              <td>
-                <div class="select-wrapper">
-                  <select style="width: 100%;">
-                    <option>Admin</option>
-                    <option>Analyst</option>
-                    <option selected>Informed Member</option>
-                  </select>
-                </div>
-              </td>
-              <td style="text-align: right;">
-                <button class="btn" style="color: #dc2626; font-size: 13px; font-weight: 600; padding: 6px 12px;">Remove</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  <!-- Main Content -->
+  <main style="flex: 1; padding: 40px; background: #f8fafc;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 4px;">Analysis Logs</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">View and manage your historical product analysis data.</p>
+        </div>
+        <button class="btn btn-primary" style="background: #6c2bd9;">New Analysis</button>
       </div>
 
-      <!-- Pagination -->
-      <div class="flex items-center justify-between" style="padding: 16px 24px; border-top: 1px solid var(--border);">
-        <p style="font-size: 13px; color: #64748b;">Showing 1 to 3 of 24 users</p>
-        <div class="flex gap-2">
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 13px;">Previous</button>
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 13px;">Next</button>
+      <!-- Filters & Table wrapper -->
+      <div class="card mb-8">
+        <!-- Filters Bar -->
+        <div class="flex gap-4 p-4 border-b" style="border-bottom: 1px solid var(--border);">
+          <div style="flex: 1; position: relative;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 12px; top: 11px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="input" placeholder="Search products by name or SKU..." style="padding-left: 38px;">
+          </div>
+          <div class="select-wrapper">
+            <select style="min-width: 130px; border-color: var(--border);">
+              <option>Status: All</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <select style="min-width: 130px; border-color: var(--border);">
+              <option>Score: Any</option>
+            </select>
+          </div>
+          <button class="btn btn-outline" style="min-width: 100px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            Export
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 35%;">Product</th>
+                <th style="width: 20%;">Date Analyzed</th>
+                <th style="width: 15%;">PAS Score</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 15%; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr>
+                <td>
+                  <div class="product-cell">
+                    <img src="https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=40&q=80" alt="Chair" class="product-img">
+                    <div>
+                      <div style="font-weight: 500; font-size: 14px; color: var(--text-dark);">Ergonomic Office Chair</div>
+                      <div style="font-size: 12px; color: #94a3b8; font-style: italic;">SKU-88291</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="color: #64748b; font-size: 13px;">Oct 24, 2023 14:22</td>
+                <td>
+                  <span style="font-weight: 700; color: #16a34a; font-size: 14px;">84</span> 
+                  <span style="font-size: 12px; color: #94a3b8;">/ 100</span>
+                </td>
+                <td>
+                  <span class="badge badge-outline-green">Completed</span>
+                </td>
+                <td style="text-align: right;">
+                  <a href="#" style="color: #6c2bd9; font-weight: 500; font-size: 13px; text-decoration: none;">View Report</a>
+                </td>
+              </tr>
+              <!-- Row 2 -->
+              <tr>
+                <td>
+                  <div class="product-cell">
+                    <img src="https://images.unsplash.com/photo-1543922596-b3bbaba80649?auto=format&fit=crop&w=40&q=80" alt="Lamp" class="product-img">
+                    <div>
+                      <div style="font-weight: 500; font-size: 14px; color: var(--text-dark);">Minimalist Desk Lamp</div>
+                      <div style="font-size: 12px; color: #94a3b8; font-style: italic;">SKU-44023</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="color: #64748b; font-size: 13px;">Oct 23, 2023 09:15</td>
+                <td>
+                  <span style="font-weight: 700; color: #d97706; font-size: 14px;">62</span> 
+                  <span style="font-size: 12px; color: #94a3b8;">/ 100</span>
+                </td>
+                <td>
+                  <span class="badge badge-outline-green">Completed</span>
+                </td>
+                <td style="text-align: right;">
+                  <a href="#" style="color: #6c2bd9; font-weight: 500; font-size: 13px; text-decoration: none;">View Report</a>
+                </td>
+              </tr>
+              <!-- Row 3 -->
+              <tr>
+                <td>
+                  <div class="product-cell">
+                    <img src="https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=40&q=80" alt="Keyboard" class="product-img">
+                    <div>
+                      <div style="font-weight: 500; font-size: 14px; color: var(--text-dark);">Mechanical Keyboard v2</div>
+                      <div style="font-size: 12px; color: #94a3b8; font-style: italic;">SKU-99012</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="color: #64748b; font-size: 13px;">Oct 22, 2023 17:45</td>
+                <td>
+                  <span style="color: #94a3b8; font-size: 14px;">-</span> 
+                </td>
+                <td>
+                  <span class="badge badge-outline-purple">Processing...</span>
+                </td>
+                <td style="text-align: right;">
+                  <a href="#" style="color: #94a3b8; font-weight: 500; font-size: 13px; text-decoration: none;">Cancel</a>
+                </td>
+              </tr>
+              <!-- Row 4 -->
+              <tr>
+                <td>
+                  <div class="product-cell">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=40&q=80" alt="Headphones" class="product-img">
+                    <div>
+                      <div style="font-weight: 500; font-size: 14px; color: var(--text-dark);">Noise Cancelling Headphones</div>
+                      <div style="font-size: 12px; color: #94a3b8; font-style: italic;">SKU-11223</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="color: #64748b; font-size: 13px;">Oct 21, 2023 11:30</td>
+                <td>
+                  <span style="font-weight: 700; color: #dc2626; font-size: 14px;">41</span> 
+                  <span style="font-size: 12px; color: #94a3b8;">/ 100</span>
+                </td>
+                <td>
+                  <span class="badge badge-outline-green">Completed</span>
+                </td>
+                <td style="text-align: right;">
+                  <a href="#" style="color: #6c2bd9; font-weight: 500; font-size: 13px; text-decoration: none;">View Report</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between" style="padding: 16px 24px; border-top: 1px solid var(--border);">
+          <p style="font-size: 13px; color: #64748b;">Showing 1 to 4 of 24 results</p>
+          <div class="flex gap-2">
+            <button class="btn btn-outline" style="min-width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"></path></svg>
+            </button>
+            <button class="btn btn-primary" style="background: #6c2bd9; min-width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">1</button>
+            <button class="btn btn-outline" style="min-width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">2</button>
+            <button class="btn btn-outline" style="min-width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">3</button>
+            <span style="display: flex; align-items: end; padding: 0 4px; color: #94a3b8;">...</span>
+            <button class="btn btn-outline" style="min-width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"></path></svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-  </div>
+      <div style="text-align: center; color: #94a3b8; font-size: 12px; margin-top: 60px;">
+        © 2023 ProductLog Analysis Platform. All rights reserved.
+      </div>
+    </div>
+  </main>
+
 </body>
 </html>

@@ -1,152 +1,194 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PASlytics - AI-Powered Product Analysis</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body style="background-color: #fcfcfd;">
-  <div class="container">
-    
-    <!-- Top Nav -->
-    <header class="landing-nav">
-      <div class="flex items-center gap-2">
-        <div style="width: 24px; height: 24px; color: #6c2bd9;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 14l6-6 4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <span style="font-size: 16px; font-weight: 700; color: var(--text-dark);">PASlytics</span>
-      </div>
-      
-      <div class="landing-nav-links">
-        <a href="#">Features</a>
-        <a href="#">Pricing</a>
-        <a href="#">About</a>
-      </div>
-      
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="btn" style="background: #f1f5f9; color: var(--text-dark);">Login</a>
-        <a href="#" class="btn btn-primary" style="background: #6c2bd9;">Get Started</a>
-      </div>
-    </header>
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useLanguage } from '../i18n/LanguageContext';
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div>
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f3e8ff; color: #6c2bd9; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 24px; text-transform: uppercase;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> 
-          NEXT-GEN MARKETING TOOL
-        </div>
-        
-        <h1 style="font-size: 52px; line-height: 1.1; margin-bottom: 20px;">
-          AI-Powered Product <br>
-          <span style="color: #6c2bd9;">Analysis</span>
-        </h1>
-        
-        <p style="font-size: 16px; color: #475569; margin-bottom: 40px; max-width: 480px; line-height: 1.6;">
-          Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by advanced artificial intelligence. Transform features into emotional benefits.
-        </p>
-        
-        <div class="flex items-center gap-4 mb-10">
-          <button class="btn btn-primary" style="background: #6c2bd9; padding: 12px 24px; font-size: 14px; border-radius: 8px;">Start Analyzing Now</button>
-          <button class="btn btn-outline" style="padding: 12px 24px; font-size: 14px; border-radius: 8px;">Watch Demo</button>
-        </div>
-        
-        <div class="flex items-center gap-3">
-          <div class="avatar-group">
-            <div class="avatar-circle"></div>
-            <div class="avatar-circle"></div>
-            <div class="avatar-circle"></div>
-          </div>
-          <span style="font-size: 12px; color: #64748b; font-weight: 500;">Trusted by 500+ product marketers</span>
-        </div>
-      </div>
-      
-      <div>
-        <div class="hero-image-placeholder">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="#cbd5e1" rx="4">
-            <rect x="4" y="14" width="4" height="6" rx="1"/>
-            <rect x="10" y="8" width="4" height="12" rx="1"/>
-            <rect x="16" y="11" width="4" height="9" rx="1"/>
-          </svg>
-        </div>
-      </div>
-    </section>
+type UserRole = 'Admin' | 'Analyst' | 'Informed Member';
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <h2 style="font-size: 28px; margin-bottom: 16px; color: var(--text-dark);">Transform Your Product Strategy</h2>
-      <p style="font-size: 15px; max-width: 600px; margin: 0 auto; color: #475569;">
-        Our tool leverages cutting-edge computer vision and NLP to provide actionable analysis that resonates with your customers.
-      </p>
-      
-      <div class="feature-grid">
-        <div class="card p-8" style="background: #ffffff; border-color: var(--border);">
-          <div class="feature-icon-wrapper" style="background-color: #f3e8ff; color: #6c2bd9;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          </div>
-          <h3 style="text-transform: none; font-size: 16px; margin-bottom: 12px; border: none; letter-spacing: normal;">AI Image Analysis</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
-            Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.
-          </p>
-        </div>
-        
-        <div class="card p-8" style="background: #ffffff; border-color: var(--border);">
-          <div class="feature-icon-wrapper" style="background-color: #f3e8ff; color: #6c2bd9;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          </div>
-          <h3 style="text-transform: none; font-size: 16px; margin-bottom: 12px; letter-spacing: normal;">PAS Framework Output</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
-            Generate high-converting copy structures based on the proven Problem-Agitation-Solution framework used by top direct-response marketers.
-          </p>
-        </div>
-        
-        <div class="card p-8" style="background: #ffffff; border-color: var(--border);">
-          <div class="feature-icon-wrapper" style="background-color: #f3e8ff; color: #6c2bd9;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </div>
-          <h3 style="text-transform: none; font-size: 16px; margin-bottom: 12px; letter-spacing: normal;">Comprehensive Logs</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
-            Keep track of every analysis with detailed historical logs and performance metrics. Compare different versions of product copy over time.
-          </p>
-        </div>
-      </div>
-    </section>
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatarSeed: string;
+  avatarColor: string;
+  role: UserRole;
+}
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <h2 style="font-size: 36px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.2; color: var(--text-dark);">
-        Ready to revolutionize your <br>product marketing?
-      </h2>
-      <p style="font-size: 15px; color: #475569; max-width: 500px; margin: 0 auto 40px; line-height: 1.6;">
-        Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.
-      </p>
-      <div class="flex items-center justify-center gap-4">
-        <button class="btn btn-primary" style="background: #6c2bd9; padding: 12px 32px; font-size: 14px; border-radius: 8px;">Start Free Trial</button>
-        <button class="btn btn-outline" style="background: #ffffff; padding: 12px 32px; font-size: 14px; border-radius: 8px; border: none;">Contact Sales</button>
-      </div>
-    </section>
+const initialUsers: User[] = [
+  { id: '1', name: 'Jane Doe', email: 'jane.doe@example.com', avatarSeed: 'Jane', avatarColor: 'cbd5e1', role: 'Admin' },
+  { id: '2', name: 'Mark Smith', email: 'm.smith@product-tool.io', avatarSeed: 'Mark', avatarColor: 'e2e8f0', role: 'Analyst' },
+  { id: '3', name: 'Alice Lundberg', email: 'alice.l@example.com', avatarSeed: 'Alice', avatarColor: 'f1f5f9', role: 'Informed Member' },
+];
 
-    <!-- Footer -->
-    <footer class="footer flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div style="width: 20px; height: 20px; color: #6c2bd9;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 14l6-6 4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+const SiteManagement = () => {
+  const { t, language, toggleLanguage } = useLanguage();
+  const isRtl = language === 'ar';
+
+  const [users, setUsers] = useState<User[]>(initialUsers);
+
+  const handleRemoveUser = (id: string) => {
+    const userToRemove = users.find(u => u.id === id);
+    if (!userToRemove) return;
+    if (window.confirm(`Are you sure you want to remove ${userToRemove.name} from the team?`)) {
+      setUsers(users.filter(user => user.id !== id));
+    }
+  };
+
+  const handleRoleChange = (id: string, newRole: UserRole) => {
+    setUsers(users.map(user => user.id === id ? { ...user, role: newRole } : user));
+  };
+
+  return (
+    <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      {/* Sidebar */}
+      <aside className="sidebar" style={{ borderInlineEnd: '1px solid var(--border)', ...(isRtl ? { left: 'auto', right: 0, borderLeft: '1px solid var(--border)', borderRight: 'none' } : {}) }}>
+        <div className="sidebar-logo flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div style={{ width: '28px', height: '28px', background: '#6c2bd9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            </div>
+            PASlytics
+          </div>
+          <button onClick={toggleLanguage} className="btn" style={{ padding: '4px 8px', fontSize: '10px' }}>
+            {isRtl ? 'EN' : 'AR'}
+          </button>
         </div>
-        <span style="font-size: 14px; font-weight: 700; color: var(--text-dark);">PASlytics</span>
-      </div>
-      
-      <div class="flex gap-8">
-        <a href="#" style="color: #94a3b8; font-size: 12px; text-decoration: none;">Privacy Policy</a>
-        <a href="#" style="color: #94a3b8; font-size: 12px; text-decoration: none;">Terms of Service</a>
-        <a href="#" style="color: #94a3b8; font-size: 12px; text-decoration: none;">Contact</a>
-      </div>
-      
-      <div style="font-size: 12px; color: #94a3b8;">
-        © 2024 PASlytics AI. All rights reserved.
-      </div>
-    </footer>
-    
-  </div>
-</body>
-</html>
+
+        <nav className="sidebar-nav mt-4" style={{ flex: 1 }}>
+          <Link to="/dashboard" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            {t('dashboard')}
+          </Link>
+          <Link to="/logs" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            {t('logs')}
+          </Link>
+          <Link to="/management" className="nav-item active" style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '-24px', top: 0, bottom: 0, width: '4px', background: 'var(--primary)', borderRadius: isRtl ? '4px 0 0 4px' : '0 4px 4px 0' }}></div>
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            {t('admin')}
+          </Link>
+          <Link to="/admin/payment-settings" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            {t('paysettings_nav')}
+          </Link>
+          <Link to="/admin/content" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            {t('content_manager_nav')}
+          </Link>
+        </nav>
+
+        <nav className="sidebar-nav mt-auto" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
+          <Link to="/settings" className="nav-item mb-4">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            {t('settings')}
+          </Link>
+          <Link to="/login" className="nav-item" style={{ color: '#ef4444' }}>
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            {t('logout') || 'Log Out'}
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0, marginLeft: isRtl ? 0 : undefined, marginRight: isRtl ? '260px' : undefined }}>
+        <div style={{ maxWidth: '1200px' }}>
+
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '4px' }}>{t('user_management')}</h1>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{t('manage_team')}</p>
+            </div>
+            <button className="btn btn-primary" style={{ background: '#6c2bd9' }} onClick={() => alert('Add User Dialog Opened')}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14m-7-7h14"></path></svg>
+              <span style={{ marginInlineStart: '6px' }}>{t('add_user')}</span>
+            </button>
+          </div>
+
+          {/* Stats */}
+          <div className="flex gap-6 mb-8" style={{ flexWrap: 'wrap' }}>
+            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('total_users')}</div>
+              <div style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-dark)' }}>{users.length + 21}</div>
+            </div>
+            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('active_analysts')}</div>
+              <div style={{ fontSize: '32px', fontWeight: 600, color: '#6c2bd9' }}>12</div>
+            </div>
+            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('pending_invites')}</div>
+              <div style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-dark)' }}>3</div>
+            </div>
+          </div>
+
+          {/* User Table */}
+          <div className="card" style={{ borderRadius: '12px' }}>
+            <div className="table-container">
+              <table style={{ width: '100%', textAlign: isRtl ? 'right' : 'left' }}>
+                <thead style={{ background: '#f1f5f9' }}>
+                  <tr>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('name')}</th>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('email')}</th>
+                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('permissions')}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.length === 0 ? (
+                    <tr><td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No users found.</td></tr>
+                  ) : (
+                    users.map((user) => (
+                      <tr key={user.id}>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="avatar" style={{ width: '36px', height: '36px' }}>
+                              <img src={`https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${user.avatarSeed}&backgroundColor=${user.avatarColor}`} alt={user.name} />
+                            </div>
+                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)' }}>{user.name}</span>
+                          </div>
+                        </td>
+                        <td style={{ color: '#64748b' }}>{user.email}</td>
+                        <td>
+                          <div className="select-wrapper">
+                            <select
+                              style={{ width: '100%' }}
+                              value={user.role}
+                              onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
+                            >
+                              <option value="Admin">{t('admin_role')}</option>
+                              <option value="Analyst">{t('analyst_role')}</option>
+                              <option value="Informed Member">{t('informed_member')}</option>
+                            </select>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: isRtl ? 'left' : 'right' }}>
+                          <button
+                            className="btn"
+                            onClick={() => handleRemoveUser(user.id)}
+                            style={{ color: '#dc2626', fontSize: '13px', fontWeight: 600, padding: '6px 12px' }}
+                          >
+                            {t('remove')}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex items-center justify-between" style={{ padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '13px', color: '#64748b' }}>Showing 1 to {users.length} of {users.length + 21} users</p>
+              <div className="flex gap-2">
+                <button className="btn btn-outline" onClick={() => alert('Previous Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Previous</button>
+                <button className="btn btn-outline" onClick={() => alert('Next Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SiteManagement;
