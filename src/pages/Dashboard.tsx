@@ -139,7 +139,7 @@ ${t('mm_budget')}
     <div className={css({ direction: isRtl ? 'rtl' : 'ltr', maxWidth: '1000px', margin: '0 auto' })}>
       {/* Main Content Area */}
       <div className={css({ width: '100%' })}>
-        <div style={{ maxWidth: '1000px' }}>
+        <div className={css({ maxWidth: '1000px' })}>
 
           {/* Header */}
           <div className={css({ 
@@ -212,15 +212,15 @@ ${t('mm_budget')}
 
           {/* Subscription Wall Checkout */}
           {!hasAccess ? (
-            <div className="card mb-6" style={{ padding: '60px 40px', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0', background: 'linear-gradient(to bottom, #ffffff, #f8fafc)' }}>
-              <div style={{ width: '64px', height: '64px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <div className={cx("card mb-6", css({ padding: '60px 40px', borderRadius: '16px', textAlign: 'center', border: '1px solid', borderColor: 'slate.200', background: 'linear-gradient(to bottom, #ffffff, #f8fafc)' }))}>
+              <div className={css({ width: '64px', height: '64px', background: 'violet.50', borderRadius: 'full', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' })}>
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>{isRtl ? 'ميزة مميزة' : 'Premium Feature'}</h2>
-              <p style={{ fontSize: '16px', color: '#64748b', maxWidth: '400px', margin: '0 auto 32px', lineHeight: 1.6 }}>
+              <h2 className={css({ fontSize: '24px', fontWeight: 'extrabold', color: 'slate.900', marginBottom: '16px' })}>{isRtl ? 'ميزة مميزة' : 'Premium Feature'}</h2>
+              <p className={css({ fontSize: '16px', color: 'slate.500', maxWidth: '400px', margin: '0 auto 32px', lineHeight: '1.6' })}>
                 {isRtl ? 'يرجى الترقية إلى خطة مدفوعة لفتح أدوات تحليل الصور وإنشاء تقارير نموذج PAS.' : 'Please upgrade to a paid plan to unlock image analysis tools and PAS framework generation.'}
               </p>
-              <Link to="/pricing" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 600, borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Link to="/pricing" className={cx("btn btn-primary", css({ padding: '14px 32px', fontSize: '16px', fontWeight: 'semibold', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px' }))}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 {isRtl ? 'اكتشف الخطط هنا' : 'Explore Plans Here'}
               </Link>
@@ -470,13 +470,13 @@ ${t('mm_budget')}
                   justifyContent: 'space-between', 
                   padding: '16px 20px' 
                 })}>
-                  <div style={{ width: '30px', height: '40px', background: '#f3e8ff', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '60px', background: '#e9d5ff', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '100px', background: '#a855f7', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '75px', background: '#c084fc', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '90px', background: '#9333ea', borderRadius: '4px 4px 0 0' }}></div>
+                  <div className={css({ width: '30px', height: '40px', background: 'violet.50', borderRadius: '4px 4px 0 0' })}></div>
+                  <div className={css({ width: '30px', height: '60px', background: 'violet.100', borderRadius: '4px 4px 0 0' })}></div>
+                  <div className={css({ width: '30px', height: '100px', background: 'violet.500', borderRadius: '4px 4px 0 0' })}></div>
+                  <div className={css({ width: '30px', height: '75px', background: 'violet.300', borderRadius: '4px 4px 0 0' })}></div>
+                  <div className={css({ width: '30px', height: '90px', background: 'violet.600', borderRadius: '4px 4px 0 0' })}></div>
                 </div>
-                <div className="flex justify-between mt-2" style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>
+                <div className={cx("flex justify-between mt-2", css({ fontSize: '10px', color: 'slate.400', fontWeight: 'semibold' }))}>
                   <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span>
                 </div>
               </div>
