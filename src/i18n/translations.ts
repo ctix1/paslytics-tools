@@ -171,6 +171,8 @@ export const translations = {
     mm_men: 'Men',
     mm_women: 'Women',
     mm_generate: '📊 Generate Marketing Plan',
+    mm_summarize: 'Summarize & Format for Platforms',
+    mm_years: 'years',
     mm_alert_empty: 'Please enter a product description first.',
     mm_plan_title: '📊 Marketing Plan for:',
     mm_target_audience: '🎯 Target Audience:',
@@ -188,7 +190,6 @@ export const translations = {
     mm_budget_content: '30% Content Creation',
     mm_budget_influencer: '20% Influencer Partnerships',
     mm_budget_analytics: '10% Analytics & Tracking',
-    mm_years: 'years',
 
     // Product Calculator
     pc_title: 'Product Price Calculator',
@@ -204,6 +205,13 @@ export const translations = {
     pc_duties_label: 'Duties:',
     pc_profit_label: 'Profit',
     pc_marketing_label: 'Marketing:',
+    pc_advice: 'Profitability Advice',
+    pc_luxury: 'Luxury Category',
+    pc_premium: 'Premium Market',
+    pc_value: 'Value Segment',
+    pc_advice_luxury: 'Focus on exclusivity and high-end craftsmanship in your marketing.',
+    pc_advice_premium: 'Optimize cost efficiency to scale margins.',
+    pc_advice_value: 'Focus on high volume and competitive pricing.',
 
     // Shared UI
     no_logs: 'No logs available.',
@@ -505,6 +513,8 @@ export const translations = {
     mm_men: 'رجال',
     mm_women: 'نساء',
     mm_generate: '📊 إنشاء خطة تسويقية',
+    mm_summarize: 'تلخيص وتنسيق للمنصات',
+    mm_years: 'سنة',
     mm_alert_empty: 'الرجاء إدخال وصف المنتج أولاً.',
     mm_plan_title: '📊 خطة تسويقية لـ:',
     mm_target_audience: '🎯 الجمهور المستهدف:',
@@ -522,7 +532,6 @@ export const translations = {
     mm_budget_content: '30% إنشاء المحتوى',
     mm_budget_influencer: '20% شراكات المؤثرين',
     mm_budget_analytics: '10% التحليلات والتتبع',
-    mm_years: 'سنة',
 
     // Product Calculator
     pc_title: 'حاسبة أسعار المنتجات',
@@ -538,6 +547,13 @@ export const translations = {
     pc_duties_label: 'الرسوم:',
     pc_profit_label: 'الربح',
     pc_marketing_label: 'التسويق:',
+    pc_advice: 'نصيحة الربحية',
+    pc_luxury: 'منتج فاخر',
+    pc_premium: 'منتج مميز',
+    pc_value: 'قيمة اقتصادية',
+    pc_advice_luxury: 'نصيحة: ركز على التفرد والجودة العالية في تسويقك.',
+    pc_advice_premium: 'نصيحة: تأكد من تحسين كفاءة التكاليف لزيادة هوامش الربح.',
+    pc_advice_value: 'نصيحة: ركز على الكفاءة والسعر التنافسي لكسب حصة سوقية أكبر.',
 
     // Shared UI
     no_logs: 'لا توجد سجلات متاحة.',
@@ -665,7 +681,7 @@ export const translations = {
     sub_cancelled_msg: 'تم إلغاء اشتراكك بنجاح.',
 
     language_ar: 'العربية',
-    language_en: 'English'
+    language_en: 'English',
   }
 };
 
