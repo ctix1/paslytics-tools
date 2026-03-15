@@ -2,60 +2,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "./responsive.css";
 
-@source "./**/*.{ts,tsx}";
 @source "../index.html";
-
-@layer base {
-  :root {
-    --primary: #581c87;
-    --primary-hover: #4c1d95;
-    --primary-light: #f3e8ff;
-    --bg-main: #f8fafc;
-    --text-dark: #111827;
-    --text-muted: #6b7280;
-    --border: #e2e8f0;
-    --white: #ffffff;
-    --success: #16a34a;
-    --success-bg: #dcfce7;
-    --warning: #ea580c;
-    --warning-bg: #ffedd5;
-    --danger: #dc2626;
-    --danger-bg: #fee2e2;
-  }
-
-  body {
-    @apply antialiased text-slate-900 bg-slate-50;
-    font-family: 'Inter', sans-serif;
-  }
-}
+@source "./**/*.{ts,tsx,js,jsx}";
 
 @theme {
+  --color-primary: #581c87;
+  --color-primary-hover: #4c1d95;
+  --color-primary-light: #f3e8ff;
+  --color-bg-main: #f8fafc;
+  --color-text-dark: #111827;
+  --color-text-muted: #6b7280;
+  --color-border: #e2e8f0;
+  --color-white: #ffffff;
+  --color-success: #16a34a;
+  --color-success-bg: #dcfce7;
+  --color-warning: #ea580c;
+  --color-warning-bg: #ffedd5;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fee2e2;
+
   --color-brand-primary: #6d28d9;
   --color-brand-secondary: #7c3aed;
   --color-brand-light: #ede9fe;
 }
 
-@layer components {
-  .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
-  }
-
-  .purple-gradient {
-    @apply bg-gradient-to-br from-violet-600 to-purple-700;
-  }
+body {
+  @apply antialiased text-slate-900;
+  background-color: #f8fafc !important; /* Force a background for testing */
+  font-family: 'Inter', sans-serif;
 }
 
-@layer utilities {
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
+.glass-card {
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+}
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+.purple-gradient {
+  @apply bg-gradient-to-br from-violet-600 to-purple-700;
+}
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
-  }
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
 
