@@ -1,12 +1,9 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import "./responsive.css";
-
-/* Force scanning from the root to ensure Vercel build picks up all classes */
-@source "../*.html";
-@source "../src/**/*.{ts,tsx,js,jsx}";
 
 @theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  
   --color-primary: #581c87;
   --color-primary-hover: #4c1d95;
   --color-primary-light: #f3e8ff;
@@ -25,31 +22,46 @@
   --color-brand-primary: #6d28d9;
   --color-brand-secondary: #7c3aed;
   --color-brand-light: #ede9fe;
+
+  /* Explicitly define slate for testing */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-900: #0f172a;
 }
 
-body {
-  @apply antialiased text-slate-900 bg-slate-50;
-  font-family: 'Inter', sans-serif;
-  /* Diagnostic: If this is NOT red on the live site, the CSS is not being applied correctly */
-  border-top: 10px solid red !important;
+@layer base {
+  body {
+    @apply antialiased text-slate-900;
+    font-family: var(--font-sans);
+    /* TEST: If the background is NOT black, the CSS file is not loading at all */
+    background-color: #000000 !important;
+  }
 }
 
-.glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+
+  .purple-gradient {
+    @apply bg-gradient-to-br from-violet-600 to-purple-700;
+  }
 }
 
-.purple-gradient {
-  @apply bg-gradient-to-br from-violet-600 to-purple-700;
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  }
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
-}
