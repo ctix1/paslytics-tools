@@ -1,29 +1,28 @@
-/* TEST: FORCE BLACK BACKGROUND - If you see black, the file is working! */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@layer reset, base, tokens, recipes, utilities;
+
+/* Panda CSS Styles - If you see black, the file is working! */
 html, body {
   background-color: #000000 !important;
 }
 
-@import "tailwindcss";
-@import "./responsive.css";
-
-@theme {
-  --color-brand-primary: #6d28d9; /* violet-700 */
-  --color-brand-secondary: #7c3aed; /* violet-600 */
-  --color-brand-light: #ede9fe; /* violet-100 */
-}
-
 @layer base {
   body {
-    @apply antialiased text-slate-900;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #0f172a; /* slate-900 */
   }
 }
 
 .glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .purple-gradient {
-  @apply bg-gradient-to-br from-violet-600 to-purple-700;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
 }
 
 ::-webkit-scrollbar {
@@ -35,10 +34,14 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+::-webkit-scrollbar-thumb:hover {
+  background-color: #cbd5e1;
+}
 
 :root {
   --primary: #581c87;
