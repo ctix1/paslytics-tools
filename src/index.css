@@ -2,8 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "./responsive.css";
 
-@source "../index.html";
-@source "./**/*.{ts,tsx,js,jsx}";
+/* Force scanning from the root to ensure Vercel build picks up all classes */
+@source "../*.html";
+@source "../src/**/*.{ts,tsx,js,jsx}";
 
 @theme {
   --color-primary: #581c87;
@@ -27,9 +28,10 @@
 }
 
 body {
-  @apply antialiased text-slate-900;
-  background-color: #f8fafc !important; /* Force a background for testing */
+  @apply antialiased text-slate-900 bg-slate-50;
   font-family: 'Inter', sans-serif;
+  /* Diagnostic: If this is NOT red on the live site, the CSS is not being applied correctly */
+  border-top: 10px solid red !important;
 }
 
 .glass-card {
@@ -51,4 +53,3 @@ body {
 ::-webkit-scrollbar-thumb {
   @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
-
