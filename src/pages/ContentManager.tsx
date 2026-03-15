@@ -164,6 +164,5 @@ const ContentManager = () => {
     </div>
   );
 };
-};
 
 export default ContentManager;
