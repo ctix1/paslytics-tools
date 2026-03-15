@@ -210,8 +210,8 @@ const Dashboard = () => {
            {/* AI Quick Take - Premium Look */}
            <div className="bg-slate-900 p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-violet-400 backdrop-blur-3xl border border-white/5">
-                  <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round"/></svg>
+                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-violet-400 backdrop-blur-3xl border border-white/5 shrink-0">
+                  <svg className="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round"/></svg>
                 </div>
               </div>
               <h3 className="text-white text-lg font-black uppercase tracking-widest mb-8 flex items-center gap-4">
@@ -343,7 +343,7 @@ const Dashboard = () => {
                       "w-16 h-16 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-2xl transition-transform group-hover/advice:scale-110",
                       advice.type === 'luxury' ? "bg-slate-900" : advice.type === 'premium' ? "bg-violet-600" : "bg-emerald-600"
                     )}>
-                       <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                       <svg className="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                     <div>
                        <div className="flex items-center gap-3 mb-3">
