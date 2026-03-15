@@ -53,8 +53,8 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       {/* Brand Section */}
       <div className="p-8 mb-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-violet-200">
-            <LayoutDashboard className="text-white w-6 h-6" />
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-violet-200 shrink-0">
+            <LayoutDashboard className="text-white w-6 h-6 shrink-0" />
           </div>
           <div>
             <span className="text-2xl font-black text-slate-900 tracking-tighter block leading-none">{t('app_name')}</span>
@@ -80,7 +80,7 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
               )}
             >
               <item.icon className={cn(
-                "w-5 h-5 transition-colors relative z-10",
+                "w-5 h-5 transition-colors relative z-10 shrink-0",
                 location.pathname === item.path ? "text-violet-400" : "text-slate-400 group-hover:text-slate-600"
               )} />
               <span className="relative z-10">{item.label}</span>
@@ -104,7 +104,7 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
           )}
         >
           <Settings className={cn(
-            "w-5 h-5 transition-colors",
+            "w-5 h-5 transition-colors shrink-0",
             location.pathname === '/settings' ? "text-violet-600" : "text-slate-400 group-hover:text-slate-600"
           )} />
           {t('settings')}
@@ -124,7 +124,7 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
               to="/logout"
               className="flex items-center justify-center py-3 bg-slate-50 rounded-xl border border-slate-100 hover:bg-red-50 hover:border-red-100 group transition-all"
            >
-              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-red-500" />
+              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-red-500 shrink-0" />
            </Link>
         </div>
 
