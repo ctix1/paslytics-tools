@@ -1,10 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@layer reset, base, tokens, recipes, utilities;
 
-/* Panda CSS Styles - If you see black, the file is working! */
+/* DIAGNOSTIC BACKGROUND - SHOULD BE BLACK */
 html, body {
   background-color: #000000 !important;
+  color: white !important;
 }
+
+@layer reset, base, tokens, recipes, utilities;
 
 @layer base {
   body {
