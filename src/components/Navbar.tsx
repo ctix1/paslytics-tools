@@ -1,24 +1,82 @@
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
+import { css } from '../../styled-system/css';
 
 const Navbar = () => {
   return (
-    <nav className="flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
-      <div className="flex items-center gap-2">
-        <div className="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
-          <LayoutDashboard className="text-white w-5 h-5" />
+    <nav className={css({
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingX: '32px',
+      paddingY: '16px',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      backdropBlur: 'md',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      borderBottom: '1px solid',
+      borderColor: 'slate.100'
+    })}>
+      <div className={css({ display: 'flex', alignItems: 'center', gap: '8px' })}>
+        <div className={css({ 
+          width: '36px', 
+          height: '36px', 
+          backgroundColor: 'brand.primary', 
+          borderRadius: 'xl', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          boxShadow: '0 10px 15px -3px rgba(109, 40, 217, 0.2)' 
+        })}>
+          <LayoutDashboard className={css({ color: 'white', width: '20px', height: '20px' })} />
         </div>
-        <span className="text-xl font-bold text-slate-900 tracking-tight">PASlytics</span>
+        <span className={css({ 
+          fontSize: '20px', 
+          fontWeight: 'bold', 
+          color: 'slate.900', 
+          tracking: 'tight' 
+        })}>PASlytics</span>
       </div>
       
-      <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-500 uppercase tracking-wider">
-        <Link to="/pricing" className="hover:text-violet-600 transition-colors">Plan</Link>
-        <Link to="/about" className="hover:text-violet-600 transition-colors">About</Link>
+      <div className={css({ 
+        display: { base: 'none', md: 'flex' }, 
+        alignItems: 'center', 
+        gap: '32px', 
+        fontSize: '14px', 
+        fontWeight: 'bold', 
+        color: 'slate.500', 
+        textTransform: 'uppercase', 
+        tracking: 'wider' 
+      })}>
+        <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' } })}>Pricing</Link>
+        <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' } })}>About</Link>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Link to="/login" className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-violet-600 transition-colors">Log in</Link>
-        <Link to="/login" className="px-6 py-2.5 text-sm font-bold text-white bg-violet-600 rounded-xl hover:bg-violet-700 transition-all shadow-lg shadow-violet-100">
+      <div className={css({ display: 'flex', alignItems: 'center', gap: '16px' })}>
+        <Link to="/login" className={css({ 
+          paddingX: '20px', 
+          paddingY: '8px', 
+          fontSize: '14px', 
+          fontWeight: 'bold', 
+          color: 'slate.600', 
+          textDecoration: 'none',
+          transition: 'colors', 
+          _hover: { color: 'brand.primary' } 
+        })}>Log in</Link>
+        <Link to="/login" className={css({ 
+          paddingX: '24px', 
+          paddingY: '10px', 
+          fontSize: '14px', 
+          fontWeight: 'bold', 
+          color: 'white', 
+          backgroundColor: 'brand.primary', 
+          borderRadius: 'xl', 
+          textDecoration: 'none',
+          transition: 'all', 
+          boxShadow: '0 10px 15px -3px rgba(109, 40, 217, 0.1)',
+          _hover: { backgroundColor: 'brand.secondary' } 
+        })}>
           Get Started
         </Link>
       </div>
