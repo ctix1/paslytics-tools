@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
@@ -13,37 +13,25 @@ import SiteManagement from './pages/SiteManagement';
 import Profile from './pages/Profile';
 import PaymentSettings from './pages/PaymentSettings';
 import ContentManager from './pages/ContentManager';
-import Logout from './pages/Logout';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
+import { useState } from 'react';
 import { supabase } from './lib/supabase';
 
 // Simple Auth Provider & Protected Route Wrapper for App.tsx
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<any | null>(undefined);
+  const [session, setSession] = useState<any>(undefined);
   
   useEffect(() => {
-    const syncProfile = (sessionData: any | null) => {
-      if (sessionData?.user) {
-        localStorage.setItem('user_profile', JSON.stringify({
-          email: sessionData.user.email,
-          name: sessionData.user.user_metadata?.full_name || sessionData.user.email?.split('@')[0],
-          role: sessionData.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
-        }));
-      }
-    };
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      syncProfile(session);
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session: any) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      syncProfile(session);
     });
 
     return () => subscription.unsubscribe();
@@ -55,28 +43,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!session) {
     return <Navigate to="/login" replace />; // Not logged in
-  }
-
-  return <>{children}</>;
-};
-
-
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
-  
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
-      const email = session?.user?.email?.toLowerCase();
-      setIsAdmin(email === 'koo111333@gmail.com');
-    });
-  }, []);
-
-  if (isAdmin === undefined) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Checking permissions...</div>;
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -94,16 +60,21 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/logout" element={<Logout />} />
               
+              {/* Protected Routes */}
+              <Route path="/checkout/:plan" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+
               <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-                <Route path="/checkout/:plan" element={<Checkout />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/logs" element={<SystemLogs />} />
-                <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
+                <Route path="/management" element={<SiteManagement />} />
                 <Route path="/settings" element={<Profile />} />
-                <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
-                <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
+                <Route path="/admin/payment-settings" element={<PaymentSettings />} />
+                <Route path="/admin/content" element={<ContentManager />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />
@@ -116,3 +87,4 @@ function App() {
 }
 
 export { App };
+
