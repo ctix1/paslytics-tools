@@ -1,10 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* DIAGNOSTIC BACKGROUND - SHOULD BE BLACK */
-html, body {
-  background-color: #000000 !important;
-  color: white !important;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer reset, base, tokens, recipes, utilities;
 
