@@ -7,6 +7,7 @@ import { css } from '../../styled-system/css';
 const LoginPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
+  const isRtl = language === 'ar';
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,7 +71,7 @@ const LoginPage = () => {
       backgroundColor: 'slate.50',
       position: 'relative',
       fontFamily: 'sans'
-    })} style={{ direction: language === 'ar' ? 'rtl' : 'ltr' }}>
+    })} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
       
       {/* Language Toggle */}
       <div className={css({ 
@@ -157,11 +158,11 @@ const LoginPage = () => {
             gap: '8px', 
             marginY: '24px',
             color: 'slate.400',
-            fontSize: '13px',
-            _before: { content: '""', height: '1px', flex: 1, backgroundColor: 'slate.100' },
-            _after: { content: '""', height: '1px', flex: 1, backgroundColor: 'slate.100' }
+            fontSize: '13px'
           })}>
-            {t('or_email')}
+            <div className={css({ height: '1px', flex: 1, backgroundColor: 'slate.100' })} />
+            <span>{t('or_email')}</span>
+            <div className={css({ height: '1px', flex: 1, backgroundColor: 'slate.100' })} />
           </div>
 
           <form onSubmit={handleEmailLogin}>
