@@ -19,6 +19,8 @@ import { ContentProvider } from './context/ContentContext';
 import { useState } from 'react';
 import { supabase } from './lib/supabase';
 
+import { css } from '../styled-system/css';
+
 // Simple Auth Provider & Protected Route Wrapper for App.tsx
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<any>(undefined);
@@ -38,7 +40,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   if (session === undefined) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>; // Still checking
+    return <div className={css({ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'slate.50', color: 'slate.600', fontWeight: 'medium' })}>Loading...</div>; // Still checking
   }
 
   if (!session) {
@@ -87,4 +89,3 @@ function App() {
 }
 
 export { App };
-
