@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -6,142 +5,193 @@ import {
   ClipboardList, 
   Users, 
   LogOut, 
-  CreditCard,
-  FileText
+  HelpCircle,
+  Bell
 } from 'lucide-react';
-import { cn } from '../utils/cn';
-import { useLanguage } from '../i18n/LanguageContext';
-import { supabase } from '../lib/supabase';
+import { css, cx } from '../../styled-system/css';
 
-const Sidebar = ({ onClose }: { onClose?: () => void }) => {
+const Sidebar = () => {
   const location = useLocation();
-  const { t, language, toggleLanguage } = useLanguage();
-  const isRtl = language === 'ar';
-
-  const [userProfile, setUserProfile] = useState<any>(null);
-
-  useEffect(() => {
-    // Sync profile from session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        const profile = {
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
-          role: session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : (session.user.user_metadata?.role || 'user')
-        };
-        setUserProfile(profile);
-        localStorage.setItem('user_profile', JSON.stringify(profile));
-      }
-    });
-  }, []);
-
-  const isAdmin = userProfile?.role === 'admin';
 
   const menuItems = [
-    { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
-    { icon: ClipboardList, label: t('logs'), path: '/logs' },
-    { icon: Users, label: t('admin'), path: '/management', adminOnly: true },
-    { icon: CreditCard, label: t('paysettings_nav'), path: '/admin/payment-settings', adminOnly: true },
-    { icon: FileText, label: t('content_manager_nav'), path: '/admin/content', adminOnly: true },
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+    { icon: ClipboardList, label: 'Logs', path: '/logs' },
+    { icon: Users, label: 'Management', path: '/management' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
-    <aside className={cn(
-      "w-full bg-white h-screen flex flex-col overflow-hidden shrink-0 border-r border-slate-100 shadow-2xl shadow-slate-200/50",
-      isRtl && "border-l border-r-0"
-    )}>
-      {/* Brand Section */}
-      <div className="p-8 mb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-violet-200 shrink-0">
-            <LayoutDashboard className="text-white w-6 h-6 shrink-0" />
-          </div>
-          <div>
-            <span className="text-2xl font-black text-slate-900 tracking-tighter block leading-none">{t('app_name')}</span>
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-1 block">Analytics Engine</span>
-          </div>
+    <aside className={css({
+      width: '256px',
+      backgroundColor: 'white',
+      borderRight: '1px solid',
+      borderColor: 'slate.100',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'sticky',
+      top: 0,
+      overflow: 'hidden',
+      flexShrink: 0
+    })}>
+      <div className={css({ 
+        padding: '32px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '12px' 
+      })}>
+        <div className={css({ 
+          width: '40px', 
+          height: '40px', 
+          backgroundColor: 'brand.primary', 
+          borderRadius: '2xl', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          boxShadow: '0 10px 15px -3px rgba(109, 40, 217, 0.2)' 
+        })}>
+          <LayoutDashboard className={css({ color: 'white', width: '20px', height: '20px' })} />
         </div>
+        <span className={css({ 
+          fontSize: '24px', 
+          fontWeight: 'black', 
+          color: 'slate.900', 
+          tracking: 'tight' 
+        })}>PASlytics</span>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 px-4 space-y-2">
-        {menuItems
-          .filter(item => !item.adminOnly || isAdmin)
-          .map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              onClick={onClose}
-              className={cn(
-                "flex items-center gap-4 px-5 py-4 rounded-[1.25rem] text-sm font-black transition-all group relative overflow-hidden",
-                location.pathname === item.path 
-                  ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-              )}
-            >
-              <item.icon className={cn(
-                "w-5 h-5 transition-colors relative z-10 shrink-0",
-                location.pathname === item.path ? "text-violet-400" : "text-slate-400 group-hover:text-slate-600"
-              )} />
-              <span className="relative z-10">{item.label}</span>
-              {location.pathname === item.path && (
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-transparent opacity-50"></div>
-              )}
-            </Link>
-          ))}
+      <nav className={css({ 
+        flex: 1, 
+        paddingX: '16px', 
+        paddingY: '32px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '8px' 
+      })}>
+        {menuItems.map((item) => (
+          <Link
+            key={item.label}
+            to={item.path}
+            className={cx(
+              css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                paddingX: '20px',
+                paddingY: '16px',
+                borderRadius: '2xl',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                transition: 'all',
+                color: 'slate.500',
+                _hover: { backgroundColor: 'slate.50', color: 'slate.900' }
+              }),
+              location.pathname === item.path && css({
+                backgroundColor: 'brand.primary',
+                color: 'white',
+                boxShadow: '0 20px 25px -5px rgba(109, 40, 217, 0.1)',
+                transform: 'translateX(4px)',
+                _hover: { backgroundColor: 'brand.secondary', color: 'white' }
+              })
+            )}
+          >
+            <item.icon className={css({
+              width: '20px',
+              height: '20px',
+              transition: 'colors',
+              color: location.pathname === item.path ? 'white' : 'slate.400'
+            })} />
+            {item.label}
+          </Link>
+        ))}
       </nav>
 
-      {/* Bottom Section: Settings & Utils */}
-      <div className="p-6 mt-auto border-t border-slate-50 space-y-2">
-        <Link
-          to="/settings"
-          onClick={onClose}
-          className={cn(
-            "flex items-center gap-4 px-5 py-3.5 rounded-xl text-sm font-black transition-all group",
-            location.pathname === '/settings' 
-              ? "bg-violet-50 text-violet-700" 
-              : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-          )}
+      <div className={css({ 
+        padding: '24px', 
+        borderTop: '1px solid', 
+        borderColor: 'slate.50', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '4px' 
+      })}>
+        <button
+          onClick={() => alert('Opening Support Ticket...')}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            paddingX: '20px',
+            paddingY: '12px',
+            borderRadius: 'xl',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: 'slate.500',
+            width: '100%',
+            cursor: 'pointer',
+            border: 'none',
+            backgroundColor: 'transparent',
+            transition: 'all',
+            _hover: { backgroundColor: 'slate.50', color: 'slate.900' }
+          })}
         >
-          <Settings className={cn(
-            "w-5 h-5 transition-colors shrink-0",
-            location.pathname === '/settings' ? "text-violet-600" : "text-slate-400 group-hover:text-slate-600"
-          )} />
-          {t('settings')}
+          <HelpCircle className={css({ width: '20px', height: '20px', color: 'slate.400' })} />
+          Support
+        </button>
+        <Link
+          to="/login"
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            paddingX: '20px',
+            paddingY: '12px',
+            borderRadius: 'xl',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: 'red.500',
+            textDecoration: 'none',
+            transition: 'all',
+            _hover: { backgroundColor: 'red.50' }
+          })}
+        >
+          <LogOut className={css({ width: '20px', height: '20px' })} />
+          Log Out
         </Link>
+      </div>
 
-        {/* Language & Profile */}
-        <div className="grid grid-cols-2 gap-2 mt-4">
-           <button 
-              onClick={toggleLanguage} 
-              className="flex items-center justify-center gap-2 py-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-violet-200 transition-all group"
-           >
-              <span className="text-[10px] font-black uppercase text-slate-400 group-hover:text-violet-600">
-                {language === 'en' ? 'AR' : 'EN'}
-              </span>
-           </button>
-           <Link 
-              to="/logout"
-              className="flex items-center justify-center py-3 bg-slate-50 rounded-xl border border-slate-100 hover:bg-red-50 hover:border-red-100 group transition-all"
-           >
-              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-red-500 shrink-0" />
-           </Link>
+      <div className={css({ 
+        padding: '20px', 
+        backgroundColor: 'rgba(248, 250, 252, 0.5)', 
+        marginX: '16px', 
+        marginBottom: '32px', 
+        borderRadius: '32px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '12px', 
+        border: '1px solid', 
+        borderColor: 'slate.100' 
+      })}>
+        <div className={css({ 
+          width: '48px', 
+          height: '48px', 
+          borderRadius: '16px', 
+          backgroundColor: 'violet.100', 
+          border: '1px solid white', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          color: 'violet.700', 
+          fontWeight: 'bold', 
+          overflow: 'hidden', 
+          boxShadow: 'sm' 
+        })}>
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100" alt="User" className={css({ width: '100%', height: '100%', objectFit: 'cover' })} />
         </div>
-
-        {/* User Mini Profile */}
-        {userProfile && (
-          <div className="mt-6 flex items-center gap-4 p-4 bg-slate-900 rounded-[1.5rem] shadow-xl shadow-slate-200">
-            <div className="w-10 h-10 rounded-xl bg-violet-600 flex items-center justify-center text-white font-black shrink-0">
-              {userProfile.name.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-black text-white truncate">{userProfile.name}</p>
-              <p className="text-[9px] font-black text-violet-400 uppercase tracking-[0.15em] truncate">
-                {isAdmin ? 'Administrator' : 'Premium Member'}
-              </p>
-            </div>
-          </div>
-        )}
+        <div className={css({ flex: 1, overflow: 'hidden' })}>
+          <p className={css({ fontSize: '14px', fontWeight: 'black', color: 'slate.900', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>Alex Thompson</p>
+          <p className={css({ fontSize: '10px', fontWeight: 'bold', color: 'slate.400', textTransform: 'uppercase', tracking: 'widest', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>Admin Account</p>
+        </div>
+        <Bell onClick={() => alert('Opening Notifications...')} className={css({ width: '16px', height: '16px', color: 'slate.400', cursor: 'pointer', transition: 'colors', _hover: { color: 'brand.primary' } })} />
       </div>
     </aside>
   );
