@@ -70,8 +70,9 @@ const LoginPage = () => {
       paddingX: '16px',
       backgroundColor: 'slate.50',
       position: 'relative',
-      fontFamily: 'sans'
-    })} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      fontFamily: 'sans',
+      direction: isRtl ? 'rtl' : 'ltr'
+    })}>
       
       {/* Language Toggle */}
       <div className={css({ 
@@ -142,7 +143,7 @@ const LoginPage = () => {
             })} 
             onClick={handleGoogleLogin}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ marginInlineEnd: '8px' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className={css({ marginInlineEnd: '8px' })}>
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -176,14 +177,15 @@ const LoginPage = () => {
                 border: '1px solid', 
                 borderColor: 'slate.200',
                 fontSize: '14px',
-                _focus: { borderColor: 'brand.primary', outline: 'none', ring: '2px', ringColor: 'brand.light' }
-              })} placeholder="name@company.com" required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
+                _focus: { borderColor: 'brand.primary', outline: 'none', ring: '2px', ringColor: 'brand.light' },
+                textAlign: language === 'ar' ? 'right' : 'left'
+              })} placeholder="name@company.com" required />
             </div>
 
             <div className={css({ marginBottom: '24px' })}>
               <div className={css({ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' })}>
-                <label htmlFor="password" className={css({ fontSize: '14px', fontWeight: 'medium', color: 'slate.700' })} style={{ margin: 0 }}>{t('password')}</label>
-                <button type="button" onClick={(e) => { e.preventDefault(); alert('Opening Password Reset Flow...'); }} className={css({ color: 'brand.primary', fontSize: '13px', fontWeight: 'medium', cursor: 'pointer', _hover: { textDecoration: 'underline' } })} style={{ background: 'none', border: 'none', padding: 0 }}>{t('forgot')}</button>
+                <label htmlFor="password" className={css({ fontSize: '14px', fontWeight: 'medium', color: 'slate.700', margin: 0 })}>{t('password')}</label>
+                <button type="button" onClick={(e) => { e.preventDefault(); alert('Opening Password Reset Flow...'); }} className={css({ color: 'brand.primary', fontSize: '13px', fontWeight: 'medium', cursor: 'pointer', background: 'none', border: 'none', padding: 0, _hover: { textDecoration: 'underline' } })}>{t('forgot')}</button>
               </div>
               <input type="password" id="password" className={css({ 
                 width: '100%', 
@@ -193,8 +195,9 @@ const LoginPage = () => {
                 border: '1px solid', 
                 borderColor: 'slate.200',
                 fontSize: '14px',
-                _focus: { borderColor: 'brand.primary', outline: 'none', ring: '2px', ringColor: 'brand.light' }
-              })} required style={{ textAlign: language === 'ar' ? 'right' : 'left' }} />
+                _focus: { borderColor: 'brand.primary', outline: 'none', ring: '2px', ringColor: 'brand.light' },
+                textAlign: language === 'ar' ? 'right' : 'left'
+              })} required />
             </div>
 
             <button disabled={isLoading} type="submit" className={css({ 
@@ -215,7 +218,7 @@ const LoginPage = () => {
             </button>
           </form>
 
-          <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px' }}>
+          <div className={css({ marginTop: '32px', textAlign: 'center', fontSize: '14px' })}>
             <span className={css({ color: 'slate.500' })}>{t('new_to_pas')}</span> 
             <Link to="/register" className={css({ color: 'brand.primary', fontWeight: 'bold', marginInlineStart: '6px', textDecoration: 'none', _hover: { textDecoration: 'underline' } })}>{t('create_account')}</Link>
           </div>
@@ -233,6 +236,3 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-export default LoginPage;
