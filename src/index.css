@@ -1,9 +1,10 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "./responsive.css";
+
 @source "../src/**/*.{ts,tsx}";
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  
   :root {
     --primary: #581c87;
     --primary-hover: #4c1d95;
@@ -57,4 +58,3 @@
   }
 }
 
-@import "./responsive.css";
