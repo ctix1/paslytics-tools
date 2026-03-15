@@ -75,4 +75,26 @@ firebase deploy
 
 ---
 
+## 🛠️ Troubleshooting: AI Analysis Error
+
+If you see an error like **"Edge Function returned a non-2xx status code"** when uploading an image:
+
+### 1. Set your OpenAI API Key in Supabase
+The analysis function needs an OpenAI key to work on the live site. Run this command in your project folder (using Supabase CLI):
+```bash
+supabase secrets set OPENAI_API_KEY=your_sk_key_here
+```
+*Alternatively, go to your **Supabase Dashboard > Project Settings > Edge Functions** and add `OPENAI_API_KEY` to the secrets.*
+
+### 2. Deploy the Analysis Function
+If you haven't deployed the function yet, run:
+```bash
+supabase functions deploy analyze-product
+```
+
+### 3. Check OpenAI Credits
+Ensure your OpenAI account has active credits and that the key supports `gpt-4o-mini` (Vision).
+
+---
+
 *If you ever want to upgrade the simulated frontend tools to process genuine live OpenAI requests securely, we can implement Firebase Cloud Functions or a serverless api later!*

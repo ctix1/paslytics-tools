@@ -60,6 +60,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
+  
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const email = session?.user?.email?.toLowerCase();
+      setIsAdmin(email === 'koo111333@gmail.com');
+    });
+  }, []);
+
+  if (isAdmin === undefined) {
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Checking permissions...</div>;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 function App() {
   return (
     <LanguageProvider>
@@ -84,10 +106,10 @@ function App() {
               <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/logs" element={<SystemLogs />} />
-                <Route path="/management" element={<SiteManagement />} />
+                <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
                 <Route path="/settings" element={<Profile />} />
-                <Route path="/admin/payment-settings" element={<PaymentSettings />} />
-                <Route path="/admin/content" element={<ContentManager />} />
+                <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
+                <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />

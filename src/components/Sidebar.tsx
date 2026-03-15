@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -6,17 +7,31 @@ import {
   Users, 
   LogOut, 
   HelpCircle,
-  Bell
+  Bell,
+  CreditCard,
+  FileText
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const Sidebar = () => {
   const location = useLocation();
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const profile = localStorage.getItem('user_profile');
+    if (profile) {
+      const userData = JSON.parse(profile);
+      setIsAdmin(userData.role === 'admin');
+    }
+  }, []);
+
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: ClipboardList, label: 'Logs', path: '/logs' },
-    { icon: Users, label: 'Management', path: '/management' },
+    { icon: Users, label: 'Administration', path: '/management', adminOnly: true },
+    { icon: CreditCard, label: 'Payment Settings', path: '/admin/payment-settings', adminOnly: true },
+    { icon: FileText, label: 'Content Management', path: '/admin/content', adminOnly: true },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
@@ -30,24 +45,26 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex-1 px-4 py-8 space-y-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.label}
-            to={item.path}
-            className={cn(
-              "flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-bold transition-all group",
-              location.pathname === item.path 
-                ? "bg-violet-600 text-white shadow-xl shadow-violet-100 translate-x-1" 
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-            )}
-          >
-            <item.icon className={cn(
-              "w-5 h-5 transition-colors",
-              location.pathname === item.path ? "text-white" : "text-slate-400 group-hover:text-slate-600"
-            )} />
-            {item.label}
-          </Link>
-        ))}
+        {menuItems
+          .filter(item => !item.adminOnly || isAdmin)
+          .map((item) => (
+            <Link
+              key={item.label}
+              to={item.path}
+              className={cn(
+                "flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-bold transition-all group",
+                location.pathname === item.path 
+                  ? "bg-violet-600 text-white shadow-xl shadow-violet-100 translate-x-1" 
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+              )}
+            >
+              <item.icon className={cn(
+                "w-5 h-5 transition-colors",
+                location.pathname === item.path ? "text-white" : "text-slate-400 group-hover:text-slate-600"
+              )} />
+              {item.label}
+            </Link>
+          ))}
       </nav>
 
       <div className="p-6 border-t border-slate-50 space-y-1">
