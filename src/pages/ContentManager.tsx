@@ -62,7 +62,6 @@ const ContentManager = () => {
 
 
   return (
-  return (
     <div className="p-8" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
       <div style={{ maxWidth: '900px' }}>
 
