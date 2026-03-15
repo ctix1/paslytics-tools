@@ -8,7 +8,7 @@ export const translations = {
     dashboard: 'Dashboard',
     analytics: 'Analytics',
     logs: 'Logs',
-    admin: 'Admin',
+    admin: 'Administrator',
     settings: 'Settings',
     profile_settings: 'Profile & Settings',
 
@@ -107,7 +107,7 @@ export const translations = {
     email: 'Email',
     permissions: 'Permissions',
     remove: 'Remove',
-    admin_role: 'Admin',
+    admin_role: 'Administrator',
     analyst_role: 'Analyst',
     informed_member: 'Informed Member',
 

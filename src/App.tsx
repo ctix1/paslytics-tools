@@ -96,14 +96,8 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/logout" element={<Logout />} />
               
-              {/* Protected Routes */}
-              <Route path="/checkout/:plan" element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              } />
-
               <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route path="/checkout/:plan" element={<Checkout />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/logs" element={<SystemLogs />} />
                 <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
