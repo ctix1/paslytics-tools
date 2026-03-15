@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { supabase } from '../lib/supabase';
-import { cn } from '../utils/cn';
+import { css, cx } from '../../styled-system/css';
 
 const Dashboard = () => {
-  const { t, language } = useLanguage();
+  const { t, language, toggleLanguage } = useLanguage();
   const isRtl = language === 'ar';
+
   const navigate = useNavigate();
   const { hasActivePlan } = useSubscription();
 
-  const [userProfile, setUserProfile] = useState<any>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        const profile = {
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
-          role: session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
-        };
-        setUserProfile(profile);
-      }
-    });
-  }, []);
-
+  // Check generic user profile role
+  const profileRaw = localStorage.getItem('user_profile');
+  const userProfile = profileRaw ? JSON.parse(profileRaw) : null;
   const isAdmin = userProfile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
 
+  // Real Upload State
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -36,328 +26,793 @@ const Dashboard = () => {
     problem: '',
     agitation: '',
     solution: '',
-    resonanceScore: 85,
-    engagementPulse: [65, 80, 45, 90, 70]
+    ai_quick_take: '',
+    emotional_score: 88
   });
 
-  // Marketing Manager State
-  const [mmAge, setMmAge] = useState([18, 45]);
-  const [mmGender, setMmGender] = useState(50);
-  const [mmProduct, setMmProduct] = useState('');
+  // Derived analysis state for UI logic
+  const analysisState = analysisComplete ? 'complete' : (isUploading ? 'uploading' : 'idle');
 
-  // Pricing Calculator State
-  const [pcBase, setPcBase] = useState(100);
-  const [pcDuty, setPcDuty] = useState(5);
-  const [pcMargin, setPcMargin] = useState(25);
-  const [pcMarketing, setPcMarketing] = useState(10);
-  
+  // Marketing Manager state
+  const [mmDescription, setMmDescription] = useState('');
+  const [mmAgeMin, setMmAgeMin] = useState(18);
+  const [mmAgeMax, setMmAgeMax] = useState(35);
+  const [mmMen, setMmMen] = useState(50);
+  const [mmPlan, setMmPlan] = useState('');
+
+  // Product Calculator state
+  const [pcBase, setPcBase] = useState('');
+  const [pcDuty, setPcDuty] = useState('');
+  const [pcDutyIsPercent, setPcDutyIsPercent] = useState(true);
+  const [pcProfit, setPcProfit] = useState('');
+  const [pcMarketing, setPcMarketing] = useState('');
+
+  const pcWomen = 100 - mmMen;
+
   const calcFinalPrice = () => {
-    const dutyVal = pcBase * (pcDuty / 100);
-    const cost = pcBase + dutyVal + pcMarketing;
-    const price = cost / (1 - (pcMargin / 100));
-    return price.toFixed(2);
+    const base = parseFloat(pcBase) || 0;
+    const duty = pcDutyIsPercent ? base * ((parseFloat(pcDuty) || 0) / 100) : (parseFloat(pcDuty) || 0);
+    const profit = base * ((parseFloat(pcProfit) || 0) / 100);
+    const marketing = parseFloat(pcMarketing) || 0;
+    return (base + duty + profit + marketing).toFixed(2);
   };
 
-  const getProfitabilityAdvice = (price: number) => {
-    if (price > 500) return { category: t('pc_luxury'), advice: t('pc_advice_luxury'), type: 'luxury' };
-    if (price > 150) return { category: t('pc_premium'), advice: t('pc_advice_premium'), type: 'premium' };
-    return { category: t('pc_value'), advice: t('pc_advice_value'), type: 'value' };
+  const handleGeneratePlan = () => {
+    if (!mmDescription.trim()) { alert(t('mm_alert_empty') || 'Please enter a product description first.'); return; }
+    setMmPlan(`${t('mm_plan_title')} "${mmDescription}"
+
+${t('mm_target_audience')}
+  • ${t('mm_age_range_label')} ${mmAgeMin}–${mmAgeMax} ${t('mm_years')}
+  • ${t('mm_gender_split_label')} ${mmMen}% ${t('mm_men')} / ${pcWomen}% ${t('mm_women')}
+
+${t('mm_channels')}
+  • ${mmMen > pcWomen ? 'YouTube, Reddit, Gaming' : 'Instagram, Pinterest, TikTok'}
+  • ${mmAgeMax < 35 ? t('mm_email_young') : t('mm_email_older')}
+
+${t('mm_content_strategy')}
+  • ${mmMen > pcWomen ? t('mm_highlight_male') : t('mm_highlight_female')}
+  • ${t('mm_ab_tests')} ${mmAgeMin}–${Math.floor((mmAgeMin + mmAgeMax) / 2)}
+
+${t('mm_budget')}
+  • ${t('mm_budget_digital')}
+  • ${t('mm_budget_content')}
+  • ${t('mm_budget_influencer')}
+  • ${t('mm_budget_analytics')}`);
   };
 
-  const finalPrice = parseFloat(calcFinalPrice());
-  const advice = getProfitabilityAdvice(finalPrice);
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleRunAnalysis = () => {
     setIsUploading(true);
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setAnalysisComplete(true);
-          setIsUploading(false);
-          setPasOutput({
-            problem: "Customers are struggling with complex data visualization tools that require degrees in statistics to understand.",
-            agitation: "Hours are wasted every week staring at confusing spreadsheets, leading to delayed decisions and lost revenue opportunities.",
-            solution: "Our AI-driven dashboard translates raw metrics into clear emotional narratives, empowering teams to act instantly.",
-            resonanceScore: 92,
-            engagementPulse: [75, 85, 60, 95, 82]
-          });
-          return 100;
+    setUploadProgress(20);
+    setAnalysisComplete(false);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      setUploadProgress(45);
+      const base64Image = reader.result;
+      
+      try {
+        const { data, error } = await supabase.functions.invoke('analyze-product', {
+          body: { imageBase64: base64Image }
+        });
+        
+        setUploadProgress(85);
+        if (error) {
+          console.error("Supabase Function Error Details:", error);
+          throw new Error(error.message || "Failed to connect to analysis service.");
         }
-        return prev + 10;
-      });
-    }, 300);
+        
+        setPasOutput({
+          problem: data.problem || '',
+          agitation: data.agitation || '',
+          solution: data.solution || '',
+          ai_quick_take: data.ai_quick_take || '',
+          emotional_score: data.emotional_score || 88
+        });
+      } catch (err: any) {
+        console.error("AI Analysis Failed:", err);
+        // Show the real error message to the user for debugging
+        alert(`Analysis Error: ${err.message || "Unknown error"}\n\nPlease check your OpenAI credits or Edge Function logs if this persists.`);
+        
+        // Fallback gracefully so UI doesn't break if edge function isn't deployed yet
+        setPasOutput({
+          problem: t('problem_text') || 'Fallback problem text.',
+          agitation: t('agitation_text') || 'Fallback agitation text.',
+          solution: t('solution_text') || 'Fallback solution text.',
+          ai_quick_take: t('quick_take_text') || 'Fallback quick take.',
+          emotional_score: 88
+        });
+      } finally {
+        setUploadProgress(100);
+        setTimeout(() => {
+          setIsUploading(false);
+          setAnalysisComplete(true);
+        }, 800);
+      }
+    };
   };
 
   return (
-    <div className="space-y-10 pb-20 max-w-[1400px] mx-auto px-4 sm:px-6" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      
-      {/* Premium Header */}
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-[2rem] blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white/80 backdrop-blur-xl p-10 rounded-[2rem] border border-white/50 shadow-2xl shadow-slate-200">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 bg-violet-600 text-white text-[8px] font-black uppercase tracking-[0.2em] rounded-lg">AI Core v4.2</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            </div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase leading-none mb-3">
-              {t('dashboard')}
-            </h1>
-            <p className="text-slate-500 font-semibold text-lg opacity-70">{t('pas_desc')}</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-             <button className="px-8 py-4 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-slate-200 hover:border-violet-300 hover:text-violet-600 transition-all shadow-sm">
-               {t('export_report')}
-             </button>
-             <button onClick={handleRunAnalysis} className="px-8 py-4 bg-violet-600 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-2xl shadow-violet-200 hover:bg-violet-700 hover:-translate-y-1 transition-all active:scale-95">
-               {t('run_new_analysis')}
-             </button>
-          </div>
-        </div>
-      </div>
+    <div className={css({ direction: isRtl ? 'rtl' : 'ltr', maxWidth: '1000px', margin: '0 auto' })}>
+      {/* Main Content Area */}
+      <div className={css({ width: '100%' })}>
+        <div style={{ maxWidth: '1000px' }}>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-        
-        {/* Left Column: Analysis Results (7/12) */}
-        <div className="xl:col-span-7 space-y-8">
-           <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100 relative overflow-hidden group">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white">
-                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" strokeLinecap="round"/></svg>
-                   </div>
-                   <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">{t('pas_output')}</h2>
-                </div>
-                <div className="flex -space-x-2">
-                   {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full border-4 border-white bg-slate-100"></div>)}
-                </div>
-              </div>
-
-              {/* PAS Flow */}
-              <div className="space-y-12 relative">
-                 <div className="absolute top-0 bottom-0 left-[23px] w-0.5 bg-slate-50"></div>
-                 
-                 {/* Problem */}
-                 <div className="relative pl-12 group/item">
-                    <div className="absolute left-[15px] top-1 w-4 h-4 rounded-full bg-white border-4 border-slate-200 group-hover/item:border-red-500 transition-all z-10"></div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-red-500/60 mb-3">{t('problem')}</h3>
-                    <div className="p-6 bg-slate-50/50 rounded-3xl border border-transparent group-hover/item:border-slate-100 group-hover/item:bg-white transition-all">
-                       <p className="text-slate-800 font-bold leading-relaxed text-lg">{pasOutput.problem || t('problem_text')}</p>
-                    </div>
-                 </div>
-
-                 {/* Agitation */}
-                 <div className="relative pl-12 group/item">
-                    <div className="absolute left-[15px] top-1 w-4 h-4 rounded-full bg-white border-4 border-slate-200 group-hover/item:border-orange-500 transition-all z-10"></div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-orange-500/60 mb-3">{t('agitation')}</h3>
-                    <div className="p-6 bg-slate-50/50 rounded-3xl border border-transparent group-hover/item:border-slate-100 group-hover/item:bg-white transition-all">
-                       <p className="text-slate-800 font-bold leading-relaxed text-lg">{pasOutput.agitation || t('agitation_text')}</p>
-                    </div>
-                 </div>
-
-                 {/* Solution */}
-                 <div className="relative pl-12 group/item">
-                    <div className="absolute left-[15px] top-1 w-4 h-4 rounded-full bg-white border-4 border-slate-200 group-hover/item:border-emerald-500 transition-all z-10"></div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-emerald-500/60 mb-3">{t('solution')}</h3>
-                    <div className="p-6 bg-slate-50/50 rounded-3xl border border-transparent group-hover/item:border-slate-100 group-hover/item:bg-white transition-all">
-                       <p className="text-slate-800 font-bold leading-relaxed text-lg">{pasOutput.solution || t('solution_text')}</p>
-                    </div>
-                 </div>
-              </div>
-
-              {/* Visual Metrics Floor */}
-              <div className="mt-16 pt-10 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                  <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('emotional_resonance')}</h4>
-                      <span className="text-xl font-black text-violet-600">{pasOutput.resonanceScore}%</span>
-                    </div>
-                    <div className="relative h-4 bg-slate-50 rounded-full overflow-hidden p-1 border border-slate-100/50">
-                      <div 
-                        className="h-full bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full transition-all duration-1000 relative shadow-[0_0_15px_rgba(124,58,237,0.3)]" 
-                        style={{ width: `${pasOutput.resonanceScore}%` }}
-                      >
-                         <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-end justify-center md:justify-end gap-2">
-                    <div className="flex items-end gap-1.5 h-16 mr-4">
-                      {pasOutput.engagementPulse.map((v, i) => (
-                        <div 
-                          key={i} 
-                          className="w-2.5 bg-slate-100 rounded-full transition-all duration-500 hover:bg-violet-600 relative group/bar"
-                          style={{ height: `${v}%` }}
-                        >
-                           <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity">
-                              {v}%
-                           </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="text-right">
-                       <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{t('engagement_pulse')}</h4>
-                       <div className="text-[9px] font-bold text-slate-300 uppercase letter-spacing-widest">Past 24h prediction</div>
-                    </div>
-                  </div>
-              </div>
-           </div>
-
-           {/* AI Quick Take - Premium Look */}
-           <div className="bg-slate-900 p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-violet-400 backdrop-blur-3xl border border-white/5 shrink-0">
-                  <svg className="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round"/></svg>
-                </div>
-              </div>
-              <h3 className="text-white text-lg font-black uppercase tracking-widest mb-8 flex items-center gap-4">
-                <span className="w-1.5 h-6 bg-violet-500 rounded-full shadow-[0_0_10px_rgba(139,92,246,0.6)]"></span>
-                {t('ai_quick_take')}
-              </h3>
-              <p className="text-slate-300 font-bold text-xl leading-relaxed italic mb-10 max-w-[80%]">
-                "{t('quick_take_text')}"
-              </p>
-              <button className="w-full py-5 bg-white text-slate-900 font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-violet-600 hover:text-white transition-all shadow-xl active:scale-[0.98]">
-                REFINE COPY ARCHITECTURE
+          {/* Header */}
+          <div className={css({ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginBottom: '24px',
+            paddingBottom: '24px'
+          })}>
+            <h1 className={css({ fontSize: '24px', fontWeight: 'bold', color: 'slate.900' })}>{t('pas_analysis_title')}</h1>
+            <div className={css({ display: 'flex', gap: '12px' })}>
+              <button
+                className={css({
+                  paddingX: '20px',
+                  paddingY: '10px',
+                  borderRadius: 'lg',
+                  fontSize: '14px',
+                  fontWeight: 'semibold',
+                  backgroundColor: 'white',
+                  border: '1px solid',
+                  borderColor: 'slate.200',
+                  cursor: 'pointer',
+                  transition: 'all',
+                  _hover: { backgroundColor: 'slate.50', borderColor: 'slate.300' }
+                })}
+                onClick={() => {
+                  const element = document.getElementById('pas-report-content');
+                  if (element) {
+                    // @ts-ignore
+                    if (window.html2pdf) {
+                      const opt = {
+                        margin: 10,
+                        filename: 'PAS_Analysis_Report.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                      };
+                      // @ts-ignore
+                      window.html2pdf().set(opt).from(element).save();
+                    } else {
+                      alert('PDF Export library is loading. Please try again in a moment.');
+                    }
+                  } else {
+                    alert('No analysis available to export. Please analyze an image first.');
+                  }
+                }}
+              >
+                {t('export_report')}
               </button>
-           </div>
-        </div>
+              <button
+                className={css({
+                  paddingX: '20px',
+                  paddingY: '10px',
+                  borderRadius: 'lg',
+                  fontSize: '14px',
+                  fontWeight: 'semibold',
+                  backgroundColor: 'brand.primary',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all',
+                  _hover: { backgroundColor: 'brand.secondary' }
+                })}
+                onClick={() => alert('Starting a new analysis trace...')}
+              >
+                {t('run_new_analysis')}
+              </button>
+            </div>
+          </div>
 
-        {/* Right Column: Tools (5/12) */}
-        <div className="xl:col-span-12 2xl:col-span-5 space-y-10">
-           
-           {/* Marketing Manager Card */}
-           <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-100 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-50 rounded-full -mr-16 -mt-16 opacity-50"></div>
-              
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">{t('mm_title')}</h2>
-              <p className="text-slate-500 font-bold text-sm mb-10 opacity-60 leading-relaxed">
-                {t('mm_desc')}
+          {/* Subscription Wall Checkout */}
+          {!hasAccess ? (
+            <div className="card mb-6" style={{ padding: '60px 40px', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0', background: 'linear-gradient(to bottom, #ffffff, #f8fafc)' }}>
+              <div style={{ width: '64px', height: '64px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>{isRtl ? 'ميزة مميزة' : 'Premium Feature'}</h2>
+              <p style={{ fontSize: '16px', color: '#64748b', maxWidth: '400px', margin: '0 auto 32px', lineHeight: 1.6 }}>
+                {isRtl ? 'يرجى الترقية إلى خطة مدفوعة لفتح أدوات تحليل الصور وإنشاء تقارير نموذج PAS.' : 'Please upgrade to a paid plan to unlock image analysis tools and PAS framework generation.'}
               </p>
-
-              <div className="space-y-8">
-                <div>
-                   <label className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">{t('mm_product_desc')}</label>
-                   <textarea 
-                    value={mmProduct}
-                    onChange={(e) => setMmProduct(e.target.value)}
-                    placeholder={t('mm_product_placeholder')}
-                    className="w-full h-40 px-6 py-5 bg-slate-50 border-2 border-slate-50 rounded-3xl text-slate-900 font-bold focus:bg-white focus:border-violet-100 focus:ring-8 focus:ring-violet-50/50 transition-all outline-none resize-none leading-relaxed"
-                   ></textarea>
-                </div>
-
-                {/* Demographics Area */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50/50 p-8 rounded-[2rem] border border-slate-50">
-                  {/* Age */}
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('mm_age_range')}</label>
-                      <span className="text-xs font-black text-violet-600">{mmAge[0]} - {mmAge[1]} {t('mm_years')}</span>
-                    </div>
-                    <input 
-                      type="range" min="13" max="65" value={mmAge[1]} 
-                      onChange={(e) => setMmAge([mmAge[0], parseInt(e.target.value)])}
-                      className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-violet-600" 
-                    />
+              <Link to="/pricing" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 600, borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                {isRtl ? 'اكتشف الخطط هنا' : 'Explore Plans Here'}
+              </Link>
+            </div>
+          ) : (
+            <>
+          {/* Upload Section */}
+          <div className={css({ 
+            backgroundColor: 'white', 
+            padding: '32px', 
+            borderRadius: '16px', 
+            boxShadow: 'sm',
+            border: '1px solid',
+            borderColor: 'slate.100',
+            marginBottom: '24px'
+          })}>
+            <div 
+              className={css({ 
+                border: isUploading ? '2px solid' : '2px dashed', 
+                borderColor: isUploading ? 'brand.primary' : 'slate.200',
+                borderRadius: '16px', 
+                padding: '48px 20px', 
+                textAlign: 'center', 
+                backgroundColor: isUploading ? 'rgba(108, 43, 217, 0.05)' : 'slate.50', 
+                transition: 'all', 
+                cursor: isUploading ? 'default' : 'pointer',
+                _hover: { backgroundColor: !isUploading ? 'slate.100' : 'none' }
+              })}
+              onClick={() => { if (!isUploading && !analysisComplete) document.getElementById('file-upload-mock')?.click(); }}
+            >
+              {!isUploading && !analysisComplete ? (
+                <>
+                  <div className={css({ 
+                    width: '64px', 
+                    height: '64px', 
+                    backgroundColor: 'violet.50', 
+                    borderRadius: 'full', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    margin: '0 auto 24px' 
+                  })}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                   </div>
-                  
-                  {/* Gender Split */}
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('mm_gender_split')}</label>
-                      <div className="flex items-center gap-3 text-[9px] font-black uppercase">
-                        <span className={mmGender >= 50 ? "text-violet-600" : "text-slate-300"}>{t('mm_men')}</span>
-                        <span className={mmGender < 50 ? "text-pink-500" : "text-slate-300"}>{t('mm_women')}</span>
-                      </div>
-                    </div>
-                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden flex relative cursor-pointer group/slider">
-                       <div className="h-full bg-violet-600 transition-all" style={{ width: `${mmGender}%` }}></div>
-                       <div className="h-full bg-pink-500 transition-all" style={{ width: `${100-mmGender}%` }}></div>
-                       <input 
-                          type="range" min="0" max="100" value={mmGender} 
-                          onChange={(e) => setMmGender(parseInt(e.target.value))}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                       />
-                    </div>
+                  <h2 className={css({ fontSize: '20px', fontWeight: 'bold', color: 'slate.900', marginBottom: '8px' })}>{t('upload_title')}</h2>
+                  <p className={css({ fontSize: '14px', color: 'slate.500', marginBottom: '24px' })}>{t('upload_desc')}</p>
+                  <button
+                    className={css({
+                      paddingX: '32px',
+                      paddingY: '12px',
+                      borderRadius: 'lg',
+                      fontSize: '15px',
+                      fontWeight: 'bold',
+                      backgroundColor: 'slate.900',
+                      color: 'white',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all',
+                      _hover: { opacity: 0.9 }
+                    })}
+                  >
+                    {t('select_files')}
+                  </button>
+                  <input type="file" id="file-upload-mock" className={css({ display: 'none' })} accept="image/png, image/jpeg, image/webp" onChange={handleUpload} />
+                </>
+              ) : isUploading ? (
+                <div className={css({ padding: '20px' })}>
+                  <div className={css({ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    marginBottom: '12px', 
+                    fontSize: '14px', 
+                    fontWeight: 'bold', 
+                    color: 'brand.primary' 
+                  })}>
+                    <span>{isRtl ? 'جاري تحليل الصورة بالذكاء الاصطناعي...' : 'Analyzing AI visual points...'}</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className={css({ width: '100%', height: '10px', backgroundColor: 'slate.200', borderRadius: 'full', overflow: 'hidden' })}>
+                    <div className={css({ 
+                      width: `${uploadProgress}%`, 
+                      height: '100%', 
+                      backgroundColor: 'brand.primary', 
+                      transition: 'width 0.3s ease' 
+                    })}></div>
                   </div>
                 </div>
+              ) : (
+                <div className={css({ padding: '12px' })}>
+                  <div className={css({ 
+                    width: '64px', 
+                    height: '64px', 
+                    backgroundColor: 'green.50', 
+                    borderRadius: 'full', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    margin: '0 auto 24px' 
+                  })}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <h2 className={css({ fontSize: '20px', fontWeight: 'bold', color: 'green.600', marginBottom: '8px' })}>{isRtl ? 'تم التحليل بنجاح' : 'Analysis Complete'}</h2>
+                  <p className={css({ fontSize: '14px', color: 'slate.500', marginBottom: '24px' })}>{isRtl ? 'تم استخراج نقاط PAS بنجاح.' : 'PAS frameworks generated successfully.'}</p>
+                  <button 
+                    onClick={() => { setIsUploading(false); setAnalysisComplete(false); setUploadProgress(0); }} 
+                    className={css({
+                      paddingX: '24px',
+                      paddingY: '10px',
+                      borderRadius: 'lg',
+                      fontSize: '14px',
+                      fontWeight: 'semibold',
+                      backgroundColor: 'white',
+                      border: '1px solid',
+                      borderColor: 'slate.200',
+                      cursor: 'pointer',
+                      transition: 'all',
+                      _hover: { backgroundColor: 'slate.50' }
+                    })}
+                  >
+                    {isRtl ? 'تحليل صورة جديدة' : 'Analyze New Image'}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                   <button className="flex-[2] py-5 bg-violet-600 text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-violet-200 hover:bg-violet-800 transition-all hover:scale-[1.02] active:scale-95">
-                      {t('mm_generate')}
-                   </button>
-                   <button className="flex-1 py-5 bg-slate-900 text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95">
-                      {t('mm_summarize')}
-                   </button>
+          <div className={css({ opacity: analysisComplete ? 1 : 0.3, transition: 'opacity 0.5s', pointerEvents: analysisComplete ? 'auto' : 'none' })}>
+           {/* Analysis Results Layout - Wrapped for PDF Export */}
+           <div id="pas-report-content" className={css({ padding: '16px', backgroundColor: 'white', borderRadius: '16px' })}>
+             <div className={css({ 
+               display: 'grid', 
+               gridTemplateColumns: { base: '1', lg: '1.4fr 1fr' }, 
+               gap: '24px' 
+             })}>
+
+            {/* Left Column: Framework Output */}
+            <div className={css({ 
+              backgroundColor: 'white', 
+              padding: '24px', 
+              borderRadius: '16px', 
+              border: '1px solid', 
+              borderColor: 'slate.100',
+              boxShadow: 'sm'
+            })}>
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' })}>
+                <div className={css({ width: '6px', height: '24px', backgroundColor: 'brand.primary', borderRadius: 'full' })}></div>
+                <h2 className={css({ fontSize: '18px', fontWeight: 'bold', color: 'slate.900' })}>{t('pas_output')}</h2>
+              </div>
+
+              <div className={css({ marginBottom: '24px' })}>
+                <span className={css({ 
+                  display: 'inline-block', 
+                  backgroundColor: 'red.50', 
+                  color: 'red.600', 
+                  fontSize: '12px', 
+                  fontWeight: 'bold', 
+                  padding: '4px 12px', 
+                  borderRadius: 'full', 
+                  marginBottom: '12px' 
+                })}>{t('problem')}</span>
+                <p className={css({ color: 'slate.600', lineHeight: '1.6', fontSize: '15px' })}>
+                  {pasOutput.problem || t('problem_text')}
+                </p>
+              </div>
+
+              <div className={css({ marginBottom: '24px' })}>
+                <span className={css({ 
+                  display: 'inline-block', 
+                  backgroundColor: 'orange.50', 
+                  color: 'orange.600', 
+                  fontSize: '12px', 
+                  fontWeight: 'bold', 
+                  padding: '4px 12px', 
+                  borderRadius: 'full', 
+                  marginBottom: '12px' 
+                })}>{t('agitation')}</span>
+                <p className={css({ color: 'slate.600', lineHeight: '1.6', fontSize: '15px' })}>
+                  {pasOutput.agitation || t('agitation_text')}
+                </p>
+              </div>
+
+              <div>
+                <span className={css({ 
+                  display: 'inline-block', 
+                  backgroundColor: 'green.50', 
+                  color: 'green.600', 
+                  fontSize: '12px', 
+                  fontWeight: 'bold', 
+                  padding: '4px 12px', 
+                  borderRadius: 'full', 
+                  marginBottom: '12px' 
+                })}>{t('solution')}</span>
+                <p className={css({ color: 'slate.600', lineHeight: '1.6', fontSize: '15px' })}>
+                  {pasOutput.solution || t('solution_text')}
+                </p>
+              </div>
+            </div>
+
+            {/* Right Column: Stats */}
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '24px' })}>
+
+              <div className={css({ 
+                backgroundColor: 'white', 
+                padding: '24px', 
+                borderRadius: '16px', 
+                border: '1px solid', 
+                borderColor: 'slate.100',
+                boxShadow: 'sm'
+              })}>
+                <h3 className={css({ color: 'slate.500', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' })}>{t('emotional_resonance')}</h3>
+                <div className={css({ 
+                  display: 'inline-block', 
+                  backgroundColor: 'violet.50', 
+                  color: 'brand.primary', 
+                  fontSize: '14px', 
+                  fontWeight: 'bold', 
+                  padding: '6px 16px', 
+                  borderRadius: 'full', 
+                  marginBottom: '16px' 
+                })}>{t('score')} {pasOutput.emotional_score || 88}%</div>
+                <div className={css({ width: '100%', height: '10px', backgroundColor: 'slate.100', borderRadius: 'full', marginBottom: '16px', overflow: 'hidden' })}>
+                  <div className={css({ 
+                    width: `${pasOutput.emotional_score || 88}%`, 
+                    height: '100%', 
+                    backgroundColor: 'brand.primary', 
+                    borderRadius: 'full' 
+                  })}></div>
+                </div>
+                <p className={css({ fontSize: '13px', color: 'slate.500' })}>{t('agitation_scores')}</p>
+              </div>
+
+              <div className={css({ 
+                backgroundColor: 'white', 
+                padding: '24px', 
+                borderRadius: '16px', 
+                border: '1px solid', 
+                borderColor: 'slate.100',
+                boxShadow: 'sm'
+              })}>
+                <h3 className={css({ color: 'slate.500', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' })}>{t('engagement_pulse')}</h3>
+                <div className={css({ 
+                  height: '120px', 
+                  backgroundColor: 'slate.50', 
+                  borderRadius: '12px', 
+                  display: 'flex', 
+                  alignItems: 'flex-end', 
+                  justifyContent: 'space-between', 
+                  padding: '16px 20px' 
+                })}>
+                  <div style={{ width: '30px', height: '40px', background: '#f3e8ff', borderRadius: '4px 4px 0 0' }}></div>
+                  <div style={{ width: '30px', height: '60px', background: '#e9d5ff', borderRadius: '4px 4px 0 0' }}></div>
+                  <div style={{ width: '30px', height: '100px', background: '#a855f7', borderRadius: '4px 4px 0 0' }}></div>
+                  <div style={{ width: '30px', height: '75px', background: '#c084fc', borderRadius: '4px 4px 0 0' }}></div>
+                  <div style={{ width: '30px', height: '90px', background: '#9333ea', borderRadius: '4px 4px 0 0' }}></div>
+                </div>
+                <div className="flex justify-between mt-2" style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>
+                  <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span>
                 </div>
               </div>
-           </div>
 
-           {/* Pricing Strategy Card */}
-           <div className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-200/60 shadow-inner overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 to-emerald-600"></div>
-              
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
+              <div className={css({ 
+                backgroundColor: 'purple.900', 
+                color: 'white', 
+                padding: '24px', 
+                borderRadius: '16px', 
+                border: 'none',
+                boxShadow: 'sm'
+              })}>
+                <h3 className={css({ color: 'violet.300', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' })}>{t('ai_quick_take')}</h3>
+                <p className={css({ fontSize: '14px', color: 'violet.50', lineHeight: '1.6' })}>
+                  {pasOutput.ai_quick_take || t('quick_take_text')}
+                </p>
+              </div>
+
+            </div>
+             </div>
+
+          {/* Marketing Manager Tool */}
+          <div className={css({ 
+            backgroundColor: 'white', 
+            padding: '32px', 
+            marginTop: '32px', 
+            borderRadius: '16px', 
+            border: '1px solid', 
+            borderColor: 'slate.100',
+            boxShadow: 'sm'
+          })}>
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' })}>
+              <div className={css({ 
+                width: '40px', 
+                height: '40px', 
+                background: 'gradient.primary', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                color: 'white' 
+              })}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              </div>
+              <div>
+                <h2 className={css({ fontSize: '20px', fontWeight: 'bold', color: 'slate.900' })}>{t('mm_title')}</h2>
+                <p className={css({ fontSize: '14px', color: 'slate.500' })}>{t('mm_desc')}</p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'grid', gap: '24px' })}>
+              <div>
+                <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '8px', display: 'block' })}>{t('mm_product_desc')}</label>
+                <textarea
+                  value={mmDescription}
+                  onChange={(e) => setMmDescription(e.target.value)}
+                  className={css({ 
+                    width: '100%', 
+                    minHeight: '100px', 
+                    padding: '12px 16px', 
+                    borderRadius: '12px', 
+                    border: '1px solid', 
+                    borderColor: 'slate.200', 
+                    fontSize: '15px',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    transition: 'all',
+                    _focus: { borderColor: 'brand.primary', ring: '2px', ringColor: 'violet.100' }
+                  })}
+                  placeholder={t('mm_product_placeholder')}
+                />
+              </div>
+
+              <div className={css({ display: 'grid', gridTemplateColumns: { base: '1', md: 'repeat(auto-fit, minmax(240px, 1fr))' }, gap: '24px' })}>
                 <div>
-                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">{t('pc_title')}</h2>
-                  <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-2 opacity-50">{t('pc_desc')}</p>
+                  <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '12px', display: 'block' })}>
+                    {t('mm_age_range')} <span className={css({ color: 'brand.primary' })}>{mmAgeMin}—{mmAgeMax}</span>
+                  </label>
+                  <div className={css({ display: 'flex', gap: '16px', alignItems: 'center' })}>
+                    <span className={css({ fontSize: '12px', color: 'slate.400', minWidth: '20px' })}>18</span>
+                    <input type="range" min="18" max={mmAgeMax} value={mmAgeMin} onChange={(e) => setMmAgeMin(parseInt(e.target.value))} className={css({ flex: 1, accentColor: 'brand.primary' })} />
+                    <input type="range" min={mmAgeMin} max="65" value={mmAgeMax} onChange={(e) => setMmAgeMax(parseInt(e.target.value))} className={css({ flex: 1, accentColor: 'brand.primary' })} />
+                    <span className={css({ fontSize: '12px', color: 'slate.400', minWidth: '20px' })}>65</span>
+                  </div>
                 </div>
-                <div className="bg-white px-8 py-5 rounded-3xl border border-slate-200/50 shadow-sm text-center min-w-[160px]">
-                   <div className="text-[9px] font-black uppercase text-slate-400 mb-1 tracking-widest">{t('pc_final_price')}</div>
-                   <div className="text-4xl font-black text-slate-900 tracking-tighter">${finalPrice}</div>
+                <div>
+                  <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '12px', display: 'block' })}>
+                    Gender Split: <span className={css({ color: 'brand.primary' })}>{mmMen}% Men</span> / <span className={css({ color: 'pink.500' })}>{pcWomen}% Women</span>
+                  </label>
+                  <div className={css({ display: 'flex', gap: '12px', alignItems: 'center' })}>
+                    <span className={css({ fontSize: '14px', color: 'violet.600', fontWeight: 'bold' })}>♂</span>
+                    <input type="range" min="0" max="100" value={mmMen} onChange={(e) => setMmMen(parseInt(e.target.value))} className={css({ flex: 1, accentColor: 'brand.primary' })} />
+                    <span className={css({ fontSize: '14px', color: 'pink.500', fontWeight: 'bold' })}>♀</span>
+                  </div>
+                  <div className={css({ display: 'flex', marginTop: '8px', height: '8px', borderRadius: 'full', overflow: 'hidden', backgroundColor: 'slate.100' })}>
+                    <div className={css({ backgroundColor: 'brand.primary', transition: 'width 0.3s ease' })} style={{ width: `${mmMen}%` }}></div>
+                    <div className={css({ backgroundColor: 'pink.400', transition: 'width 0.3s ease' })} style={{ width: `${pcWomen}%` }}></div>
+                  </div>
                 </div>
               </div>
 
-              {/* Slider Controls */}
-              <div className="grid grid-cols-2 gap-8 mb-12">
-                 {[
-                   { label: t('pc_base_cost'), val: pcBase, set: setPcBase, max: 2000 },
-                   { label: t('pc_profit_margin'), val: pcMargin, set: setPcMargin, max: 100 }
-                 ].map((ctrl, i) => (
-                   <div key={i} className="space-y-4">
-                      <div className="flex justify-between items-center">
-                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{ctrl.label}</label>
-                         <input 
-                            type="number" value={ctrl.val} onChange={(e) => ctrl.set(parseFloat(e.target.value))}
-                            className="w-16 bg-transparent text-right font-black text-slate-900 outline-none" 
-                         />
-                      </div>
-                      <input 
-                        type="range" min="0" max={ctrl.max} value={ctrl.val} 
-                        onChange={(e) => ctrl.set(parseFloat(e.target.value))}
-                        className="w-full h-1 bg-slate-200 rounded-full appearance-none cursor-pointer accent-slate-900" 
-                      />
-                   </div>
-                 ))}
-              </div>
+              <button
+                onClick={handleGeneratePlan}
+                className={css({ 
+                  alignSelf: 'flex-start', 
+                  minWidth: '200px',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  backgroundColor: 'brand.primary',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  transition: 'all',
+                  border: 'none',
+                  _hover: { opacity: 0.9, transform: 'translateY(-1px)' },
+                  _active: { transform: 'translateY(0)' }
+                })}
+              >
+                {t('mm_generate')}
+              </button>
 
-              {/* Insight Advice Area */}
-              <div className="relative group/advice">
-                 <div className="absolute -inset-1 bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl blur opacity-5 group-hover/advice:opacity-10 transition"></div>
-                 <div className="relative bg-white p-8 rounded-[2rem] border border-slate-100 flex gap-6 items-start shadow-sm">
-                    <div className={cn(
-                      "w-16 h-16 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-2xl transition-transform group-hover/advice:scale-110",
-                      advice.type === 'luxury' ? "bg-slate-900" : advice.type === 'premium' ? "bg-violet-600" : "bg-emerald-600"
-                    )}>
-                       <svg className="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <div>
-                       <div className="flex items-center gap-3 mb-3">
-                          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('pc_advice')}</h4>
-                          <span className="px-2.5 py-0.5 bg-slate-900 text-white text-[8px] font-black rounded-full uppercase tracking-widest">Optimized</span>
-                       </div>
-                       <div className="text-xl font-black text-slate-900 mb-2">{advice.category}</div>
-                       <p className="text-sm text-slate-500 font-bold leading-relaxed opacity-70 italic">{advice.advice}</p>
-                    </div>
-                 </div>
+              {mmPlan && (
+                <div className={css({ 
+                  backgroundColor: 'violet.50', 
+                  border: '1px solid', 
+                  borderColor: 'violet.100', 
+                  borderRadius: '16px', 
+                  padding: '24px', 
+                  whiteSpace: 'pre-line', 
+                  fontSize: '14px', 
+                  color: 'slate.700', 
+                  lineHeight: '1.8',
+                  boxShadow: 'inner'
+                })}>
+                  {mmPlan}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Product Price Calculator */}
+          <div className={css({ 
+            backgroundColor: 'white', 
+            padding: '32px', 
+            marginTop: '32px', 
+            marginBottom: '48px', 
+            borderRadius: '16px', 
+            border: '1px solid', 
+            borderColor: 'slate.100',
+            boxShadow: 'sm'
+          })}>
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' })}>
+              <div className={css({ 
+                width: '40px', 
+                height: '40px', 
+                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                color: 'white' 
+              })}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
               </div>
-           </div>
+              <div>
+                <h2 className={css({ fontSize: '20px', fontWeight: 'bold', color: 'slate.900' })}>{t('pc_title')}</h2>
+                <p className={css({ fontSize: '14px', color: 'slate.500' })}>{t('pc_desc')}</p>
+              </div>
+            </div>
+
+            <div className={css({ 
+              display: 'grid', 
+              gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, 
+              gap: '20px', 
+              marginBottom: '32px' 
+            })}>
+              <div>
+                <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '8px', display: 'block' })}>{t('pc_base_cost')}</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  value={pcBase} 
+                  onChange={(e) => setPcBase(e.target.value)} 
+                  className={css({
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: 'slate.200',
+                    fontSize: '14px',
+                    outline: 'none',
+                    _focus: { borderColor: 'blue.400', ring: '2px', ringColor: 'blue.50' }
+                  })} 
+                  placeholder="e.g. 25.00" 
+                />
+              </div>
+              <div>
+                <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' })}>
+                  {t('pc_duties')}
+                  <button
+                    onClick={() => setPcDutyIsPercent(p => !p)}
+                    className={css({ 
+                      padding: '2px 8px', 
+                      fontSize: '11px', 
+                      borderRadius: '6px', 
+                      backgroundColor: 'slate.100', 
+                      border: 'none',
+                      color: 'slate.600',
+                      cursor: 'pointer',
+                      _hover: { backgroundColor: 'slate.200' }
+                    })}
+                  >
+                    {pcDutyIsPercent ? t('pc_duty_percent') : t('pc_duty_fixed')}
+                  </button>
+                </label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  value={pcDuty} 
+                  onChange={(e) => setPcDuty(e.target.value)} 
+                  className={css({
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: 'slate.200',
+                    fontSize: '14px',
+                    outline: 'none',
+                    _focus: { borderColor: 'blue.400', ring: '2px', ringColor: 'blue.50' }
+                  })} 
+                  placeholder={pcDutyIsPercent ? 'e.g. 12 (%)' : 'e.g. 5.00 ($)'} 
+                />
+              </div>
+              <div>
+                <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '8px', display: 'block' })}>{t('pc_profit_margin')}</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="100" 
+                  step="1" 
+                  value={pcProfit} 
+                  onChange={(e) => setPcProfit(e.target.value)} 
+                  className={css({
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: 'slate.200',
+                    fontSize: '14px',
+                    outline: 'none',
+                    _focus: { borderColor: 'blue.400', ring: '2px', ringColor: 'blue.50' }
+                  })} 
+                  placeholder="e.g. 35" 
+                />
+              </div>
+              <div>
+                <label className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.700', marginBottom: '8px', display: 'block' })}>{t('pc_marketing_budget')}</label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  value={pcMarketing} 
+                  onChange={(e) => setPcMarketing(e.target.value)} 
+                  className={css({
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: 'slate.200',
+                    fontSize: '14px',
+                    outline: 'none',
+                    _focus: { borderColor: 'blue.400', ring: '2px', ringColor: 'blue.50' }
+                  })} 
+                  placeholder="e.g. 3.00" 
+                />
+              </div>
+            </div>
+
+            <div className={css({ 
+              background: 'linear-gradient(135deg, #0ea5e9 0%, #6c2bd9 100%)', 
+              borderRadius: '20px', 
+              padding: '32px', 
+              color: 'white', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              flexWrap: 'wrap', 
+              gap: '24px',
+              boxShadow: 'lg'
+            })}>
+              <div>
+                <div className={css({ fontSize: '14px', fontWeight: 'medium', opacity: 0.9, marginBottom: '4px' })}>{t('pc_final_price')}</div>
+                <div className={css({ fontSize: '48px', fontWeight: '800', letterSpacing: 'tight' })}>${calcFinalPrice()}</div>
+              </div>
+              <div className={css({ 
+                fontSize: '13px', 
+                backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                backdropFilter: 'blur(8px)', 
+                padding: '20px', 
+                borderRadius: '16px', 
+                border: '1px solid', 
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                lineHeight: '2',
+                minWidth: '220px'
+              })}>
+                <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                  <span>{t('pc_base_label')}:</span>
+                  <span className={css({ fontWeight: 'bold' })}>${parseFloat(pcBase || '0').toFixed(2)}</span>
+                </div>
+                <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                  <span>{t('pc_duties_label')}:</span>
+                  <span className={css({ fontWeight: 'bold' })}>+${pcDutyIsPercent ? (parseFloat(pcBase || '0') * (parseFloat(pcDuty || '0') / 100)).toFixed(2) : parseFloat(pcDuty || '0').toFixed(2)}</span>
+                </div>
+                <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                  <span>{t('pc_profit_label')} ({pcProfit || 0}%):</span>
+                  <span className={css({ fontWeight: 'bold' })}>+${(parseFloat(pcBase || '0') * (parseFloat(pcProfit || '0') / 100)).toFixed(2)}</span>
+                </div>
+                <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                  <span>{t('pc_marketing_label')}:</span>
+                  <span className={css({ fontWeight: 'bold' })}>+${parseFloat(pcMarketing || '0').toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Close pas-report-content wrapper */}
+          </div>
+          {/* Close opacity wrapper */}
+          </div>
+          {/* Close Fragment from upload section */}
+          </>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
