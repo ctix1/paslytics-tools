@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { supabase } from '../lib/supabase';
+import { cn } from '../utils/cn';
 
 const Dashboard = () => {
   const { t, language, toggleLanguage } = useLanguage();
@@ -14,7 +15,6 @@ const Dashboard = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
 
   useEffect(() => {
-    // 1. First, attempt to securely parse Local Storage
     try {
       const profileRaw = localStorage.getItem('user_profile');
       if (profileRaw && profileRaw !== 'undefined' && profileRaw !== '[object Object]') {
@@ -22,10 +22,9 @@ const Dashboard = () => {
       }
     } catch (e) {
       console.warn('Error parsing user_profile from localStorage', e);
-      localStorage.removeItem('user_profile'); // Clear corrupt data
+      localStorage.removeItem('user_profile');
     }
 
-    // 2. Always override/verify with actual Supabase DB authentication to be perfectly safe
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         const profile = {
@@ -42,7 +41,6 @@ const Dashboard = () => {
   const isAdmin = userProfile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
 
-  // Real Upload State
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -50,433 +48,286 @@ const Dashboard = () => {
     problem: '',
     agitation: '',
     solution: '',
-    ai_quick_take: '',
-    emotional_score: 88
+    resonanceScore: 85,
+    engagementPulse: [65, 80, 45, 90, 70]
   });
 
-  // Derived analysis state for UI logic
-  const analysisState = analysisComplete ? 'complete' : (isUploading ? 'uploading' : 'idle');
+  // Marketing Manager State
+  const [mmAge, setMmAge] = useState([18, 45]);
+  const [mmGender, setMmGender] = useState(50); // 50/50 split
+  const [mmProduct, setMmProduct] = useState('');
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
 
-  // Marketing Manager state
-  const [mmDescription, setMmDescription] = useState('');
-  const [mmAgeMin, setMmAgeMin] = useState(18);
-  const [mmAgeMax, setMmAgeMax] = useState(35);
-  const [mmMen, setMmMen] = useState(50);
-  const [mmPlan, setMmPlan] = useState('');
-
-  // Product Calculator state
-  const [pcBase, setPcBase] = useState('');
-  const [pcDuty, setPcDuty] = useState('');
-  const [pcDutyIsPercent, setPcDutyIsPercent] = useState(true);
-  const [pcProfit, setPcProfit] = useState('');
-  const [pcMarketing, setPcMarketing] = useState('');
-
-  const pcWomen = 100 - mmMen;
-
+  // Pricing Calculator State
+  const [pcBase, setPcBase] = useState(100);
+  const [pcDuty, setPcDuty] = useState(5);
+  const [pcMargin, setPcMargin] = useState(25);
+  const [pcMarketing, setPcMarketing] = useState(10);
+  
   const calcFinalPrice = () => {
-    const base = parseFloat(pcBase) || 0;
-    const duty = pcDutyIsPercent ? base * ((parseFloat(pcDuty) || 0) / 100) : (parseFloat(pcDuty) || 0);
-    const profit = base * ((parseFloat(pcProfit) || 0) / 100);
-    const marketing = parseFloat(pcMarketing) || 0;
-    return (base + duty + profit + marketing).toFixed(2);
+    const dutyVal = pcBase * (pcDuty / 100);
+    const cost = pcBase + dutyVal + pcMarketing;
+    const price = cost / (1 - (pcMargin / 100));
+    return price.toFixed(2);
   };
 
-  const handleGeneratePlan = () => {
-    if (!mmDescription.trim()) { alert(t('mm_alert_empty') || 'Please enter a product description first.'); return; }
-    setMmPlan(`${t('mm_plan_title')} "${mmDescription}"
-
-${t('mm_target_audience')}
-  • ${t('mm_age_range_label')} ${mmAgeMin}–${mmAgeMax} ${t('mm_years')}
-  • ${t('mm_gender_split_label')} ${mmMen}% ${t('mm_men')} / ${pcWomen}% ${t('mm_women')}
-
-${t('mm_channels')}
-  • ${mmMen > pcWomen ? 'YouTube, Reddit, Gaming' : 'Instagram, Pinterest, TikTok'}
-  • ${mmAgeMax < 35 ? t('mm_email_young') : t('mm_email_older')}
-
-${t('mm_content_strategy')}
-  • ${mmMen > pcWomen ? t('mm_highlight_male') : t('mm_highlight_female')}
-  • ${t('mm_ab_tests')} ${mmAgeMin}–${Math.floor((mmAgeMin + mmAgeMax) / 2)}
-
-${t('mm_budget')}
-  • ${t('mm_budget_digital')}
-  • ${t('mm_budget_content')}
-  • ${t('mm_budget_influencer')}
-  • ${t('mm_budget_analytics')}`);
+  const getProfitabilityAdvice = (price: number) => {
+    if (price > 500) return { category: t('pc_luxury'), advice: t('pc_advice_luxury') };
+    if (price > 150) return { category: t('pc_premium'), advice: t('pc_advice_premium') };
+    return { category: t('pc_value'), advice: t('pc_advice_value') };
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const finalPrice = parseFloat(calcFinalPrice());
+  const advice = getProfitabilityAdvice(finalPrice);
 
+  const handleRunAnalysis = () => {
     setIsUploading(true);
-    setUploadProgress(20);
-    setAnalysisComplete(false);
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      setUploadProgress(45);
-      const base64Image = reader.result;
-      
-      try {
-        const { data, error } = await supabase.functions.invoke('analyze-product', {
-          body: { imageBase64: base64Image }
-        });
-        
-        setUploadProgress(85);
-        if (error) {
-          console.error("Supabase Function Error Details:", error);
-          throw new Error(error.message || "Failed to connect to analysis service.");
-        }
-        
-        setPasOutput({
-          problem: data.problem || '',
-          agitation: data.agitation || '',
-          solution: data.solution || '',
-          ai_quick_take: data.ai_quick_take || '',
-          emotional_score: data.emotional_score || 88
-        });
-      } catch (err: any) {
-        console.error("AI Analysis Failed:", err);
-        // Show the real error message to the user for debugging
-        alert(`Analysis Error: ${err.message || "Unknown error"}\n\nPlease check your OpenAI credits or Edge Function logs if this persists.`);
-        
-        // Fallback gracefully so UI doesn't break if edge function isn't deployed yet
-        setPasOutput({
-          problem: t('problem_text') || 'Fallback problem text.',
-          agitation: t('agitation_text') || 'Fallback agitation text.',
-          solution: t('solution_text') || 'Fallback solution text.',
-          ai_quick_take: t('quick_take_text') || 'Fallback quick take.',
-          emotional_score: 88
-        });
-      } finally {
-        setUploadProgress(100);
-        setTimeout(() => {
-          setIsUploading(false);
+    setUploadProgress(0);
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
           setAnalysisComplete(true);
-        }, 800);
-      }
-    };
+          setIsUploading(false);
+          setPasOutput({
+            problem: "Customers are struggling with complex data visualization tools that require degrees in statistics to understand.",
+            agitation: "Hours are wasted every week staring at confusing spreadsheets, leading to delayed decisions and lost revenue opportunities.",
+            solution: "Our AI-driven dashboard translates raw metrics into clear emotional narratives, empowering teams to act instantly.",
+            resonanceScore: 92,
+            engagementPulse: [75, 85, 60, 95, 82]
+          });
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 300);
   };
 
   return (
-    <div className="p-8" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6" style={{ paddingBottom: '24px' }}>
-            <h1 style={{ fontSize: '24px' }}>{t('pas_analysis_title')}</h1>
-            <div className="flex gap-3">
-              <button
-                className="btn btn-outline"
-                style={{ borderRadius: '4px' }}
-                onClick={() => {
-                  const element = document.getElementById('pas-report-content');
-                  if (element) {
-                    // @ts-ignore
-                    if (window.html2pdf) {
-                      const opt = {
-                        margin: 10,
-                        filename: 'PAS_Analysis_Report.pdf',
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                      };
-                      // @ts-ignore
-                      window.html2pdf().set(opt).from(element).save();
-                    } else {
-                      alert('PDF Export library is loading. Please try again in a moment.');
-                    }
-                  } else {
-                    alert('No analysis available to export. Please analyze an image first.');
-                  }
-                }}
-              >
-                {t('export_report')}
-              </button>
-              <button
-                className="btn btn-primary"
-                style={{ background: '#6c2bd9', borderRadius: '4px' }}
-                onClick={() => alert('Starting a new analysis trace...')}
-              >
-                {t('run_new_analysis')}
-              </button>
-            </div>
-          </div>
-
-          {/* Subscription Wall Checkout */}
-          {!hasAccess ? (
-            <div className="card mb-6" style={{ padding: '60px 40px', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0', background: 'linear-gradient(to bottom, #ffffff, #f8fafc)' }}>
-              <div style={{ width: '64px', height: '64px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-              </div>
-              <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>{isRtl ? 'ميزة مميزة' : 'Premium Feature'}</h2>
-              <p style={{ fontSize: '16px', color: '#64748b', maxWidth: '400px', margin: '0 auto 32px', lineHeight: 1.6 }}>
-                {isRtl ? 'يرجى الترقية إلى خطة مدفوعة لفتح أدوات تحليل الصور وإنشاء تقارير نموذج PAS.' : 'Please upgrade to a paid plan to unlock image analysis tools and PAS framework generation.'}
-              </p>
-              <Link to="/pricing" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 600, borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                {isRtl ? 'اكتشف الخطط هنا' : 'Explore Plans Here'}
-              </Link>
-            </div>
-          ) : (
-            <>
-          {/* Upload Section */}
-          <div className="card mb-6" style={{ padding: '32px', borderRadius: '12px' }}>
-            <div 
-              style={{ border: isUploading ? '2px solid #6c2bd9' : '2px dashed #cbd5e1', borderRadius: '12px', padding: '48px 20px', textAlign: 'center', backgroundColor: isUploading ? '#fcfaff' : '#f8fafc', transition: 'all 0.2s', cursor: isUploading ? 'default' : 'pointer' }}
-              onClick={() => { if (!isUploading && !analysisComplete) document.getElementById('file-upload-mock')?.click(); }}
-            >
-              <input 
-                type="file" 
-                id="file-upload-mock" 
-                style={{ display: 'none' }} 
-                accept="image/png, image/jpeg, image/webp" 
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => {
-                  handleUpload(e);
-                  e.target.value = '';
-                }} 
-              />
-              {!isUploading && !analysisComplete ? (
-                <>
-                  <div style={{ width: '48px', height: '48px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  </div>
-                  <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px', color: '#1e293b' }}>{t('upload_title')}</h2>
-                  <p style={{ marginBottom: '20px', color: '#64748b', fontSize: '14px' }}>{t('upload_desc')}</p>
-                  <button
-                    className="btn"
-                    style={{ background: '#0f172a', color: 'white', fontWeight: 600, padding: '10px 24px', borderRadius: '8px' }}
-                    onClick={(e) => { e.stopPropagation(); document.getElementById('file-upload-mock')?.click(); }}
-                  >
-                    {t('select_files')}
-                  </button>
-                </>
-              ) : isUploading ? (
-                <div style={{ padding: '20px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: '#6c2bd9' }}>
-                    <span>{isRtl ? 'جاري تحليل الصورة بالذكاء الاصطناعي...' : 'Analyzing AI visual points...'}</span>
-                    <span>{uploadProgress}%</span>
-                  </div>
-                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#6c2bd9', transition: 'width 0.3s ease' }}></div>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ padding: '12px' }}>
-                  <div style={{ width: '48px', height: '48px', background: '#dcfce7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </div>
-                  <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#16a34a', marginBottom: '8px' }}>{isRtl ? 'تم التحليل بنجاح' : 'Analysis Complete'}</h2>
-                  <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '20px' }}>{isRtl ? 'تم استخراج نقاط PAS بنجاح.' : 'PAS frameworks generated successfully.'}</p>
-                  <button onClick={() => { setIsUploading(false); setAnalysisComplete(false); setUploadProgress(0); }} className="btn btn-outline" style={{ fontSize: '13px' }}>
-                    {isRtl ? 'تحليل صورة جديدة' : 'Analyze New Image'}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div style={{ opacity: analysisComplete ? 1 : 0.3, transition: 'opacity 0.5s', pointerEvents: analysisComplete ? 'auto' : 'none' }}>
-           {/* Analysis Results Layout - Wrapped for PDF Export */}
-           <div id="pas-report-content" style={{ padding: '16px', background: '#fff', borderRadius: '12px' }}>
-             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '24px' }}>
-
-            {/* Left Column: Framework Output */}
-            <div className="card p-6" style={{ borderRadius: '12px' }}>
-              <div className="flex items-center gap-2 mb-6">
-                <div style={{ width: '6px', height: '20px', background: '#6c2bd9', borderRadius: '2px' }}></div>
-                <h2 style={{ fontSize: '16px' }}>{t('pas_output')}</h2>
-              </div>
-
-              <div className="mb-6">
-                <span className="badge badge-red mb-3">{t('problem')}</span>
-                <p style={{ color: '#374151', lineHeight: '1.6' }}>
-                  {pasOutput.problem || t('problem_text')}
-                </p>
-              </div>
-
-              <div className="mb-6">
-                <span className="badge badge-orange mb-3">{t('agitation')}</span>
-                <p style={{ color: '#374151', lineHeight: '1.6' }}>
-                  {pasOutput.agitation || t('agitation_text')}
-                </p>
-              </div>
-
-              <div>
-                <span className="badge badge-green mb-3">{t('solution')}</span>
-                <p style={{ color: '#374151', lineHeight: '1.6' }}>
-                  {pasOutput.solution || t('solution_text')}
-                </p>
-              </div>
-            </div>
-
-            {/* Right Column: Stats */}
-            <div className="flex flex-col gap-6">
-
-              <div className="card p-6" style={{ borderRadius: '12px' }}>
-                <h3 className="mb-4" style={{ color: '#6b7280', fontSize: '12px' }}>{t('emotional_resonance')}</h3>
-                <div className="badge badge-purple mb-4" style={{ borderRadius: '20px', fontWeight: 700 }}>{t('score')} {pasOutput.emotional_score || 88}%</div>
-                <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', marginBottom: '16px', display: 'flex' }}>
-                  <div style={{ width: `${pasOutput.emotional_score || 88}%`, height: '100%', background: '#9333ea', borderRadius: '4px' }}></div>
-                </div>
-                <p style={{ fontSize: '12px' }}>{t('agitation_scores')}</p>
-              </div>
-
-              <div className="card p-6" style={{ borderRadius: '12px' }}>
-                <h3 className="mb-4" style={{ color: '#6b7280', fontSize: '12px' }}>{t('engagement_pulse')}</h3>
-                <div style={{ height: '120px', background: '#f8fafc', borderRadius: '8px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '16px 20px' }}>
-                  <div style={{ width: '30px', height: '40px', background: '#f3e8ff', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '60px', background: '#e9d5ff', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '100px', background: '#a855f7', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '75px', background: '#c084fc', borderRadius: '4px 4px 0 0' }}></div>
-                  <div style={{ width: '30px', height: '90px', background: '#9333ea', borderRadius: '4px 4px 0 0' }}></div>
-                </div>
-                <div className="flex justify-between mt-2" style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>
-                  <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span>
-                </div>
-              </div>
-
-              <div className="card p-6" style={{ background: '#581c87', color: 'white', borderRadius: '12px', border: 'none' }}>
-                <h3 className="mb-4" style={{ color: '#c084fc', fontSize: '12px' }}>{t('ai_quick_take')}</h3>
-                <p style={{ fontSize: '13px', color: '#f3e8ff', lineHeight: '1.5' }}>
-                  {pasOutput.ai_quick_take || t('quick_take_text')}
-                </p>
-              </div>
-
-            </div>
-             </div>
-
-          {/* ── Marketing Manager Tool ── */}
-          <div className="card" style={{ padding: '28px', marginTop: '32px', borderRadius: '12px' }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #6c2bd9, #a855f7)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-              </div>
-              <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('mm_title')}</h2>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t('mm_desc')}</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gap: '20px' }}>
-              <div>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '6px', display: 'block' }}>{t('mm_product_desc')}</label>
-                <textarea
-                  value={mmDescription}
-                  onChange={(e) => setMmDescription(e.target.value)}
-                  className="input"
-                  style={{ width: '100%', minHeight: '80px', resize: 'vertical', padding: '10px 14px', fontFamily: 'inherit' }}
-                  placeholder={t('mm_product_placeholder')}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-                <div>
-                  <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '8px', display: 'block' }}>
-                    {t('mm_age_range')} <strong>{mmAgeMin}–{mmAgeMax}</strong>
-                  </label>
-                  <div className="flex gap-3 items-center">
-                    <span style={{ fontSize: '12px', color: '#64748b', minWidth: '20px' }}>18</span>
-                    <input type="range" min="18" max={mmAgeMax} value={mmAgeMin} onChange={(e) => setMmAgeMin(parseInt(e.target.value))} style={{ flex: 1, accentColor: '#6c2bd9' }} />
-                    <input type="range" min={mmAgeMin} max="65" value={mmAgeMax} onChange={(e) => setMmAgeMax(parseInt(e.target.value))} style={{ flex: 1, accentColor: '#6c2bd9' }} />
-                    <span style={{ fontSize: '12px', color: '#64748b', minWidth: '20px' }}>65</span>
-                  </div>
-                </div>
-                <div>
-                  <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '8px', display: 'block' }}>
-                    Gender Split: <strong>{mmMen}% Men / {pcWomen}% Women</strong>
-                  </label>
-                  <div className="flex gap-2 items-center">
-                    <span style={{ fontSize: '12px', color: '#6c2bd9', fontWeight: 700 }}>♂</span>
-                    <input type="range" min="0" max="100" value={mmMen} onChange={(e) => setMmMen(parseInt(e.target.value))} style={{ flex: 1, accentColor: '#6c2bd9' }} />
-                    <span style={{ fontSize: '12px', color: '#ec4899', fontWeight: 700 }}>♀</span>
-                  </div>
-                  <div style={{ display: 'flex', marginTop: '6px', height: '6px', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ flex: mmMen, background: '#6c2bd9', transition: 'flex 0.3s ease' }}></div>
-                    <div style={{ flex: pcWomen, background: '#ec4899', transition: 'flex 0.3s ease' }}></div>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={handleGeneratePlan}
-                className="btn btn-primary"
-                style={{ background: '#6c2bd9', alignSelf: 'flex-start', minWidth: '180px' }}
-              >
-                {t('mm_generate')}
-              </button>
-
-              {mmPlan && (
-                <div style={{ background: '#f8f5ff', border: '1px solid #e9d5ff', borderRadius: '10px', padding: '20px', whiteSpace: 'pre-line', fontFamily: 'monospace', fontSize: '13px', color: '#3b0764', lineHeight: '1.8' }}>
-                  {mmPlan}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ── Product Price Calculator ── */}
-          <div className="card" style={{ padding: '28px', marginTop: '24px', marginBottom: '48px', borderRadius: '12px' }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
-              </div>
-              <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('pc_title')}</h2>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{t('pc_desc')}</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-              <div>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '6px', display: 'block' }}>{t('pc_base_cost')}</label>
-                <input type="number" min="0" step="0.01" value={pcBase} onChange={(e) => setPcBase(e.target.value)} className="input" style={{ width: '100%' }} placeholder="e.g. 25.00" />
-              </div>
-              <div>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '6px', display: 'block' }}>
-                  {t('pc_duties')}
-                  <button
-                    onClick={() => setPcDutyIsPercent(p => !p)}
-                    className="btn btn-outline"
-                    style={{ padding: '2px 8px', fontSize: '11px', borderRadius: '4px', display: 'inline-flex', marginLeft: '6px' }}
-                  >
-                    {pcDutyIsPercent ? t('pc_duty_percent') : t('pc_duty_fixed')}
-                  </button>
-                </label>
-                <input type="number" min="0" step="0.01" value={pcDuty} onChange={(e) => setPcDuty(e.target.value)} className="input" style={{ width: '100%' }} placeholder={pcDutyIsPercent ? 'e.g. 12 (%)' : 'e.g. 5.00 ($)'} />
-              </div>
-              <div>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '6px', display: 'block' }}>{t('pc_profit_margin')}</label>
-                <input type="number" min="0" max="100" step="1" value={pcProfit} onChange={(e) => setPcProfit(e.target.value)} className="input" style={{ width: '100%' }} placeholder="e.g. 35" />
-              </div>
-              <div>
-                <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '6px', display: 'block' }}>{t('pc_marketing_budget')}</label>
-                <input type="number" min="0" step="0.01" value={pcMarketing} onChange={(e) => setPcMarketing(e.target.value)} className="input" style={{ width: '100%' }} placeholder="e.g. 3.00" />
-              </div>
-            </div>
-
-            <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #6c2bd9 100%)', borderRadius: '12px', padding: '24px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-              <div>
-                <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '4px' }}>{t('pc_final_price')}</div>
-                <div style={{ fontSize: '42px', fontWeight: 700, letterSpacing: '-1px' }}>${calcFinalPrice()}</div>
-              </div>
-              <div style={{ fontSize: '13px', opacity: 0.85, lineHeight: '2' }}>
-                <div>{t('pc_base_label')}: ${parseFloat(pcBase || '0').toFixed(2)}</div>
-                <div>{t('pc_duties_label')}: +${pcDutyIsPercent ? (parseFloat(pcBase || '0') * (parseFloat(pcDuty || '0') / 100)).toFixed(2) : parseFloat(pcDuty || '0').toFixed(2)}</div>
-                <div>{t('pc_profit_label')} ({pcProfit || 0}%): +${(parseFloat(pcBase || '0') * (parseFloat(pcProfit || '0') / 100)).toFixed(2)}</div>
-                <div>{t('pc_marketing_label')}: +${parseFloat(pcMarketing || '0').toFixed(2)}</div>
-              </div>
-            </div>
-          </div>
-          {/* Close pas-report-content wrapper */}
-          </div>
-          {/* Close opacity wrapper */}
-          </div>
-          {/* Close Fragment from upload section */}
-          </>
-          )}
+    <div className="space-y-8 pb-12" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      
+      {/* Top Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase leading-none mb-2">
+            {t('dashboard')}
+          </h1>
+          <p className="text-slate-500 font-medium">{t('pas_desc')}</p>
         </div>
+        <div className="flex items-center gap-3">
+           <button className="px-6 py-3 bg-slate-50 text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-slate-200 hover:bg-slate-100 transition-all">
+             {t('export_report')}
+           </button>
+           <button onClick={handleRunAnalysis} className="px-6 py-3 bg-violet-600 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-violet-200 hover:bg-violet-700 transition-all active:scale-95">
+             {t('run_new_analysis')}
+           </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* PAS Section */}
+        <div className="space-y-6">
+           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">{t('pas_output')}</h2>
+                <div className="flex gap-2">
+                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                   <div className="w-2 h-2 rounded-full bg-slate-200"></div>
+                   <div className="w-2 h-2 rounded-full bg-slate-200"></div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                 {/* Problem */}
+                 <div className="relative pl-6 border-l-2 border-slate-100 hover:border-violet-200 transition-colors">
+                    <span className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-white border-2 border-slate-200 group-hover:border-violet-500 transition-colors"></span>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('problem')}</h3>
+                    <p className="text-slate-700 font-medium leading-relaxed">{pasOutput.problem || t('problem_text')}</p>
+                 </div>
+
+                 {/* Agitation */}
+                 <div className="relative pl-6 border-l-2 border-slate-100 hover:border-violet-200 transition-colors">
+                    <span className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-white border-2 border-slate-200 group-hover:border-violet-500 transition-colors"></span>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('agitation')}</h3>
+                    <p className="text-slate-700 font-medium leading-relaxed">{pasOutput.agitation || t('agitation_text')}</p>
+                 </div>
+
+                 {/* Solution */}
+                 <div className="relative pl-6 border-l-2 border-slate-100 hover:border-violet-200 transition-colors">
+                    <span className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-white border-2 border-slate-200 group-hover:border-violet-500 transition-colors"></span>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('solution')}</h3>
+                    <p className="text-slate-700 font-medium leading-relaxed">{pasOutput.solution || t('solution_text')}</p>
+                 </div>
+              </div>
+
+              {/* Graphical Extras for PAS */}
+              <div className="mt-12 pt-8 border-t border-slate-50 flex flex-wrap gap-8 items-end">
+                  <div className="flex-1 min-w-[120px]">
+                    <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4">{t('emotional_resonance')}</h4>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1 h-2 bg-slate-50 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-1000" 
+                          style={{ width: `${pasOutput.resonanceScore}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-lg font-black text-slate-900">{pasOutput.resonanceScore}%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-1">
+                    {pasOutput.engagementPulse.map((v, i) => (
+                      <div 
+                        key={i} 
+                        className="w-1.5 bg-violet-100 rounded-full transition-all duration-700 hover:bg-violet-600"
+                        style={{ height: `${v}%` }}
+                      ></div>
+                    ))}
+                    <span className="ml-2 text-[10px] font-black uppercase tracking-widest text-slate-400">{t('engagement_pulse')}</span>
+                  </div>
+              </div>
+           </div>
+
+           {/* AI Quick Take - Premium Look */}
+           <div className="bg-slate-900 p-8 rounded-3xl shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4">
+                <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/50 backdrop-blur-xl">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round"/></svg>
+                </div>
+              </div>
+              <h3 className="text-white text-sm font-black uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-1 h-4 bg-violet-500 rounded-full"></span>
+                {t('ai_quick_take')}
+              </h3>
+              <p className="text-slate-400 font-medium leading-relaxed italic mb-8">
+                "{t('quick_take_text')}"
+              </p>
+              <button className="w-full py-4 bg-white text-slate-900 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-100 transition-all active:scale-95">
+                Refine with AI
+              </button>
+           </div>
+        </div>
+
+        {/* Marketing Manager & Tools */}
+        <div className="space-y-8">
+           
+           {/* Marketing Manager Component */}
+           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2">{t('mm_title')}</h2>
+              <p className="text-slate-400 text-xs font-medium mb-8 leading-relaxed">
+                {t('mm_desc')}
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">{t('mm_product_desc')}</label>
+                   <textarea 
+                    value={mmProduct}
+                    onChange={(e) => setMmProduct(e.target.value)}
+                    placeholder={t('mm_product_placeholder')}
+                    className="w-full h-32 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 font-medium focus:bg-white focus:border-violet-200 focus:ring-4 focus:ring-violet-50 transition-all outline-none resize-none"
+                   ></textarea>
+                </div>
+
+                {/* Age Range Slider */}
+                <div className="pt-2">
+                   <div className="flex justify-between items-center mb-6">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">{t('mm_age_range')}</label>
+                     <span className="text-[11px] font-bold text-violet-600 bg-violet-50 px-3 py-1 rounded-full">{mmAge[0]} - {mmAge[1]} {t('mm_years')}</span>
+                   </div>
+                   <input 
+                    type="range" 
+                    min="13" max="65" 
+                    value={mmAge[1]} 
+                    onChange={(e) => setMmAge([mmAge[0], parseInt(e.target.value)])}
+                    className="w-full h-1.5 bg-slate-100 rounded-full appearance-none cursor-pointer accent-violet-600" 
+                  />
+                </div>
+
+                {/* Gender Split Interactive */}
+                <div>
+                   <div className="flex justify-between items-center mb-4">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">{t('mm_gender_split')}</label>
+                     <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
+                        <span className={cn("transition-colors", mmGender < 50 ? "text-slate-400" : "text-violet-600")}>Men</span>
+                        <span className={cn("transition-colors", mmGender > 50 ? "text-slate-400" : "text-pink-500")}>Women</span>
+                     </div>
+                   </div>
+                   <div className="relative">
+                      <div className="h-4 w-full bg-slate-100 rounded-xl overflow-hidden flex">
+                        <div className="h-full bg-violet-500 transition-all" style={{ width: `${mmGender}%` }}></div>
+                        <div className="h-full bg-pink-500 transition-all" style={{ width: `${100-mmGender}%` }}></div>
+                      </div>
+                      <input 
+                        type="range" min="0" max="100" 
+                        value={mmGender} 
+                        onChange={(e) => setMmGender(parseInt(e.target.value))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                      />
+                   </div>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                   <button className="flex-1 py-4 bg-violet-600 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-violet-100 hover:bg-violet-700 transition-all">
+                      {t('mm_generate')}
+                   </button>
+                   <button className="px-6 py-4 bg-white text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
+                      {t('mm_summarize')}
+                   </button>
+                </div>
+              </div>
+           </div>
+
+           {/* Pricing Calculator Upgrade */}
+           <div className="bg-slate-50 p-8 rounded-3xl border border-slate-200/50">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">{t('pc_title')}</h2>
+                  <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1 opacity-60">{t('pc_desc')}</p>
+                </div>
+                <div className="text-right">
+                   <div className="text-[10px] font-black uppercase text-slate-400 mb-1">{t('pc_final_price')}</div>
+                   <div className="text-3xl font-black text-slate-900 tracking-tighter">${finalPrice}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                 <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-400">{t('pc_base_cost')}</label>
+                    <input 
+                      type="number" value={pcBase} 
+                      onChange={(e) => setPcBase(parseFloat(e.target.value))}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-black text-slate-900 text-sm focus:ring-2 focus:ring-violet-100 outline-none transition-all" 
+                    />
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-400">{t('pc_profit_margin')}</label>
+                    <input 
+                      type="number" value={pcMargin} 
+                      onChange={(e) => setPcMargin(parseFloat(e.target.value))}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-black text-slate-900 text-sm focus:ring-2 focus:ring-violet-100 outline-none transition-all" 
+                    />
+                 </div>
+              </div>
+
+              {/* Profitability Advice - AI Powered */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-200/50 flex gap-5 items-start">
+                 <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-violet-400 shrink-0 shadow-lg">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                 </div>
+                 <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{t('pc_advice')}</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                       <span className="text-sm font-black text-slate-900">{advice.category}</span>
+                       <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[8px] font-black rounded-md uppercase">Optimized</span>
+                    </div>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">{advice.advice}</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
     </div>
   );
 };
