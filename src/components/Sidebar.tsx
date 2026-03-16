@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 import { 
   Home,
   LayoutDashboard, 
@@ -9,9 +10,9 @@ import {
   Users, 
   LogOut, 
   HelpCircle,
-  Bell
+  Bell,
+  Sparkles
 } from 'lucide-react';
-import { css, cx } from '../../styled-system/css';
 
 const Sidebar = () => {
   const { t } = useLanguage();
@@ -29,190 +30,88 @@ const Sidebar = () => {
   const userInitial = profile?.name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || '?';
 
   return (
-    <aside className={css({
-      width: '256px',
-      backgroundColor: 'white',
-      borderRight: '1px solid',
-      borderColor: 'slate.100',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'sticky',
-      top: 0,
-      overflow: 'hidden',
-      flexShrink: 0
-    })}>
-      <Link to="/" className={css({ 
-        padding: '32px', 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px',
-        textDecoration: 'none'
-      })}>
-        <div className={css({ 
-          width: '40px', 
-          height: '40px', 
-          backgroundColor: 'brand.primary', 
-          borderRadius: '2xl', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          boxShadow: '0 10px 15px -3px rgba(109, 40, 217, 0.2)' 
-        })}>
-          <LayoutDashboard className={css({ color: 'white', width: '20px', height: '20px' })} />
-        </div>
-        <span className={css({ 
-          fontSize: '24px', 
-          fontWeight: 'black', 
-          color: 'slate.900', 
-          letterSpacing: 'tight' 
-        })}>PASlytics</span>
-      </Link>
-
-      <nav className={css({ 
-        flex: 1, 
-        paddingX: '16px', 
-        paddingY: '32px', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '8px' 
-      })}>
-        {menuItems.map((item) => (
-          <Link
-            key={item.label}
-            to={item.path}
-            className={cx(
-              css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                paddingX: '20px',
-                paddingY: '16px',
-                borderRadius: '2xl',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                transition: 'all',
-                color: 'slate.500',
-                textDecoration: 'none',
-                _hover: { backgroundColor: 'slate.50', color: 'slate.900' }
-              }),
-              location.pathname === item.path && css({
-                backgroundColor: 'brand.primary',
-                color: 'white',
-                boxShadow: '0 20px 25px -5px rgba(109, 40, 217, 0.1)',
-                transform: 'translateX(4px)',
-                _hover: { backgroundColor: 'brand.secondary', color: 'white' }
-              })
-            )}
+    <aside className="w-72 h-screen sticky top-0 flex flex-col p-6 z-40">
+      <div className="flex-1 glass-panel flex flex-col overflow-hidden relative group">
+        {/* Animated Glow Effect */}
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 blur-3xl rounded-full group-hover:bg-purple-500/20 transition-colors duration-700" />
+        
+        <Link to="/" className="p-8 flex items-center gap-4 no-underline relative z-10">
+          <motion.div 
+            whileHover={{ rotate: 15, scale: 1.1 }}
+            className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(109,40,217,0.4)]"
           >
-            <item.icon className={css({
-              width: '20px',
-              height: '20px',
-              transition: 'colors',
-              color: location.pathname === item.path ? 'white' : 'slate.400'
-            })} />
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+            <Sparkles className="text-white w-5 h-5" />
+          </motion.div>
+          <span className="text-xl font-black text-white tracking-tighter">
+            PAS<span className="text-purple-400">lytics</span>
+          </span>
+        </Link>
 
-      <div className={css({ 
-        padding: '24px', 
-        borderTop: '1px solid', 
-        borderColor: 'slate.50', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '4px' 
-      })}>
-        <button
-          onClick={() => alert('Opening Support Ticket...')}
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            paddingX: '20px',
-            paddingY: '12px',
-            borderRadius: 'xl',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: 'slate.500',
-            width: '100%',
-            cursor: 'pointer',
-            border: 'none',
-            backgroundColor: 'transparent',
-            transition: 'all',
-            _hover: { backgroundColor: 'slate.50', color: 'slate.900' }
+        <nav className="flex-1 px-4 py-6 flex flex-col gap-2 relative z-10">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.label}
+                to={item.path}
+                className="relative group no-underline"
+              >
+                <div className={`
+                  flex items-center gap-3 px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 relative z-10
+                  ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'}
+                `}>
+                  <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-purple-400'}`} />
+                  {item.label}
+                </div>
+                {isActive && (
+                  <motion.div 
+                    layoutId="activeNav"
+                    className="absolute inset-0 bg-brand-primary/20 border border-brand-primary/50 rounded-xl z-0"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
           })}
-        >
-          <HelpCircle className={css({ width: '20px', height: '20px', color: 'slate.400' })} />
-          {t('contact')}
-        </button>
-        <button
-          onClick={signOut}
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            paddingX: '20px',
-            paddingY: '12px',
-            borderRadius: 'xl',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: 'red.500',
-            width: '100%',
-            cursor: 'pointer',
-            border: 'none',
-            backgroundColor: 'transparent',
-            transition: 'all',
-            _hover: { backgroundColor: 'red.50' }
-          })}
-        >
-          <LogOut className={css({ width: '20px', height: '20px' })} />
-          {t('logout')}
-        </button>
-      </div>
+        </nav>
 
-      <div className={css({ 
-        padding: '20px', 
-        backgroundColor: 'rgba(248, 250, 252, 0.5)', 
-        marginX: '16px', 
-        marginBottom: '32px', 
-        borderRadius: '32px', 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px', 
-        border: '1px solid', 
-        borderColor: 'slate.100' 
-      })}>
-        <div className={css({ 
-          width: '48px', 
-          height: '48px', 
-          borderRadius: '16px', 
-          backgroundColor: 'violet.100', 
-          border: '1px solid white', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          color: 'violet.700', 
-          fontWeight: 'bold', 
-          overflow: 'hidden', 
-          boxShadow: 'sm' 
-        })}>
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="User" className={css({ width: '100%', height: '100%', objectFit: 'cover' })} />
-          ) : (
-            <span className={css({ fontSize: '18px' })}>{userInitial}</span>
-          )}
+        <div className="p-6 mt-auto flex flex-col gap-2 border-t border-white/5 relative z-10">
+          <button
+            onClick={() => alert('Opening Support Ticket...')}
+            className="flex items-center gap-3 px-5 py-3 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all w-full cursor-pointer border-none bg-transparent"
+          >
+            <HelpCircle className="w-4 h-4" />
+            {t('contact')}
+          </button>
+          <button
+            onClick={signOut}
+            className="flex items-center gap-3 px-5 py-3 rounded-xl text-xs font-bold text-red-400 hover:text-white hover:bg-red-500/20 transition-all w-full cursor-pointer border-none bg-transparent"
+          >
+            <LogOut className="w-4 h-4" />
+            {t('logout')}
+          </button>
         </div>
-        <div className={css({ flex: 1, overflow: 'hidden' })}>
-          <p className={css({ fontSize: '14px', fontWeight: 'black', color: 'slate.900', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>
-            {profile?.name || 'User'}
-          </p>
-          <p className={css({ fontSize: '10px', fontWeight: 'bold', color: 'slate.400', textTransform: 'uppercase', tracking: 'widest', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>
-            {profile?.role === 'admin' ? t('admin_account') : t('standard_account')}
-          </p>
+
+        {/* User Card */}
+        <div className="p-4 mx-4 mb-8 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-3 group/user hover:bg-white/10 transition-all cursor-pointer relative z-10">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 font-bold overflow-hidden">
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="User" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-base">{userInitial}</span>
+            )}
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <p className="text-xs font-bold text-white truncate m-0">
+              {profile?.name || 'User'}
+            </p>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate m-0">
+              {profile?.role === 'admin' ? t('admin_account') : t('standard_account')}
+            </p>
+          </div>
+          <Bell className="w-4 h-4 text-slate-500 group-hover/user:text-purple-400 transition-colors" />
         </div>
-        <Bell onClick={() => alert('Opening Notifications...')} className={css({ width: '16px', height: '16px', color: 'slate.400', cursor: 'pointer', transition: 'colors', _hover: { color: 'brand.primary' } })} />
       </div>
     </aside>
   );

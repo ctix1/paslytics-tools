@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import Navbar from '../components/Navbar';
 import { useSubscription } from '../context/SubscriptionContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  CheckCircle2, 
+  ChevronDown, 
+  Zap, 
+  ShieldCheck, 
+  Users, 
+  Headphones,
+  Sparkles,
+  ArrowRight
+} from 'lucide-react';
 
 const Plan = () => {
   const { t, language } = useLanguage();
@@ -18,232 +29,235 @@ const Plan = () => {
   ];
 
   const monthlyFeatures = [
-    { label: t('plan_feature_image'), included: true },
-    { label: t('plan_feature_pas'), included: true },
-    { label: t('plan_feature_logs'), included: true },
-    { label: t('plan_feature_team'), included: false },
-    { label: t('plan_feature_support'), included: false },
+    { label: t('plan_feature_image'), icon: Sparkles },
+    { label: t('plan_feature_pas'), icon: CheckCircle2 },
+    { label: t('plan_feature_logs'), icon: ShieldCheck },
+    { label: t('plan_feature_team'), icon: Users, disabled: true },
+    { label: t('plan_feature_support'), icon: Headphones, disabled: true },
   ];
 
   const annualFeatures = [
-    { label: t('plan_feature_image'), included: true },
-    { label: t('plan_feature_pas'), included: true },
-    { label: t('plan_feature_logs'), included: true },
-    { label: t('plan_feature_team'), included: true, highlight: true },
-    { label: t('plan_feature_support'), included: true, highlight: true },
+    { label: t('plan_feature_image'), icon: Sparkles },
+    { label: t('plan_feature_pas'), icon: CheckCircle2 },
+    { label: t('plan_feature_logs'), icon: ShieldCheck },
+    { label: t('plan_feature_team'), icon: Users, highlight: true },
+    { label: t('plan_feature_support'), icon: Headphones, highlight: true },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div style={{ backgroundColor: '#f9fafb', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ margin: '0 auto', maxWidth: '1100px', padding: '0 24px' }}>
+    <div className={`min-h-screen bg-slate-950 text-white ${isRtl ? 'font-arabic' : ''}`} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      <Navbar />
 
-        <Navbar />
-
-        {/* ── Hero ── */}
-        <section style={{ textAlign: 'center', padding: '60px 0 48px' }}>
-          <div style={{
-            display: 'inline-block', padding: '4px 16px', background: '#f3e8ff',
-            color: '#6c2bd9', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-            letterSpacing: '0.08em', marginBottom: '24px', textTransform: 'uppercase'
-          }}>
+      <motion.main 
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="max-w-7xl mx-auto px-6 py-20"
+      >
+        {/* Hero Section */}
+        <section className="text-center mb-24">
+          <motion.div 
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-xs font-black uppercase tracking-widest mb-8"
+          >
+            <Zap className="w-3.5 h-3.5" />
             {t('plan_plans_badge')}
-          </div>
+          </motion.div>
 
-          <h1 style={{ fontSize: '52px', fontWeight: 900, lineHeight: 1.1, marginBottom: '20px', color: '#111827' }}>
+          <motion.h1 
+            variants={itemVariants}
+            className="text-6xl md:text-7xl font-black mb-8 tracking-tighter leading-tight"
+          >
             {t('plan_title_1')}{' '}
-            <span style={{ color: '#6c2bd9' }}>{t('plan_title_2')}</span>{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-500">
+              {t('plan_title_2')}
+            </span>{' '}
             {t('plan_title_3')}
-          </h1>
+          </motion.h1>
 
-          <p style={{ fontSize: '16px', color: '#475569', maxWidth: '480px', margin: '0 auto', lineHeight: 1.6 }}>
+          <motion.p 
+            variants={itemVariants}
+            className="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed"
+          >
             {t('plan_subtitle')}
-          </p>
+          </motion.p>
         </section>
 
-        {/* ── Plans ── */}
-        <section style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: '24px', marginBottom: '80px', alignItems: 'start' }}>
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32 items-stretch">
+          
+          {/* Monthly Plan */}
+          <motion.div 
+            variants={itemVariants}
+            className="glass-panel p-10 group relative flex flex-col h-full bg-slate-900/40"
+          >
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-white mb-2">{t('plan_monthly_title')}</h2>
+              <p className="text-slate-400 text-sm">{t('plan_monthly_desc')}</p>
+            </div>
 
-          {/* Monthly card */}
-          <div className="card" style={{
-            padding: '32px', borderRadius: '16px', background: '#ffffff',
-            border: '1px solid #e5e7eb'
-          }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px', color: '#111827' }}>
-              {t('plan_monthly_title')}
-            </h2>
-            <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '28px' }}>
-              {t('plan_monthly_desc')}
-            </p>
+            <div className="mb-10 flex items-end gap-2">
+              <span className="text-6xl font-black text-white tracking-tighter">$19</span>
+              <span className="text-slate-500 font-bold mb-2 uppercase text-xs tracking-widest">/ {t('per_month')}</span>
+            </div>
 
-            <div style={{ marginBottom: '28px' }}>
-              <span style={{ fontSize: '52px', fontWeight: 900, color: '#111827', letterSpacing: '-2px' }}>$19</span>
-              <span style={{ fontSize: '15px', color: '#9ca3af', marginInlineStart: '4px' }}>{t('per_month')}</span>
+            <div className="flex-grow space-y-8 mb-10">
+               <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                {t('whats_included')}
+              </div>
+              <ul className="space-y-4">
+                {monthlyFeatures.map((f, i) => (
+                  <li key={i} className={`flex items-center gap-4 transition-opacity ${f.disabled ? 'opacity-30' : 'opacity-100'}`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.disabled ? 'bg-slate-800' : 'bg-purple-500/20'}`}>
+                      <f.icon className={`w-4 h-4 ${f.disabled ? 'text-slate-600' : 'text-purple-400'}`} />
+                    </div>
+                    <span className="text-sm font-bold text-slate-200">{f.label}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {subscription.plan === 'monthly' ? (
-              <div style={{ width: '100%', padding: '12px', background: '#f3e8ff', color: '#6c2bd9', fontWeight: 700, borderRadius: '8px', marginBottom: '28px', fontSize: '14px', textAlign: 'center', border: '1px solid #e9d5ff' }}>
-                ✓ {t('paysettings_active_plan')}
+              <div className="w-full py-4 bg-purple-500/10 border border-purple-500/30 text-purple-400 font-black rounded-2xl text-center text-sm">
+                 ✓ {t('paysettings_active_plan')}
               </div>
             ) : (
               <button
-                className="btn"
-                style={{ width: '100%', padding: '12px', background: '#f3f4f6', color: '#111827', fontWeight: 600, borderRadius: '8px', marginBottom: '28px', fontSize: '14px', opacity: subscription.plan === 'annual' ? 0.5 : 1 }}
                 onClick={() => subscription.plan === 'none' && navigate('/checkout/monthly')}
                 disabled={subscription.plan === 'annual'}
+                className="btn-premium w-full !bg-white !text-slate-950 !py-4 hover:!bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
               >
                 {t('choose_plan')}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             )}
+          </motion.div>
 
-            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '16px' }}>
-              {t('whats_included')}
-            </div>
-
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {monthlyFeatures.map((f, i) => (
-                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', opacity: f.included ? 1 : 0.45 }}>
-                  {f.included ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" /><path d="M9 12l2 2 4-4" />
-                    </svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" /><line x1="8" y1="12" x2="16" y2="12" />
-                    </svg>
-                  )}
-                  <span style={{ fontSize: '14px', color: f.included ? '#374151' : '#9ca3af' }}>{f.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Annual card — "Best Value" */}
-          <div className="card" style={{
-            padding: '32px', borderRadius: '16px', background: '#ffffff',
-            border: '2px solid #6c2bd9', position: 'relative', boxShadow: '0 8px 30px rgba(108,43,217,0.12)'
-          }}>
-            {/* Badge */}
-            <div style={{
-              position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)',
-              background: '#6c2bd9', color: 'white', fontSize: '11px', fontWeight: 700,
-              padding: '4px 16px', borderRadius: '20px', letterSpacing: '0.08em', textTransform: 'uppercase',
-              whiteSpace: 'nowrap'
-            }}>
+          {/* Annual Plan */}
+          <motion.div 
+            variants={itemVariants}
+            className="glass-panel p-10 group relative border-purple-500/50 flex flex-col h-full bg-gradient-to-br from-purple-500/10 to-transparent"
+          >
+            {/* Recommendation Badge */}
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1.5 bg-brand-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-[0_5px_15px_rgba(109,40,217,0.4)]">
               {t('best_value')}
             </div>
 
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '6px', color: '#111827' }}>
-              {t('plan_annual_title')}
-            </h2>
-            <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '28px' }}>
-              {t('plan_annual_desc')}
-            </p>
-
-            <div style={{ marginBottom: '10px' }}>
-              <span style={{ fontSize: '52px', fontWeight: 900, color: '#111827', letterSpacing: '-2px' }}>$204</span>
-              <span style={{ fontSize: '15px', color: '#9ca3af', marginInlineStart: '4px' }}>{t('per_year')}</span>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-white mb-2">{t('plan_annual_title')}</h2>
+              <p className="text-slate-400 text-sm">{t('plan_annual_desc')}</p>
             </div>
-            <p style={{ fontSize: '13px', color: '#6c2bd9', fontWeight: 500, marginBottom: '24px' }}>
-              {t('annual_savings')}
-            </p>
+
+            <div className="mb-10 min-h-[100px]">
+              <div className="flex items-end gap-2">
+                <span className="text-6xl font-black text-white tracking-tighter">$204</span>
+                <span className="text-slate-500 font-bold mb-2 uppercase text-xs tracking-widest">/ {t('per_year')}</span>
+              </div>
+              <div className="text-brand-primary font-black text-xs uppercase tracking-widest mt-2 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                {t('annual_savings')}
+              </div>
+            </div>
+
+            <div className="flex-grow space-y-8 mb-10">
+               <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                {t('everything_monthly_plus')}
+              </div>
+              <ul className="space-y-4">
+                {annualFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-4">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.highlight ? 'bg-amber-500/20' : 'bg-purple-500/20'}`}>
+                      <f.icon className={`w-4 h-4 ${f.highlight ? 'text-amber-400' : 'text-purple-400'}`} />
+                    </div>
+                    <span className={`text-sm font-bold ${f.highlight ? 'text-amber-400' : 'text-slate-200'}`}>
+                      {f.label}
+                    </span>
+                    {f.highlight && <div className="ml-auto text-[8px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">Pro</div>}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {subscription.plan === 'annual' ? (
-              <div style={{ width: '100%', padding: '14px', background: '#6c2bd9', color: 'white', fontWeight: 700, borderRadius: '8px', marginBottom: '28px', fontSize: '14px', textAlign: 'center', opacity: 0.85 }}>
-                ✓ {t('paysettings_active_plan')}
+              <div className="w-full py-4 bg-brand-primary/20 border border-brand-primary/50 text-white font-black rounded-2xl text-center text-sm">
+                 ✓ {t('paysettings_active_plan')}
               </div>
             ) : (
               <button
-                className="btn btn-primary"
-                style={{ width: '100%', padding: '14px', background: '#6c2bd9', fontWeight: 700, borderRadius: '8px', marginBottom: '28px', fontSize: '14px', opacity: subscription.plan === 'monthly' ? 0.6 : 1 }}
                 onClick={() => subscription.plan !== 'annual' && navigate('/checkout/annual')}
                 disabled={subscription.plan === 'monthly'}
+                className="btn-premium w-full !py-4 disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
               >
                 {t('choose_plan')}
+                <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </button>
             )}
+          </motion.div>
+        </div>
 
-            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '16px' }}>
-              {t('everything_monthly_plus')}
-            </div>
-
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {annualFeatures.map((f, i) => (
-                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6c2bd9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" /><path d="M9 12l2 2 4-4" />
-                  </svg>
-                  <span style={{
-                    fontSize: '14px',
-                    color: f.highlight ? '#6c2bd9' : '#374151',
-                    fontWeight: f.highlight ? 600 : 400
-                  }}>{f.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* ── FAQ ── */}
-        <section style={{ maxWidth: '680px', margin: '0 auto 80px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 800, textAlign: 'center', marginBottom: '40px', color: '#111827' }}>
+        {/* FAQ Section */}
+        <section className="max-w-3xl mx-auto mb-32">
+          <motion.h2 variants={itemVariants} className="text-4xl font-black text-center mb-16 tracking-tight">
             {t('faq_title')}
-          </h2>
+          </motion.h2>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="space-y-4">
             {faqs.map((faq, i) => (
-              <div
+              <motion.div
                 key={i}
-                style={{
-                  background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px',
-                  overflow: 'hidden', cursor: 'pointer'
-                }}
+                variants={itemVariants}
+                className="glass-panel overflow-hidden cursor-pointer hover:bg-white/[0.03] transition-colors"
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
               >
-                <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '18px 24px', userSelect: 'none'
-                }}>
-                  <span style={{ fontSize: '15px', fontWeight: 500, color: '#111827' }}>{faq.q}</span>
-                  <svg
-                    width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"
-                    style={{ flexShrink: 0, transition: 'transform 0.2s', transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                  >
-                    <path d="M6 9l6 6 6-6" strokeLinecap="round" />
-                  </svg>
+                <div className="p-6 flex items-center justify-between">
+                  <span className="text-base font-black text-slate-200">{faq.q}</span>
+                  <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
                 </div>
-                {openFaq === i && (
-                  <div style={{ padding: '0 24px 18px', fontSize: '14px', color: '#6b7280', lineHeight: 1.7 }}>
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="px-6 pb-6 text-slate-400 text-sm leading-relaxed"
+                    >
+                      {faq.a}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </div>
         </section>
 
-        {/* ── Footer ── */}
-        <footer style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '32px 0', borderTop: '1px solid #e5e7eb' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '20px', height: '20px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('app_name')}</span>
+        {/* Footer */}
+        <footer className="pt-16 pb-32 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
+          <Link to="/" className="flex items-center gap-2 no-underline opacity-50 hover:opacity-100 transition-opacity">
+            <Sparkles className="text-purple-500 w-5 h-5" />
+            <span className="font-black text-white text-sm uppercase tracking-widest">PASlytics</span>
+          </Link>
+
+          <div className="flex gap-8">
+            <a href="#" className="text-slate-500 hover:text-white text-xs font-bold no-underline uppercase tracking-widest">{t('privacy_policy')}</a>
+            <a href="#" className="text-slate-500 hover:text-white text-xs font-bold no-underline uppercase tracking-widest">{t('terms_of_service')}</a>
+            <a href="#" className="text-slate-500 hover:text-white text-xs font-bold no-underline uppercase tracking-widest">{t('contact')}</a>
           </div>
 
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '13px', textDecoration: 'none' }}>{t('privacy_policy')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '13px', textDecoration: 'none' }}>{t('terms_of_service')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '13px', textDecoration: 'none' }}>{t('contact')}</a>
-          </div>
-
-          <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+          <div className="text-slate-600 text-[10px] font-medium uppercase tracking-[0.2em]">
             © {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}
           </div>
         </footer>
-
-      </div>
+      </motion.main>
     </div>
   );
 };

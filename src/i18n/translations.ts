@@ -155,6 +155,23 @@ export const translations = {
     plan_feature_team: 'Team Management',
     plan_feature_support: 'Priority Support',
     plan_chosen_alert: 'Redirecting to checkout...',
+    plan_tab: "Plan",
+    plan_feature_1: "AI Product Analysis",
+    plan_feature_2: "Unlimited Export",
+    plan_feature_3: "Market Insights",
+    plan_feature_4: "24/7 Priority Support",
+    plan_feature_5: "Custom PAS Templates",
+    
+    // Dashboard Premium Keys
+    premium_access_required: "Premium Access Required",
+    premium_access_desc: "Please upgrade to a paid plan to unlock image analysis tools and PAS framework generation.",
+    explore_plans_here: "Explore Plans",
+    analysis_complete: "Analysis Complete",
+    analyze_another: "Analyze Another Image",
+    marketing: "Marketing",
+
+    // Analysis Results
+    analysis_results: "Analysis Results",
     faq_title: 'Frequently Asked Questions',
     faq_cancel_q: 'Can I cancel my subscription?',
     faq_cancel_a: 'Yes, you can cancel at any time from your account settings. Your access will continue until the end of the billing period.',

@@ -1,42 +1,55 @@
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useContent } from '../context/ContentContext';
+import { motion } from 'framer-motion';
+import { 
+  Sparkles, 
+  Target, 
+  Rocket, 
+  Layers, 
+  ShieldCheck, 
+  History, 
+  Users, 
+  ArrowRight,
+  ChevronRight,
+  Brain
+} from 'lucide-react';
 
 const AboutPage = () => {
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const { about } = useContent();
   const isRtl = language === 'ar';
-
   const get = (en: string, ar: string) => isRtl ? ar : en;
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
 
   const features = [
     {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2" />
-          <path d="M12 8v4l3 3" />
-        </svg>
-      ),
+      icon: <Brain className="w-6 h-6" />,
       title: isRtl ? 'الاستخدام الذكي للذكاء الاصطناعي' : 'AI Smart Usage',
       desc: isRtl ? 'تستخدم تقنيات متقدمة لتحليل الصور والنصوص' : 'Uses advanced technology for image and text analysis',
+      color: 'bg-indigo-500/20 text-indigo-400'
     },
     {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
-        </svg>
-      ),
+      icon: <Layers className="w-6 h-6" />,
       title: isRtl ? 'الموثوق PAS إطار عمل' : 'Trusted PAS Framework',
       desc: isRtl ? 'تستخدم إطار عمل المشكلة - الإثارة - الحل لإنشاء محتوى فعّال' : 'Uses the Problem-Agitation-Solution framework for effective content',
+      color: 'bg-purple-500/20 text-purple-400'
     },
     {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
-        </svg>
-      ),
+      icon: <History className="w-6 h-6" />,
       title: isRtl ? 'تسجيل شامل للتحليلات' : 'Comprehensive Logs',
       desc: isRtl ? 'تقوم بتسجيل جميع التحليلات لمساعدتك في متابعة التقدم' : 'Records all analyses to help you follow progress',
+      color: 'bg-fuchsia-500/20 text-fuchsia-400'
     },
   ];
 
@@ -47,145 +60,205 @@ const AboutPage = () => {
   ];
 
   return (
-    <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
+    <div className={`min-h-screen bg-slate-950 text-white selection:bg-brand-primary/30 ${isRtl ? 'font-arabic' : ''}`} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      <Navbar />
 
-        {/* Nav */}
-        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            <div style={{ width: '24px', height: '24px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </div>
-            <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
-          </Link>
+      <main className="max-w-7xl mx-auto px-6 pt-24 pb-32 overflow-hidden">
+        
+        {/* Dynamic Backgrounds */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-secondary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/plan" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
-            <Link to="/about" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('about')}</Link>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button onClick={toggleLanguage} className="btn" style={{ background: 'transparent', padding: '8px 12px', fontSize: '14px', fontWeight: 600 }}>
-              {isRtl ? 'English' : 'العربية'}
-            </button>
-            <Link to="/login" className="btn" style={{ background: '#f1f5f9', color: '#1e293b' }}>{t('login')}</Link>
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9' }}>{t('get_started')}</Link>
-          </div>
-        </header>
-
-        {/* Hero */}
-        <section style={{ textAlign: 'center', padding: '40px 0 60px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 18px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '20px', fontSize: '13px', fontWeight: 600, marginBottom: '20px' }}>
-            {get(about.badge_en, about.badge_ar)}
-          </div>
-          <h1 style={{ fontSize: '42px', fontWeight: 800, color: '#1e293b', marginBottom: '20px', lineHeight: 1.2 }}>
+        {/* Hero Section */}
+        <motion.section 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="text-center mb-32"
+        >
+          <motion.div 
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 px-4 py-2 glass-panel border-white/5 bg-white/5 rounded-full mb-8"
+          >
+            <Sparkles className="w-4 h-4 text-brand-primary" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">
+              {get(about.badge_en, about.badge_ar)}
+            </span>
+          </motion.div>
+          
+          <motion.h1 
+            variants={itemVariants}
+            className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[1.1]"
+          >
             {get(about.heading_en, about.heading_ar)}
-          </h1>
-          <p style={{ fontSize: '16px', color: '#475569', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>
+          </motion.h1>
+          
+          <motion.p 
+            variants={itemVariants}
+            className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed"
+          >
             {get(about.subheading_en, about.subheading_ar)}
-          </p>
-        </section>
+          </motion.p>
+        </motion.section>
 
-        {/* Vision & Features */}
-        <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', padding: '40px 0 80px', alignItems: 'start' }}>
-          {/* Left: Vision + Mission */}
-          <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-              {get(about.visionTitle_en, about.visionTitle_ar)}
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8, marginBottom: '32px' }}>
-              {get(about.visionText_en, about.visionText_ar)}
-            </p>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-              {get(about.missionTitle_en, about.missionTitle_ar)}
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.8 }}>
-              {get(about.missionText_en, about.missionText_ar)}
-            </p>
+        {/* Vision & Mission Bento */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-32">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-12 xl:col-span-7 glass-panel p-10 md:p-16 flex flex-col justify-center relative group overflow-hidden"
+          >
+             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+             <Target className="w-12 h-12 text-brand-primary mb-8" />
+             <h2 className="text-3xl font-black tracking-tighter mb-6">{get(about.visionTitle_en, about.visionTitle_ar)}</h2>
+             <p className="text-lg text-slate-400 font-medium leading-relaxed">
+               {get(about.visionText_en, about.visionText_ar)}
+             </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-12 xl:col-span-5 glass-panel p-10 md:p-16 flex flex-col justify-center border-brand-primary/20 bg-brand-primary/5"
+          >
+             <Rocket className="w-12 h-12 text-brand-primary mb-8" />
+             <h2 className="text-3xl font-black tracking-tighter mb-6">{get(about.missionTitle_en, about.missionTitle_ar)}</h2>
+             <p className="text-lg text-slate-300 font-medium leading-relaxed">
+               {get(about.missionText_en, about.missionText_ar)}
+             </p>
+          </motion.div>
+        </div>
+
+        {/* Core Pillars */}
+        <section className="mb-32">
+          <div className="text-center mb-16">
+             <h2 className="text-4xl font-black racking-tighter mb-4">Core Technology</h2>
+             <p className="text-slate-500 uppercase text-[10px] font-black tracking-[0.2em]">Crafting the next generation of narrative intelligence</p>
           </div>
-
-          {/* Right: Feature Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((f, i) => (
-              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 24px', display: 'flex', alignItems: 'flex-start', gap: '16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-                <div style={{ width: '40px', height: '40px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass-panel p-8 hover:bg-white/10 transition-all group"
+              >
+                <div className={`w-14 h-14 ${f.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                   {f.icon}
                 </div>
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#6c2bd9', marginBottom: '4px' }}>{f.title}</div>
-                  <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>{f.desc}</div>
-                </div>
-              </div>
+                <h3 className="text-xl font-black mb-4">{f.title}</h3>
+                <p className="text-slate-400 text-sm font-medium leading-relaxed">{f.desc}</p>
+              </motion.div>
             ))}
           </div>
         </section>
 
         {/* Team Section */}
-        <section style={{ padding: '60px 0', background: '#f8fafc', borderRadius: '24px', marginBottom: '60px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>
-            {get(about.teamTitle_en, about.teamTitle_ar)}
-          </h2>
-          <p style={{ fontSize: '15px', color: '#64748b', marginBottom: '48px' }}>
-            {get(about.teamSubtitle_en, about.teamSubtitle_ar)}
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', padding: '0 40px' }}>
+        <section className="mb-32 relative">
+          <div className="text-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-black tracking-tighter mb-4"
+            >
+              {get(about.teamTitle_en, about.teamTitle_ar)}
+            </motion.h2>
+            <p className="text-slate-400 text-lg font-medium max-w-2xl mx-auto">
+              {get(about.teamSubtitle_en, about.teamSubtitle_ar)}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {team.map((member, i) => (
-              <div key={i} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '32px 24px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <div style={{ width: '72px', height: '72px', background: '#f3e8ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#6c2bd9' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                  </svg>
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="group relative"
+              >
+                <div className="absolute inset-0 bg-brand-primary opacity-0 blur-2xl group-hover:opacity-10 transition-opacity" />
+                <div className="glass-panel p-10 text-center relative z-10 hover:border-brand-primary/50 transition-colors">
+                  <div className="w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full mx-auto mb-8 flex items-center justify-center p-1 border border-white/10 group-hover:border-brand-primary/50 transition-colors">
+                    <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center text-brand-primary">
+                      <Users className="w-10 h-10 opacity-50" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-black mb-2">{get(member.nameEn, member.nameAr)}</h3>
+                  <div className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] mb-6">
+                    {get(member.roleEn, member.roleAr)}
+                  </div>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed line-clamp-4 italic">
+                    "{get(member.bioEn, member.bioAr)}"
+                  </p>
                 </div>
-                <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}>
-                  {get(member.nameEn, member.nameAr)}
-                </div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: '#6c2bd9', marginBottom: '10px' }}>
-                  {get(member.roleEn, member.roleAr)}
-                </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6 }}>
-                  {get(member.bioEn, member.bioAr)}
-                </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
 
         {/* CTA Section */}
-        <section style={{ padding: '80px 0', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#1e293b', marginBottom: '16px' }}>
-            {get(about.ctaTitle_en, about.ctaTitle_ar)}
-          </h2>
-          <p style={{ fontSize: '15px', color: '#475569', maxWidth: '500px', margin: '0 auto 40px', lineHeight: 1.7 }}>
-            {get(about.ctaDesc_en, about.ctaDesc_ar)}
-          </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9', padding: '12px 32px', fontSize: '14px', borderRadius: '8px' }}>
-              {isRtl ? 'اتصل بنا' : 'Contact Us'}
-            </Link>
-            <button className="btn btn-outline" onClick={() => alert('Opening demo...')} style={{ padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: '#ffffff' }}>
-              {isRtl ? 'شاهد عرضنا تقديمي' : 'Watch our demo'}
-            </button>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer style={{ padding: '40px 0', borderTop: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '20px', height: '20px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <motion.section 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center glass-panel p-16 md:p-24 bg-brand-primary relative overflow-hidden group border-none"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary via-purple-900 to-brand-primary opacity-90" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.2),transparent)] pointer-events-none" />
+          
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-8">
+              {get(about.ctaTitle_en, about.ctaTitle_ar)}
+            </h2>
+            <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
+              {get(about.ctaDesc_en, about.ctaDesc_ar)}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link 
+                to="/register" 
+                className="px-10 py-5 bg-white text-slate-950 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-2 group/btn no-underline"
+              >
+                {isRtl ? 'اتصل بنا' : 'Contact Us'}
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </Link>
+              <button 
+                onClick={() => alert('Launching holographic presentation...')}
+                className="px-10 py-5 glass-panel bg-white/10 border-white/20 text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+              >
+                {isRtl ? 'شاهد عرضنا تقديمي' : 'Neural Demo'}
+                <Sparkles className="w-4 h-4" />
+              </button>
             </div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1e293b' }}>{t('app_name')}</span>
           </div>
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('privacy_policy')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('terms_of_service')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('contact')}</a>
-          </div>
-          <div style={{ fontSize: '12px', color: '#94a3b8' }}>© {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}</div>
-        </footer>
+        </motion.section>
+      </main>
 
-      </div>
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 opacity-60 hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <span className="text-sm font-black uppercase tracking-[0.2em]">{t('app_name')}</span>
+        </div>
+        <div className="flex flex-wrap justify-center gap-8">
+          <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white no-underline transition-colors">{t('privacy_policy')}</a>
+          <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white no-underline transition-colors">{t('terms_of_service')}</a>
+          <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white no-underline transition-colors">{t('contact')}</a>
+        </div>
+        <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+          © {new Date().getFullYear()} PASLYTICS NEURAL. {t('all_rights_reserved')}
+        </div>
+      </footer>
     </div>
   );
 };

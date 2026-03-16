@@ -1,120 +1,233 @@
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useContent } from '../context/ContentContext';
+import { motion, Variants } from 'framer-motion';
+import { 
+  Sparkles, 
+  Play, 
+  Zap, 
+  Rocket, 
+  BarChart3, 
+  BrainCircuit,
+  Globe
+} from 'lucide-react';
 
 const LandingPage = () => {
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const { homepage } = useContent();
   const isRtl = language === 'ar';
   const get = (en: string, ar: string) => isRtl ? ar : en;
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
+  const floatingVariants: Variants = {
+    animate: {
+      y: [0, -20, 0],
+      transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+    }
+  };
+
   return (
-    <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div className="container" style={{ margin: '0 auto', maxWidth: '1200px' }}>
-        
-        {/* Top Nav */}
-        <header className="landing-nav" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '24px', height: '24px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </div>
-            <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('app_name')}</span>
-          </Link>
-          
-          <div className="landing-nav-links" style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/plan" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
-            <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <button onClick={toggleLanguage} className="btn" style={{ background: 'transparent', padding: '8px 12px', fontSize: '14px', fontWeight: 600 }}>
-              {language === 'ar' ? 'English' : 'العربية'}
-            </button>
-            <Link to="/login" className="btn" style={{ background: '#f1f5f9', color: 'var(--text-dark)' }}>{t('login')}</Link>
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9' }}>{t('get_started')}</Link>
-          </div>
-        </header>
+    <div className={`min-h-screen bg-slate-950 text-white overflow-hidden ${isRtl ? 'font-arabic' : ''}`} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      {/* Background Decorative Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-600/10 blur-[120px] rounded-full" />
+      </div>
 
-        {/* Hero Section */}
-        <section className="hero-section" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'center', padding: '60px 0' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: '#f3e8ff', color: '#6c2bd9', borderRadius: '20px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '24px', textTransform: 'uppercase' }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> 
-              {t('next_gen')}
+      <div className="relative z-10">
+        <Navbar />
+
+        <motion.main 
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="max-w-7xl mx-auto px-6"
+        >
+          {/* Hero Section */}
+          <section className="py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-10 text-center lg:text-start">
+              <motion.div 
+                variants={itemVariants}
+                className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-purple-400 text-[10px] font-black uppercase tracking-[0.2em]"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {t('next_gen')}
+              </motion.div>
+              
+              <motion.h1 
+                variants={itemVariants}
+                className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-white"
+              >
+                {get(homepage.heroTitle1_en, homepage.heroTitle1_ar)}<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-500 to-amber-400">
+                  {get(homepage.heroTitle2_en, homepage.heroTitle2_ar)}
+                </span>
+              </motion.h1>
+              
+              <motion.p 
+                variants={itemVariants}
+                className="text-slate-400 text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
+              >
+                {get(homepage.heroDesc_en, homepage.heroDesc_ar)}
+              </motion.p>
+              
+              <motion.div 
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6"
+              >
+                <Link to="/login" className="btn-premium flex items-center gap-3 px-10 py-5 group no-underline text-lg">
+                  {t('start_analyzing')}
+                  <Rocket className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </Link>
+                <button 
+                  onClick={() => alert('Launching neural interface...')}
+                  className="flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white font-bold transition-all text-lg"
+                >
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+                    <Play className="w-4 h-4 fill-purple-400 text-purple-400" />
+                  </div>
+                  {t('watch_demo')}
+                </button>
+              </motion.div>
+              
+              <motion.div 
+                variants={itemVariants}
+                className="flex flex-col items-center lg:items-start gap-4"
+              >
+                <div className="flex -space-x-4">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800" />
+                  ))}
+                  <div className="w-10 h-10 rounded-full border-2 border-slate-950 bg-brand-primary flex items-center justify-center text-[10px] font-black">
+                    +2k
+                  </div>
+                </div>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                  {t('trusted_by')}
+                </span>
+              </motion.div>
             </div>
             
-            <h1 style={{ fontSize: '52px', lineHeight: 1.1, marginBottom: '20px' }}>
-              {get(homepage.heroTitle1_en, homepage.heroTitle1_ar)}<br />
-              <span style={{ color: '#6c2bd9' }}>{get(homepage.heroTitle2_en, homepage.heroTitle2_ar)}</span>
-            </h1>
-            
-            <p style={{ fontSize: '16px', color: '#475569', marginBottom: '40px', maxWidth: '480px', lineHeight: 1.6 }}>
-              {get(homepage.heroDesc_en, homepage.heroDesc_ar)}
-            </p>
-            
-            <div className="flex items-center gap-4 mb-10">
-              <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9', padding: '12px 24px', fontSize: '14px', borderRadius: '8px', display: 'inline-block', lineHeight: 'normal' }}>{t('start_analyzing')}</Link>
-              <button className="btn btn-outline" onClick={() => alert('Opening Video player...')} style={{ padding: '12px 24px', fontSize: '14px', borderRadius: '8px' }}>{t('watch_demo')}</button>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="avatar-group" style={{ display: 'flex' }}>
-                <div className="avatar-circle" style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#e2e8f0', border: '2px solid white', marginInlineEnd: '-8px' }}></div>
-                <div className="avatar-circle" style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#cbd5e1', border: '2px solid white', marginInlineEnd: '-8px' }}></div>
-                <div className="avatar-circle" style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#94a3b8', border: '2px solid white', marginInlineEnd: '-8px' }}></div>
+            <motion.div 
+              variants={itemVariants}
+              className="relative hidden lg:block"
+            >
+              <motion.div 
+                variants={floatingVariants}
+                animate="animate"
+                className="glass-panel p-2 aspect-[4/3] rounded-[40px] relative z-20 overflow-hidden shadow-2xl"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent" />
+                <div className="w-full h-full bg-slate-900/80 rounded-[34px] flex items-center justify-center overflow-hidden">
+                   {/* Abstract Neural Grid */}
+                   <div className="absolute inset-0 opacity-20 pointer-events-none" 
+                        style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #6366f1 1px, transparent 0)', backgroundSize: '24px 24px'}} />
+                   <BrainCircuit className="w-32 h-32 text-purple-500/50 relative z-10" />
+                </div>
+              </motion.div>
+
+              {/* Floating Widgets */}
+              <motion.div 
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="absolute -top-8 -left-8 glass-panel p-6 bg-slate-900/90 z-30"
+              >
+                 <Zap className="text-amber-400 w-8 h-8 mb-3" />
+                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Processing</div>
+                 <div className="text-lg font-black text-white">Neuro-PAS™</div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ x: 50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1.2, duration: 1 }}
+                className="absolute -bottom-8 -right-8 glass-panel p-6 bg-brand-primary z-30 shadow-[0_15px_40px_rgba(109,40,217,0.4)]"
+              >
+                 <BarChart3 className="text-white w-8 h-8 mb-3" />
+                 <div className="text-xs font-black uppercase tracking-widest text-purple-200 mb-1">Efficiency</div>
+                 <div className="text-2xl font-black text-white">+88.4%</div>
+              </motion.div>
+            </motion.div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="py-32 relative text-center">
+            <motion.div 
+              variants={itemVariants}
+              className="glass-panel p-16 md:p-24 bg-gradient-to-br from-purple-600/10 via-transparent to-amber-500/5 relative overflow-hidden group"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-amber-500 opacity-50" />
+              
+              <div className="relative z-10 max-w-3xl mx-auto space-y-10">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight">
+                  {get(homepage.ctaHeading_en, homepage.ctaHeading_ar)}
+                </h2>
+                <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed">
+                  {get(homepage.ctaDesc_en, homepage.ctaDesc_ar)}
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+                  <Link to="/login" className="btn-premium px-12 py-5 no-underline text-lg">
+                    {t('start_free_trial')}
+                  </Link>
+                  <button 
+                    onClick={() => alert('Connecting to sales nexus...')}
+                    className="px-10 py-5 bg-white text-slate-950 font-black rounded-2xl hover:bg-purple-50 transition-all text-lg shadow-xl"
+                  >
+                    {t('contact_sales')}
+                  </button>
+                </div>
               </div>
-              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500, marginInlineStart: '12px' }}>{t('trusted_by')}</span>
+
+              {/* Decorative Glow */}
+              <div className="absolute -bottom-[20%] -right-[20%] w-[50%] h-[50%] bg-purple-500/20 blur-[120px] rounded-full group-hover:bg-purple-500/30 transition-all duration-1000" />
+            </motion.div>
+          </section>
+
+          {/* Footer Component */}
+          <footer className="py-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <Link to="/" className="flex items-center gap-2 no-underline group">
+                <Sparkles className="text-purple-500 w-6 h-6 group-hover:rotate-12 transition-transform" />
+                <span className="text-lg font-black tracking-widest uppercase">
+                  PAS<span className="text-purple-400">lytics</span>
+                </span>
+              </Link>
+              <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">
+                Neural Marketing Intelligence
+              </p>
             </div>
-          </div>
-          
-          <div>
-            <div className="hero-image-placeholder" style={{ background: '#f8fafc', borderRadius: '24px', height: '440px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.05)' }}>
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="#cbd5e1">
-                <rect x="4" y="14" width="4" height="6" rx="1"/>
-                <rect x="10" y="8" width="4" height="12" rx="1"/>
-                <rect x="16" y="11" width="4" height="9" rx="1"/>
-              </svg>
+            
+            <div className="flex gap-12">
+              <a href="#" className="text-slate-500 hover:text-white text-xs font-black no-underline uppercase tracking-widest transition-colors">{t('privacy_policy')}</a>
+              <a href="#" className="text-slate-500 hover:text-white text-xs font-black no-underline uppercase tracking-widest transition-colors">{t('terms_of_service')}</a>
+              <a href="#" className="text-slate-500 hover:text-white text-xs font-black no-underline uppercase tracking-widest transition-colors">{t('contact')}</a>
             </div>
-          </div>
-        </section>
-
-
-
-        {/* CTA Section */}
-        <section className="cta-section" style={{ padding: '80px 0', textAlign: 'center', background: '#f8fafc', borderRadius: '24px', border: '1px solid var(--border)' }}>
-          <h2 style={{ fontSize: '36px', marginBottom: '20px', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.2, color: 'var(--text-dark)' }}>
-            {get(homepage.ctaHeading_en, homepage.ctaHeading_ar)}
-          </h2>
-          <p style={{ fontSize: '15px', color: '#475569', maxWidth: '500px', margin: '0 auto 40px', lineHeight: 1.6 }}>
-            {get(homepage.ctaDesc_en, homepage.ctaDesc_ar)}
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link to="/login" className="btn btn-primary" style={{ background: '#6c2bd9', padding: '12px 32px', fontSize: '14px', borderRadius: '8px' }}>{t('start_free_trial')}</Link>
-            <button className="btn btn-outline" onClick={() => alert('Opening Contact Form...')} style={{ background: '#ffffff', padding: '12px 32px', fontSize: '14px', borderRadius: '8px', border: 'none' }}>{t('contact_sales')}</button>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="footer flex items-center justify-between" style={{ padding: '40px 0', marginTop: '40px', borderTop: '1px solid var(--border)' }}>
-          <div className="flex items-center gap-2">
-            <div style={{ width: '20px', height: '20px', color: '#6c2bd9' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            
+            <div className="flex flex-col items-center md:items-end gap-2">
+              <div className="flex gap-4">
+                 {[Globe, Rocket, Zap].map((Icon, i) => (
+                   <div key={i} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-500 hover:text-purple-400 hover:bg-white/10 transition-all cursor-pointer">
+                     <Icon className="w-4 h-4" />
+                   </div>
+                 ))}
+              </div>
+              <div className="text-[10px] font-medium text-slate-700 uppercase tracking-widest">
+                © {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}
+              </div>
             </div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('app_name')}</span>
-          </div>
-          
-          <div className="flex gap-8">
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('privacy_policy')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('terms_of_service')}</a>
-            <a href="#" style={{ color: '#94a3b8', fontSize: '12px', textDecoration: 'none' }}>{t('contact')}</a>
-          </div>
-          
-          <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-            © {new Date().getFullYear()} PASlytics AI. {t('all_rights_reserved')}
-          </div>
-        </footer>
-        
+          </footer>
+        </motion.main>
       </div>
     </div>
   );
