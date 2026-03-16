@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     // Shared
-    app_name: 'PASlytics (VERIFIED_BUILD)',
+    app_name: 'PASlytics (v2)',
     login: 'Login',
     logout: 'Logout',
     get_started: 'Get Started',
@@ -192,8 +192,6 @@ export const translations = {
     mm_budget_influencer: '20% Influencer Partnerships',
     mm_budget_analytics: '10% Analytics & Tracking',
     mm_years: 'years',
-    gender_target: 'GENDER TARGET',
-    age_target: 'AGE TARGET',
 
     // Product Calculator
     pc_title: 'Product Price Calculator',
@@ -339,7 +337,7 @@ export const translations = {
   },
   ar: {
     // Shared
-    app_name: 'PASlytics',
+    app_name: 'PASlytics (v2)',
     login: 'تسجيل الدخول',
     logout: 'تسجيل الخروج',
     get_started: 'ابدأ الآن',
