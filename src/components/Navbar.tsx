@@ -34,10 +34,7 @@ const Navbar = () => {
           <LayoutDashboard className={css({ color: 'white', width: '20px', height: '20px' })} />
         </div>
         <span className={css({ 
-          fontSize: '20px', 
-          fontWeight: 'bold', 
-          color: 'slate.900', 
-          tracking: 'tight' 
+          letterSpacing: 'tight' 
         })}>{t('app_name')}</span>
       </Link>
       
@@ -49,10 +46,10 @@ const Navbar = () => {
         fontWeight: 'bold', 
         color: 'slate.500', 
         textTransform: 'uppercase', 
-        tracking: 'wider' 
+        letterSpacing: 'wider' 
       })}>
         <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('home')}</Link>
-        <Link to="/pricing" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('plan')}</Link>
+        <Link to="/plan" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('plan')}</Link>
         <Link to="/about" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('about')}</Link>
       </div>
 

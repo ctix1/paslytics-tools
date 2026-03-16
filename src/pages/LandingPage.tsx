@@ -23,7 +23,7 @@ const LandingPage = () => {
           
           <div className="landing-nav-links" style={{ display: 'flex', gap: '32px' }}>
             <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
+            <Link to="/plan" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
             <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </div>
           

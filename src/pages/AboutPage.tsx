@@ -61,7 +61,7 @@ const AboutPage = () => {
 
           <div style={{ display: 'flex', gap: '32px' }}>
             <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
+            <Link to="/plan" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
             <Link to="/about" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('about')}</Link>
           </div>
 

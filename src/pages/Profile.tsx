@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const Profile = () => {
   const { t, language, toggleLanguage } = useLanguage();
   const isRtl = language === 'ar';
   const { subscription, cancel } = useSubscription();
 
+  const { profile } = useAuth();
+  
   // State
-  const [firstName, setFirstName] = useState('Alex');
-  const [lastName, setLastName] = useState('Thompson');
+  const [firstName, setFirstName] = useState(profile?.name?.split(' ')[0] || '');
+  const [lastName, setLastName] = useState(profile?.name?.split(' ').slice(1).join(' ') || '');
   const [bio, setBio] = useState('');
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [desktopNotif, setDesktopNotif] = useState(false);
@@ -19,17 +23,31 @@ const Profile = () => {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelledMsg, setCancelledMsg] = useState<string | null>(null);
 
+  // Sync state with profile once loaded
+  useEffect(() => {
+    if (profile) {
+      setFirstName(profile.name.split(' ')[0] || '');
+      setLastName(profile.name.split(' ').slice(1).join(' ') || '');
+    }
+  }, [profile]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSaving(true);
     setSaveStatus(null);
     
-    // Mock save delay
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: `${firstName} ${lastName}`.trim() }
+      });
+      if (error) throw error;
+      
       setSaveStatus(t('save_success') || 'Settings saved successfully!');
       setTimeout(() => setSaveStatus(null), 3000);
-    }, 800);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -94,7 +112,11 @@ const Profile = () => {
           <div className="card p-8 mb-6 flex items-center gap-6">
             <div style={{ position: 'relative' }}>
               <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #f3e8ff' }}>
-                <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=Alex&backgroundColor=fbebc8" alt="Alex" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img 
+                  src={profile?.avatar_url || `https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${profile?.name || 'User'}&backgroundColor=fbebc8`} 
+                  alt="Profile" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
               </div>
               <button 
                 onClick={() => alert('Change Avatar Clicked')}
@@ -108,7 +130,7 @@ const Profile = () => {
                 <h2 style={{ fontSize: '22px' }}>{firstName} {lastName}</h2>
                 <span className="badge badge-purple">{t('analyst_role')}</span>
               </div>
-              <p className="mb-2">alex.thompson@datastore-app.com</p>
+              <p className="mb-2">{profile?.email || '—'}</p>
               <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>{t('member_since')}</p>
             </div>
           </div>
@@ -213,7 +235,7 @@ const Profile = () => {
             {subscription.plan === 'none' ? (
               <div className="flex items-center justify-between">
                 <p style={{ fontSize: '14px', color: '#94a3b8' }}>{t('sub_no_plan')}</p>
-                <a href="/pricing" className="btn btn-primary" style={{ background: '#6c2bd9', fontSize: '13px', padding: '8px 16px', fontWeight: 600, textDecoration: 'none', color: 'white', borderRadius: '8px' }}>
+                <a href="/plan" className="btn btn-primary" style={{ background: '#6c2bd9', fontSize: '13px', padding: '8px 16px', fontWeight: 600, textDecoration: 'none', color: 'white', borderRadius: '8px' }}>
                   {t('sub_choose_plan')}
                 </a>
               </div>

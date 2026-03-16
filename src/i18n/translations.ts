@@ -9,8 +9,11 @@ export const translations = {
     analytics: 'Analytics',
     logs: 'Logs',
     admin: 'Admin',
+    admin_account: 'Admin Account',
+    standard_account: 'Standard Account',
     settings: 'Settings',
     profile_settings: 'Profile & Settings',
+    user_management: 'User Management',
 
     // Landing Page
     home: 'Home',
@@ -96,7 +99,6 @@ export const translations = {
     delete: 'Delete',
 
     // Management
-    user_management: 'User Management',
     manage_team: 'Manage team members, roles, and product analysis permissions.',
     add_user: 'Add User',
     total_users: 'Total Users',
@@ -142,6 +144,8 @@ export const translations = {
     per_month: '/month',
     per_year: '/year',
     annual_savings: 'Equates to $17/month (Save $24/year)',
+    gender_target: 'GENDER TARGET',
+    age_target: 'AGE TARGET',
     choose_plan: 'Choose Plan',
     whats_included: "WHAT'S INCLUDED",
     everything_monthly_plus: 'EVERYTHING IN MONTHLY, PLUS',
@@ -188,6 +192,8 @@ export const translations = {
     mm_budget_influencer: '20% Influencer Partnerships',
     mm_budget_analytics: '10% Analytics & Tracking',
     mm_years: 'years',
+    gender_target: 'GENDER TARGET',
+    age_target: 'AGE TARGET',
 
     // Product Calculator
     pc_title: 'Product Price Calculator',
@@ -341,8 +347,11 @@ export const translations = {
     analytics: 'التحليلات',
     logs: 'السجلات',
     admin: 'المسؤول',
+    admin_account: 'حساب المشرف',
+    standard_account: 'حساب قياسي',
     settings: 'الإعدادات',
     profile_settings: 'الملف الشخصي والإعدادات',
+    user_management: 'إدارة المستخدمين',
 
     // Landing Page
     home: 'الرئيسية',
@@ -428,7 +437,6 @@ export const translations = {
     delete: 'حذف',
 
     // Management
-    user_management: 'إدارة المستخدمين',
     manage_team: 'إدارة أعضاء الفريق، والأدوار، وصلاحيات تحليل المنتجات.',
     add_user: 'إضافة مستخدم',
     total_users: 'إجمالي المستخدمين',
@@ -474,6 +482,8 @@ export const translations = {
     per_month: '/شهر',
     per_year: '/سنة',
     annual_savings: 'يعادل $17/شهر (وفر $24/سنة)',
+    gender_target: 'الجنس المستهدف',
+    age_target: 'الفئة العمرية المستهدف',
     choose_plan: 'اختر الخطة',
     whats_included: 'ما يشمله الاشتراك',
     everything_monthly_plus: 'كل ما في الشهري، بالإضافة إلى',

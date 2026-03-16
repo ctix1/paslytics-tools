@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
@@ -50,7 +50,7 @@ const Pricing = () => {
           </div>
 
           <nav style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600 }}>{t('pricing')}</Link>
+            <Link to="/plan" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600 }}>{t('plan')}</Link>
             <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </nav>
 

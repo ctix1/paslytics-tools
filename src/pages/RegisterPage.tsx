@@ -112,7 +112,7 @@ const RegisterPage = () => {
         
         <div className={css({ display: 'flex', gap: '8', fontWeight: 'semibold', fontSize: 'sm', color: 'slate.500' })}>
           <Link to="/" className={css({ color: 'inherit', textDecoration: 'none', _hover: { color: 'brand.primary' } })}>{t('home')}</Link>
-          <Link to="/pricing" className={css({ color: 'inherit', textDecoration: 'none', _hover: { color: 'brand.primary' } })}>{t('plan')}</Link>
+          <Link to="/plan" className={css({ color: 'inherit', textDecoration: 'none', _hover: { color: 'brand.primary' } })}>{t('plan')}</Link>
           <Link to="/about" className={css({ color: 'brand.primary', textDecoration: 'none', borderBottom: '2px solid', paddingBottom: '1' })}>{t('about')}</Link>
         </div>
         

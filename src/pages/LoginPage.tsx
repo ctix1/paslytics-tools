@@ -14,13 +14,21 @@ const LoginPage = () => {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
+      console.log('Initiating Google Login...');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/dashboard'
+          redirectTo: window.location.origin + '/dashboard',
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consensus'
+          }
         }
       });
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Google OAuth Error:', error);
+        throw error;
+      }
     } catch (error: any) {
       console.error('Error with Google Auth:', error);
       alert(error.message);
@@ -45,11 +53,6 @@ const LoginPage = () => {
       if (error) throw error;
 
       if (data.session) {
-        localStorage.setItem('user_profile', JSON.stringify({
-          email: data.session.user.email,
-          name: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0],
-          role: data.session.user.email?.toLowerCase() === 'koo111333@gmail.com' ? 'admin' : 'user'
-        }));
         navigate('/dashboard');
       }
 

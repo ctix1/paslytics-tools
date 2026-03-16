@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import { 
   Home,
   LayoutDashboard, 
@@ -14,6 +15,7 @@ import { css, cx } from '../../styled-system/css';
 
 const Sidebar = () => {
   const { t } = useLanguage();
+  const { profile, signOut } = useAuth();
   const location = useLocation();
 
   const menuItems = [
@@ -23,6 +25,8 @@ const Sidebar = () => {
     { icon: Users, label: t('user_management'), path: '/management' },
     { icon: Settings, label: t('profile_settings'), path: '/settings' },
   ];
+
+  const userInitial = profile?.name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || '?';
 
   return (
     <aside className={css({
@@ -61,7 +65,7 @@ const Sidebar = () => {
           fontSize: '24px', 
           fontWeight: 'black', 
           color: 'slate.900', 
-          tracking: 'tight' 
+          letterSpacing: 'tight' 
         })}>PASlytics</span>
       </Link>
 
@@ -143,8 +147,8 @@ const Sidebar = () => {
           <HelpCircle className={css({ width: '20px', height: '20px', color: 'slate.400' })} />
           {t('contact')}
         </button>
-        <Link
-          to="/login"
+        <button
+          onClick={signOut}
           className={css({
             display: 'flex',
             alignItems: 'center',
@@ -155,14 +159,17 @@ const Sidebar = () => {
             fontSize: '14px',
             fontWeight: 'bold',
             color: 'red.500',
-            textDecoration: 'none',
+            width: '100%',
+            cursor: 'pointer',
+            border: 'none',
+            backgroundColor: 'transparent',
             transition: 'all',
             _hover: { backgroundColor: 'red.50' }
           })}
         >
           <LogOut className={css({ width: '20px', height: '20px' })} />
           {t('logout')}
-        </Link>
+        </button>
       </div>
 
       <div className={css({ 
@@ -191,11 +198,19 @@ const Sidebar = () => {
           overflow: 'hidden', 
           boxShadow: 'sm' 
         })}>
-          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100" alt="User" className={css({ width: '100%', height: '100%', objectFit: 'cover' })} />
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="User" className={css({ width: '100%', height: '100%', objectFit: 'cover' })} />
+          ) : (
+            <span className={css({ fontSize: '18px' })}>{userInitial}</span>
+          )}
         </div>
         <div className={css({ flex: 1, overflow: 'hidden' })}>
-          <p className={css({ fontSize: '14px', fontWeight: 'black', color: 'slate.900', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>Alex Thompson</p>
-          <p className={css({ fontSize: '10px', fontWeight: 'bold', color: 'slate.400', textTransform: 'uppercase', tracking: 'widest', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>Admin Account</p>
+          <p className={css({ fontSize: '14px', fontWeight: 'black', color: 'slate.900', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>
+            {profile?.name || 'User'}
+          </p>
+          <p className={css({ fontSize: '10px', fontWeight: 'bold', color: 'slate.400', textTransform: 'uppercase', tracking: 'widest', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' })}>
+            {profile?.role === 'admin' ? t('admin_account') : t('standard_account')}
+          </p>
         </div>
         <Bell onClick={() => alert('Opening Notifications...')} className={css({ width: '16px', height: '16px', color: 'slate.400', cursor: 'pointer', transition: 'colors', _hover: { color: 'brand.primary' } })} />
       </div>
