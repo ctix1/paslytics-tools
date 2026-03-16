@@ -1,11 +1,8 @@
 import { defineConfig } from "@pandacss/dev";
 
 export default defineConfig({
-  // Whether to use postcss or not
-  postcss: true,
-
   // Where to look for your css declarations
-  include: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
+  include: ["./src/**/*.{js,jsx,ts,tsx}", "index.html"],
 
   // Files to exclude
   exclude: [],
