@@ -13,6 +13,11 @@ export const translations = {
     settings: 'Settings',
     profile_settings: 'Profile & Settings',
     user_management: 'User Management',
+    marketing_assistant: 'Marketing Assistant',
+    product_calculator: 'Product Calculator',
+    records_title: 'My Records & Reports',
+    download_pdf: 'Download PDF',
+    no_records: 'No records found yet.',
 
     // Landing Page
     home: 'Home',
@@ -393,6 +398,11 @@ export const translations = {
     settings: 'الإعدادات',
     profile_settings: 'الملف الشخصي والإعدادات',
     user_management: 'إدارة المستخدمين',
+    marketing_assistant: 'المساعد التسويقي',
+    product_calculator: 'حاسبة المنتج',
+    records_title: 'سجلاتي وتقاريري',
+    download_pdf: 'تحميل PDF',
+    no_records: 'لا توجد سجلات حتى الآن.',
 
     // Landing Page
     home: 'الرئيسية',
