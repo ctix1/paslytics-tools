@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
+import { css } from '../../styled-system/css';
 
 type UserRole = 'Admin' | 'Analyst' | 'Informed Member';
 
@@ -20,7 +20,7 @@ const initialUsers: User[] = [
 ];
 
 const SiteManagement = () => {
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const isRtl = language === 'ar';
 
   const [users, setUsers] = useState<User[]>(initialUsers);
@@ -38,155 +38,151 @@ const SiteManagement = () => {
   };
 
   return (
-    <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      {/* Sidebar */}
-      <aside className="sidebar" style={{ borderInlineEnd: '1px solid var(--border)', ...(isRtl ? { left: 'auto', right: 0, borderLeft: '1px solid var(--border)', borderRight: 'none' } : {}) }}>
-        <div className="sidebar-logo flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div style={{ width: '28px', height: '28px', background: '#6c2bd9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-            </div>
-            PASlytics
-          </div>
-          <button onClick={toggleLanguage} className="btn" style={{ padding: '4px 8px', fontSize: '10px' }}>
-            {isRtl ? 'EN' : 'AR'}
-          </button>
+    <div className={css({ maxWidth: '1200px', margin: '0 auto' })}>
+      {/* Header */}
+      <div className={css({ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '32px' 
+      })}>
+        <div>
+          <h1 className={css({ fontSize: '24px', fontWeight: 'bold', color: 'slate.900', marginBottom: '4px' })}>{t('user_management')}</h1>
+          <p className={css({ color: 'slate.500', fontSize: '14px' })}>{t('manage_team')}</p>
         </div>
+        <button 
+          className={css({
+            paddingY: '10px',
+            paddingX: '20px',
+            borderRadius: 'xl',
+            backgroundColor: 'brand.primary',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all',
+            _hover: { backgroundColor: 'brand.secondary' }
+          })}
+          onClick={() => alert('Add User Dialog Opened')}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14m-7-7h14"></path></svg>
+          {t('add_user')}
+        </button>
+      </div>
 
-        <nav className="sidebar-nav mt-4" style={{ flex: 1 }}>
-          <Link to="/dashboard" className="nav-item">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-            {t('dashboard')}
-          </Link>
-          <Link to="/logs" className="nav-item">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            {t('logs')}
-          </Link>
-          <Link to="/management" className="nav-item active" style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '-24px', top: 0, bottom: 0, width: '4px', background: 'var(--primary)', borderRadius: isRtl ? '4px 0 0 4px' : '0 4px 4px 0' }}></div>
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            {t('admin')}
-          </Link>
-          <Link to="/admin/payment-settings" className="nav-item">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-            {t('paysettings_nav')}
-          </Link>
-          <Link to="/admin/content" className="nav-item">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            {t('content_manager_nav')}
-          </Link>
-        </nav>
+      {/* Stats */}
+      <div className={css({ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px' })}>
+        <div className={css({ backgroundColor: 'white', borderRadius: '2xl', padding: '24px', border: '1px solid', borderColor: 'slate.100', boxShadow: 'sm' })}>
+          <div className={css({ fontSize: '13px', color: 'slate.500', fontWeight: 'bold', marginBottom: '8px' })}>{t('total_users')}</div>
+          <div className={css({ fontSize: '32px', fontWeight: 'bold', color: 'slate.900' })}>{users.length + 21}</div>
+        </div>
+        <div className={css({ backgroundColor: 'white', borderRadius: '2xl', padding: '24px', border: '1px solid', borderColor: 'slate.100', boxShadow: 'sm' })}>
+          <div className={css({ fontSize: '13px', color: 'slate.500', fontWeight: 'bold', marginBottom: '8px' })}>{t('active_analysts')}</div>
+          <div className={css({ fontSize: '32px', fontWeight: 'bold', color: 'brand.primary' })}>12</div>
+        </div>
+        <div className={css({ backgroundColor: 'white', borderRadius: '2xl', padding: '24px', border: '1px solid', borderColor: 'slate.100', boxShadow: 'sm' })}>
+          <div className={css({ fontSize: '13px', color: 'slate.500', fontWeight: 'bold', marginBottom: '8px' })}>{t('pending_invites')}</div>
+          <div className={css({ fontSize: '32px', fontWeight: 'bold', color: 'slate.900' })}>3</div>
+        </div>
+      </div>
 
-        <nav className="sidebar-nav mt-auto" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
-          <Link to="/settings" className="nav-item mb-4">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            {t('settings')}
-          </Link>
-          <Link to="/login" className="nav-item" style={{ color: '#ef4444' }}>
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            {t('logout') || 'Log Out'}
-          </Link>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0, marginLeft: isRtl ? 0 : undefined, marginRight: isRtl ? '260px' : undefined }}>
-        <div style={{ maxWidth: '1200px' }}>
-
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '4px' }}>{t('user_management')}</h1>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{t('manage_team')}</p>
-            </div>
-            <button className="btn btn-primary" style={{ background: '#6c2bd9' }} onClick={() => alert('Add User Dialog Opened')}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14m-7-7h14"></path></svg>
-              <span style={{ marginInlineStart: '6px' }}>{t('add_user')}</span>
-            </button>
-          </div>
-
-          {/* Stats */}
-          <div className="flex gap-6 mb-8" style={{ flexWrap: 'wrap' }}>
-            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
-              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('total_users')}</div>
-              <div style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-dark)' }}>{users.length + 21}</div>
-            </div>
-            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
-              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('active_analysts')}</div>
-              <div style={{ fontSize: '32px', fontWeight: 600, color: '#6c2bd9' }}>12</div>
-            </div>
-            <div className="card" style={{ flex: 1, minWidth: '140px', padding: '24px' }}>
-              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '8px' }}>{t('pending_invites')}</div>
-              <div style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-dark)' }}>3</div>
-            </div>
-          </div>
-
-          {/* User Table */}
-          <div className="card" style={{ borderRadius: '12px' }}>
-            <div className="table-container">
-              <table style={{ width: '100%', textAlign: isRtl ? 'right' : 'left' }}>
-                <thead style={{ background: '#f1f5f9' }}>
-                  <tr>
-                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('name')}</th>
-                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('email')}</th>
-                    <th style={{ textAlign: isRtl ? 'right' : 'left' }}>{t('permissions')}</th>
-                    <th></th>
+      {/* User Table */}
+      <div className={css({
+        backgroundColor: 'white',
+        borderRadius: '2xl',
+        border: '1px solid',
+        borderColor: 'slate.100',
+        boxShadow: 'sm',
+        overflow: 'hidden'
+      })}>
+        <div className={css({ overflowX: 'auto' })}>
+          <table className={css({ width: '100%', borderCollapse: 'collapse' })}>
+            <thead>
+              <tr className={css({ backgroundColor: 'slate.50', textAlign: isRtl ? 'right' : 'left' })}>
+                <th className={css({ padding: '16px', fontSize: '12px', fontWeight: 'bold', color: 'slate.500', textTransform: 'uppercase' })}>{t('name')}</th>
+                <th className={css({ padding: '16px', fontSize: '12px', fontWeight: 'bold', color: 'slate.500', textTransform: 'uppercase' })}>{t('email')}</th>
+                <th className={css({ padding: '16px', fontSize: '12px', fontWeight: 'bold', color: 'slate.500', textTransform: 'uppercase' })}>{t('permissions')}</th>
+                <th className={css({ padding: '16px' })}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length === 0 ? (
+                <tr><td colSpan={4} className={css({ textAlign: 'center', padding: '48px', color: 'slate.400' })}>No users found.</td></tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user.id} className={css({ borderBottom: '1px solid', borderColor: 'slate.50', _hover: { backgroundColor: 'slate.50' } })}>
+                    <td className={css({ padding: '16px' })}>
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '12px' })}>
+                        <img 
+                          className={css({ width: '36px', height: '36px', borderRadius: 'full' })} 
+                          src={`https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${user.avatarSeed}&backgroundColor=${user.avatarColor}`} 
+                          alt={user.name} 
+                        />
+                        <span className={css({ fontSize: '14px', fontWeight: 'bold', color: 'slate.900' })}>{user.name}</span>
+                      </div>
+                    </td>
+                    <td className={css({ padding: '16px', color: 'slate.500', fontSize: '14px' })}>{user.email}</td>
+                    <td className={css({ padding: '16px' })}>
+                      <select
+                        className={css({
+                          padding: '8px',
+                          borderRadius: 'lg',
+                          border: '1px solid',
+                          borderColor: 'slate.200',
+                          fontSize: '13px',
+                          backgroundColor: 'white',
+                          cursor: 'pointer',
+                          _focus: { borderColor: 'brand.primary', outline: 'none' }
+                        })}
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
+                      >
+                        <option value="Admin">{t('admin_role')}</option>
+                        <option value="Analyst">{t('analyst_role')}</option>
+                        <option value="Informed Member">{t('informed_member')}</option>
+                      </select>
+                    </td>
+                    <td className={css({ padding: '16px', textAlign: isRtl ? 'left' : 'right' })}>
+                      <button
+                        className={css({ 
+                          color: 'red.600', 
+                          fontSize: '13px', 
+                          fontWeight: 'bold', 
+                          padding: '6px 12px',
+                          cursor: 'pointer',
+                          borderRadius: 'lg',
+                          _hover: { backgroundColor: 'red.50' }
+                        })}
+                        onClick={() => handleRemoveUser(user.id)}
+                      >
+                        {t('remove')}
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
-                    <tr><td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No users found.</td></tr>
-                  ) : (
-                    users.map((user) => (
-                      <tr key={user.id}>
-                        <td>
-                          <div className="flex items-center gap-3">
-                            <div className="avatar" style={{ width: '36px', height: '36px' }}>
-                              <img src={`https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${user.avatarSeed}&backgroundColor=${user.avatarColor}`} alt={user.name} />
-                            </div>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)' }}>{user.name}</span>
-                          </div>
-                        </td>
-                        <td style={{ color: '#64748b' }}>{user.email}</td>
-                        <td>
-                          <div className="select-wrapper">
-                            <select
-                              style={{ width: '100%' }}
-                              value={user.role}
-                              onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
-                            >
-                              <option value="Admin">{t('admin_role')}</option>
-                              <option value="Analyst">{t('analyst_role')}</option>
-                              <option value="Informed Member">{t('informed_member')}</option>
-                            </select>
-                          </div>
-                        </td>
-                        <td style={{ textAlign: isRtl ? 'left' : 'right' }}>
-                          <button
-                            className="btn"
-                            onClick={() => handleRemoveUser(user.id)}
-                            style={{ color: '#dc2626', fontSize: '13px', fontWeight: 600, padding: '6px 12px' }}
-                          >
-                            {t('remove')}
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-            <div className="flex items-center justify-between" style={{ padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
-              <p style={{ fontSize: '13px', color: '#64748b' }}>Showing 1 to {users.length} of {users.length + 21} users</p>
-              <div className="flex gap-2">
-                <button className="btn btn-outline" onClick={() => alert('Previous Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Previous</button>
-                <button className="btn btn-outline" onClick={() => alert('Next Page')} style={{ padding: '6px 12px', fontSize: '13px' }}>Next</button>
-              </div>
-            </div>
+        <div className={css({ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          padding: '16px 24px', 
+          borderTop: '1px solid',
+          borderColor: 'slate.100'
+        })}>
+          <p className={css({ fontSize: '13px', color: 'slate.500' })}>Showing 1 to {users.length} of {users.length + 21} users</p>
+          <div className={css({ display: 'flex', gap: '8px' })}>
+            <button className={css({ paddingY: '8px', paddingX: '12px', borderRadius: 'lg', border: '1px solid', borderColor: 'slate.200', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', _hover: { backgroundColor: 'slate.50' } })} onClick={() => alert('Previous Page')}>Previous</button>
+            <button className={css({ paddingY: '8px', paddingX: '12px', borderRadius: 'lg', border: '1px solid', borderColor: 'slate.200', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', _hover: { backgroundColor: 'slate.50' } })} onClick={() => alert('Next Page')}>Next</button>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
