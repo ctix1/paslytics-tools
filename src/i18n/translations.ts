@@ -1,14 +1,14 @@
 export const translations = {
   en: {
     // Shared
-    app_name: 'PASlytics',
+    app_name: 'PASlytics (VERIFIED_BUILD)',
     login: 'Login',
     logout: 'Logout',
     get_started: 'Get Started',
     dashboard: 'Dashboard',
     analytics: 'Analytics',
     logs: 'Logs',
-    admin: 'Administrator',
+    admin: 'Admin',
     settings: 'Settings',
     profile_settings: 'Profile & Settings',
 
@@ -63,7 +63,6 @@ export const translations = {
     upload_desc: 'Supports JPG, PNG, WEBP (Max 10MB)',
     select_files: 'Select Files',
     pas_output: 'PAS Framework Output',
-    pas_desc: 'Unlock deep consumer insights using the PAS framework.',
     problem: 'PROBLEM',
     agitation: 'AGITATION',
     solution: 'SOLUTION',
@@ -108,7 +107,7 @@ export const translations = {
     email: 'Email',
     permissions: 'Permissions',
     remove: 'Remove',
-    admin_role: 'Administrator',
+    admin_role: 'Admin',
     analyst_role: 'Analyst',
     informed_member: 'Informed Member',
 
@@ -172,8 +171,6 @@ export const translations = {
     mm_men: 'Men',
     mm_women: 'Women',
     mm_generate: '📊 Generate Marketing Plan',
-    mm_summarize: 'Summarize & Format for Platforms',
-    mm_years: 'years',
     mm_alert_empty: 'Please enter a product description first.',
     mm_plan_title: '📊 Marketing Plan for:',
     mm_target_audience: '🎯 Target Audience:',
@@ -191,6 +188,7 @@ export const translations = {
     mm_budget_content: '30% Content Creation',
     mm_budget_influencer: '20% Influencer Partnerships',
     mm_budget_analytics: '10% Analytics & Tracking',
+    mm_years: 'years',
 
     // Product Calculator
     pc_title: 'Product Price Calculator',
@@ -206,13 +204,6 @@ export const translations = {
     pc_duties_label: 'Duties:',
     pc_profit_label: 'Profit',
     pc_marketing_label: 'Marketing:',
-    pc_advice: 'Profitability Advice',
-    pc_luxury: 'Luxury Category',
-    pc_premium: 'Premium Market',
-    pc_value: 'Value Segment',
-    pc_advice_luxury: 'Focus on exclusivity and high-end craftsmanship in your marketing.',
-    pc_advice_premium: 'Optimize cost efficiency to scale margins.',
-    pc_advice_value: 'Focus on high volume and competitive pricing.',
 
     // Shared UI
     no_logs: 'No logs available.',
@@ -226,11 +217,10 @@ export const translations = {
     next: 'Next',
     platform_name: 'PASlytics Analysis Platform.',
     save_success: 'Settings saved successfully!',
-    remove_user_confirm: 'Are you sure you want to remove {name} from the team?',
 
     // Checkout Page
     checkout_title: 'Complete Your Purchase',
-    checkout_back: 'Back to Plan',
+    checkout_back: 'Back to Pricing',
     checkout_order_summary: 'Order Summary',
     checkout_proceed: 'Continue to Payment',
     checkout_secure: 'Secured & Encrypted',
@@ -406,7 +396,6 @@ export const translations = {
     upload_desc: 'يدعم JPG، PNG، WEBP (بحد أقصى 10 ميغابايت)',
     select_files: 'اختر الملفات',
     pas_output: 'مخرجات إطار عمل PAS',
-    pas_desc: 'اكتشف رؤى المستهلكين العميقة باستخدام نموذج PAS.',
     problem: 'المشكلة',
     agitation: 'التهيج',
     solution: 'الحل',
@@ -515,8 +504,6 @@ export const translations = {
     mm_men: 'رجال',
     mm_women: 'نساء',
     mm_generate: '📊 إنشاء خطة تسويقية',
-    mm_summarize: 'تلخيص وتنسيق للمنصات',
-    mm_years: 'سنة',
     mm_alert_empty: 'الرجاء إدخال وصف المنتج أولاً.',
     mm_plan_title: '📊 خطة تسويقية لـ:',
     mm_target_audience: '🎯 الجمهور المستهدف:',
@@ -534,6 +521,7 @@ export const translations = {
     mm_budget_content: '30% إنشاء المحتوى',
     mm_budget_influencer: '20% شراكات المؤثرين',
     mm_budget_analytics: '10% التحليلات والتتبع',
+    mm_years: 'سنة',
 
     // Product Calculator
     pc_title: 'حاسبة أسعار المنتجات',
@@ -549,13 +537,6 @@ export const translations = {
     pc_duties_label: 'الرسوم:',
     pc_profit_label: 'الربح',
     pc_marketing_label: 'التسويق:',
-    pc_advice: 'نصيحة الربحية',
-    pc_luxury: 'منتج فاخر',
-    pc_premium: 'منتج مميز',
-    pc_value: 'قيمة اقتصادية',
-    pc_advice_luxury: 'نصيحة: ركز على التفرد والجودة العالية في تسويقك.',
-    pc_advice_premium: 'نصيحة: تأكد من تحسين كفاءة التكاليف لزيادة هوامش الربح.',
-    pc_advice_value: 'نصيحة: ركز على الكفاءة والسعر التنافسي لكسب حصة سوقية أكبر.',
 
     // Shared UI
     no_logs: 'لا توجد سجلات متاحة.',
@@ -569,11 +550,10 @@ export const translations = {
     next: 'التالي',
     platform_name: 'منصة تحليلات PASlytics.',
     save_success: 'تم حفظ الإعدادات بنجاح!',
-    remove_user_confirm: 'هل أنت متأكد أنك تريد إزالة {name} من الفريق؟',
 
     // Checkout Page
     checkout_title: 'أكمل عملية الشراء',
-    checkout_back: 'العودة للخطة',
+    checkout_back: 'العودة إلى الأسعار',
     checkout_order_summary: 'ملخص الطلب',
     checkout_proceed: 'المتابعة إلى الدفع',
     checkout_secure: 'آمن ومشفر',
@@ -683,7 +663,7 @@ export const translations = {
     sub_cancelled_msg: 'تم إلغاء اشتراكك بنجاح.',
 
     language_ar: 'العربية',
-    language_en: 'English',
+    language_en: 'English'
   }
 };
 

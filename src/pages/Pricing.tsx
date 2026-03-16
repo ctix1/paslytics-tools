@@ -34,7 +34,7 @@ const Pricing = () => {
 
   return (
     <div style={{ backgroundColor: '#f9fafb', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
+      <div style={{ margin: '0 auto', maxWidth: '1100px', padding: '0 24px' }}>
 
         {/* ── Nav ── */}
         <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '16px' }}>
@@ -50,9 +50,8 @@ const Pricing = () => {
           </div>
 
           <nav style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('plan')}</Link>
-            <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
+            <Link to="/pricing" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600 }}>{t('pricing')}</Link>
+            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

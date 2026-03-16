@@ -812,7 +812,7 @@ ${t('mm_budget')}
           </>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

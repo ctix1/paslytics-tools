@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
-import { supabase } from '../lib/supabase';
 
 const Profile = () => {
   const { t, language, toggleLanguage } = useLanguage();
@@ -10,9 +9,8 @@ const Profile = () => {
   const { subscription, cancel } = useSubscription();
 
   // State
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('Alex');
+  const [lastName, setLastName] = useState('Thompson');
   const [bio, setBio] = useState('');
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [desktopNotif, setDesktopNotif] = useState(false);
@@ -20,33 +18,6 @@ const Profile = () => {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelledMsg, setCancelledMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    // 1. Try local storage
-    try {
-      const profileRaw = localStorage.getItem('user_profile');
-      if (profileRaw) {
-        const profile = JSON.parse(profileRaw);
-        const names = profile.name?.split(' ') || [];
-        setFirstName(names[0] || '');
-        setLastName(names.slice(1).join(' ') || '');
-        setEmail(profile.email || '');
-      }
-    } catch (e) {
-      console.warn('Profile: Error parsing user_profile', e);
-    }
-
-    // 2. Fetch from Supabase
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        const full_name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || '';
-        const names = full_name.split(' ');
-        setFirstName(names[0] || '');
-        setLastName(names.slice(1).join(' ') || '');
-        setEmail(session.user.email || '');
-      }
-    });
-  }, []);
 
 
   const handleSave = () => {
@@ -62,8 +33,43 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-8" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      {/* Sidebar */}
+      <aside className="sidebar" style={{ borderInlineEnd: '1px solid var(--border)' }}>
+        <div className="sidebar-logo flex items-center justify-between">
+          <div>{t('app_name')}</div>
+          <button onClick={toggleLanguage} className="btn" style={{ padding: '4px 8px', fontSize: '10px' }}>
+            {isRtl ? 'EN' : 'AR'}
+          </button>
+        </div>
+        
+        <nav className="sidebar-nav mt-4" style={{ flex: 1 }}>
+          <Link to="/dashboard" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            {t('dashboard')}
+          </Link>
+          <Link to="/logs" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            {t('analytics')}
+          </Link>
+          <Link to="/settings" className="nav-item active" style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '-24px', top: 0, bottom: 0, width: '4px', background: 'var(--primary)', borderRadius: isRtl ? '4px 0 0 4px' : '0 4px 4px 0' }}></div>
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            {t('profile_settings')}
+          </Link>
+        </nav>
+        
+        <nav className="sidebar-nav mt-auto border-t" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
+          <Link to="/login" className="nav-item">
+            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            {t('logout')}
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+        <div style={{ maxWidth: '900px' }}>
           
           {/* Header */}
           <div className="flex justify-between items-center mb-8" style={{ paddingBottom: '24px', borderBottom: '1px solid var(--border)' }}>
@@ -102,7 +108,7 @@ const Profile = () => {
                 <h2 style={{ fontSize: '22px' }}>{firstName} {lastName}</h2>
                 <span className="badge badge-purple">{t('analyst_role')}</span>
               </div>
-              <p className="mb-2">{email || 'user@example.com'}</p>
+              <p className="mb-2">alex.thompson@datastore-app.com</p>
               <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>{t('member_since')}</p>
             </div>
           </div>
@@ -270,6 +276,7 @@ const Profile = () => {
           </div>
 
         </div>
+      </main>
     </div>
   );
 };

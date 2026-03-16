@@ -88,20 +88,78 @@ const PaymentSettingsPage = () => {
     setForm(prev => ({ ...prev, [key]: e.target.value }));
   };
 
+  /* ──────────── Sidebar ──────────── */
+  const Sidebar = () => (
+    <aside className="sidebar" style={{ borderInlineEnd: '1px solid var(--border)', ...(isRtl ? { left: 'auto', right: 0 } : {}) }}>
+      <div className="sidebar-logo flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div style={{ width: '28px', height: '28px', background: '#6c2bd9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          </div>
+          {t('app_name')}
+        </div>
+        <button onClick={toggleLanguage} className="btn" style={{ padding: '4px 8px', fontSize: '10px' }}>
+          {isRtl ? 'EN' : 'AR'}
+        </button>
+      </div>
+
+      <nav className="sidebar-nav mt-4" style={{ flex: 1 }}>
+        <Link to="/dashboard" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          {t('dashboard')}
+        </Link>
+        <Link to="/logs" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          {t('logs')}
+        </Link>
+        <Link to="/management" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          {t('admin')}
+        </Link>
+        <Link
+          to="/admin/payment-settings"
+          className="nav-item active"
+          style={{ position: 'relative' }}
+        >
+          <div style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '-24px', top: 0, bottom: 0, width: '4px', background: 'var(--primary)', borderRadius: isRtl ? '4px 0 0 4px' : '0 4px 4px 0' }}></div>
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          {t('paysettings_nav')}
+        </Link>
+        <Link to="/admin/content" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          {t('content_manager_nav')}
+        </Link>
+        <Link to="/settings" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+          {t('settings')}
+        </Link>
+      </nav>
+
+      <nav className="sidebar-nav mt-auto" style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
+        <Link to="/login" className="nav-item">
+          <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          {t('logout')}
+        </Link>
+      </nav>
+    </aside>
+  );
 
   if (isLoading) {
     return (
-      <div className="p-8" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+        <Sidebar />
+        <main className="main-content" style={{ marginInlineStart: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <p style={{ color: '#94a3b8' }}>Loading…</p>
-        </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="p-8" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div style={{ maxWidth: '780px' }}>
+    <div className="app-layout" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+      <Sidebar />
+      <main className="main-content" style={{ marginInlineStart: '260px', marginInlineEnd: 0 }}>
+        <div style={{ maxWidth: '780px' }}>
 
           {/* Header */}
           <div className="flex justify-between items-center mb-6" style={{ paddingBottom: '24px', borderBottom: '1px solid var(--border)' }}>
@@ -243,6 +301,7 @@ const PaymentSettingsPage = () => {
           </div>
 
         </div>
+      </main>
     </div>
   );
 };

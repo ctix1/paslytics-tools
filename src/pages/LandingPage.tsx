@@ -1,33 +1,16 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useContent } from '../context/ContentContext';
-import { supabase } from '../lib/supabase';
 
 const LandingPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
   const { homepage } = useContent();
   const isRtl = language === 'ar';
   const get = (en: string, ar: string) => isRtl ? ar : en;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate('/dashboard');
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) navigate('/dashboard');
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
 
   return (
     <div style={{ backgroundColor: '#fcfcfd', minHeight: '100vh', direction: isRtl ? 'rtl' : 'ltr' }}>
-      <div className="container" style={{ margin: '0 auto', maxWidth: '1200px', padding: '0 24px' }}>
+      <div className="container" style={{ margin: '0 auto', maxWidth: '1200px' }}>
         
         {/* Top Nav */}
         <header className="landing-nav" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
@@ -39,7 +22,6 @@ const LandingPage = () => {
           </div>
           
           <div className="landing-nav-links" style={{ display: 'flex', gap: '32px' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: '#6c2bd9', fontSize: '14px', fontWeight: 600, borderBottom: '2px solid #6c2bd9', paddingBottom: '2px' }}>{t('home')}</Link>
             <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
             <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </div>
