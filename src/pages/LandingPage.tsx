@@ -14,14 +14,15 @@ const LandingPage = () => {
         
         {/* Top Nav */}
         <header className="landing-nav" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0', marginBottom: '40px' }}>
-          <div className="flex items-center gap-2">
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{ width: '24px', height: '24px', color: '#6c2bd9' }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-dark)' }}>{t('app_name')}</span>
-          </div>
+          </Link>
           
           <div className="landing-nav-links" style={{ display: 'flex', gap: '32px' }}>
+            <Link to="/" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('home')}</Link>
             <Link to="/pricing" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('plan')}</Link>
             <Link to="/about" style={{ textDecoration: 'none', color: '#475569', fontSize: '14px', fontWeight: 500 }}>{t('about')}</Link>
           </div>

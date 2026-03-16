@@ -15,7 +15,6 @@ export const translations = {
     // Landing Page
     home: 'Home',
     features: 'Features',
-    pricing: 'Pricing',
     plan: 'Plan',
     about: 'About',
     next_gen: 'NEXT-GEN MARKETING TOOL',
@@ -348,7 +347,6 @@ export const translations = {
     // Landing Page
     home: 'الرئيسية',
     features: 'الميزات',
-    pricing: 'الأسعار',
     plan: 'الخطة',
     about: 'حول',
     next_gen: 'أداة التسويق للجيل القادم',

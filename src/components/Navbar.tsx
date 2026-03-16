@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { css } from '../../styled-system/css';
 
 const Navbar = () => {
+  const { t } = useLanguage();
   return (
     <nav className={css({
       display: 'flex',
@@ -18,7 +20,7 @@ const Navbar = () => {
       borderBottom: '1px solid',
       borderColor: 'slate.100'
     })}>
-      <div className={css({ display: 'flex', alignItems: 'center', gap: '8px' })}>
+      <Link to="/" className={css({ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' })}>
         <div className={css({ 
           width: '36px', 
           height: '36px', 
@@ -36,8 +38,8 @@ const Navbar = () => {
           fontWeight: 'bold', 
           color: 'slate.900', 
           tracking: 'tight' 
-        })}>PASlytics</span>
-      </div>
+        })}>{t('app_name')}</span>
+      </Link>
       
       <div className={css({ 
         display: { base: 'none', md: 'flex' }, 
@@ -49,8 +51,9 @@ const Navbar = () => {
         textTransform: 'uppercase', 
         tracking: 'wider' 
       })}>
-        <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' } })}>Pricing</Link>
-        <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' } })}>About</Link>
+        <Link to="/" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('home')}</Link>
+        <Link to="/pricing" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('plan')}</Link>
+        <Link to="/about" className={css({ transition: 'colors', _hover: { color: 'brand.primary' }, textDecoration: 'none' })}>{t('about')}</Link>
       </div>
 
       <div className={css({ display: 'flex', alignItems: 'center', gap: '16px' })}>
@@ -63,7 +66,7 @@ const Navbar = () => {
           textDecoration: 'none',
           transition: 'colors', 
           _hover: { color: 'brand.primary' } 
-        })}>Log in</Link>
+        })}>{t('login')}</Link>
         <Link to="/login" className={css({ 
           paddingX: '24px', 
           paddingY: '10px', 
@@ -77,7 +80,7 @@ const Navbar = () => {
           boxShadow: '0 10px 15px -3px rgba(109, 40, 217, 0.1)',
           _hover: { backgroundColor: 'brand.secondary' } 
         })}>
-          Get Started
+          {t('get_started')}
         </Link>
       </div>
     </nav>

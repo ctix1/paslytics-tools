@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '../i18n/LanguageContext';
 import { 
+  Home,
   LayoutDashboard, 
   Settings, 
   ClipboardList, 
@@ -11,13 +13,15 @@ import {
 import { css, cx } from '../../styled-system/css';
 
 const Sidebar = () => {
+  const { t } = useLanguage();
   const location = useLocation();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-    { icon: ClipboardList, label: 'Logs', path: '/logs' },
-    { icon: Users, label: 'Management', path: '/management' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: Home, label: t('home'), path: '/' },
+    { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
+    { icon: ClipboardList, label: t('logs'), path: '/logs' },
+    { icon: Users, label: t('user_management'), path: '/management' },
+    { icon: Settings, label: t('profile_settings'), path: '/settings' },
   ];
 
   return (
@@ -34,11 +38,12 @@ const Sidebar = () => {
       overflow: 'hidden',
       flexShrink: 0
     })}>
-      <div className={css({ 
+      <Link to="/" className={css({ 
         padding: '32px', 
         display: 'flex', 
         alignItems: 'center', 
-        gap: '12px' 
+        gap: '12px',
+        textDecoration: 'none'
       })}>
         <div className={css({ 
           width: '40px', 
@@ -58,7 +63,7 @@ const Sidebar = () => {
           color: 'slate.900', 
           tracking: 'tight' 
         })}>PASlytics</span>
-      </div>
+      </Link>
 
       <nav className={css({ 
         flex: 1, 
@@ -84,6 +89,7 @@ const Sidebar = () => {
                 fontWeight: 'bold',
                 transition: 'all',
                 color: 'slate.500',
+                textDecoration: 'none',
                 _hover: { backgroundColor: 'slate.50', color: 'slate.900' }
               }),
               location.pathname === item.path && css({
@@ -135,7 +141,7 @@ const Sidebar = () => {
           })}
         >
           <HelpCircle className={css({ width: '20px', height: '20px', color: 'slate.400' })} />
-          Support
+          {t('contact')}
         </button>
         <Link
           to="/login"
@@ -155,7 +161,7 @@ const Sidebar = () => {
           })}
         >
           <LogOut className={css({ width: '20px', height: '20px' })} />
-          Log Out
+          {t('logout')}
         </Link>
       </div>
 
