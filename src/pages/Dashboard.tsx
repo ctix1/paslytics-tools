@@ -83,7 +83,7 @@ ${t('mm_budget')}
   • ${t('mm_budget_digital')}
   • ${t('mm_budget_content')}
   • ${t('mm_budget_influencer')}
-  • ${t('mm_budget_analytics')}`);
+  • ${t('mm_budget_analytics')}`;
     
     // For now, let's just alert the plan or we could log it
     alert(planText);
