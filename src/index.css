@@ -26,7 +26,13 @@
   }
   
   body {
-    @apply bg-[#020617] text-slate-200 font-plus-jakarta antialiased;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #020617; /* slate-950 */
+    color: #f8fafc; /* slate-50 */
+    overflow-x: hidden;
     background-image: 
       radial-gradient(at 0% 0%, rgba(109, 40, 217, 0.15) 0px, transparent 50%),
       radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),

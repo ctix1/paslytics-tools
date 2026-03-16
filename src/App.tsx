@@ -13,6 +13,8 @@ import SiteManagement from './pages/SiteManagement';
 import Profile from './pages/Profile';
 import PaymentSettings from './pages/PaymentSettings';
 import ContentManager from './pages/ContentManager';
+import MarketingAssistant from './pages/MarketingAssistant';
+import ProductCalculatorPage from './pages/ProductCalculatorPage';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
@@ -69,6 +71,8 @@ function App() {
 
                 <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/marketing" element={<MarketingAssistant />} />
+                  <Route path="/calculator" element={<ProductCalculatorPage />} />
                   <Route path="/logs" element={<SystemLogs />} />
                   <Route path="/management" element={<SiteManagement />} />
                   <Route path="/settings" element={<Profile />} />
