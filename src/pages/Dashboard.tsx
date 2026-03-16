@@ -127,7 +127,7 @@ const Dashboard = () => {
             {t('pas_analysis_title')}
           </motion.h1>
           <p className="text-slate-400 text-lg">
-            {isRtl ? 'حول ميزات منتجك إلى فوائد عاطفية مقنعة.' : 'Transform product features into emotional impact.'}
+            {t('dashboard_hero_subtitle')}
           </p>
         </div>
         
@@ -200,7 +200,7 @@ const Dashboard = () => {
                   className="max-w-md mx-auto"
                 >
                   <div className="flex justify-between mb-4">
-                    <span className="font-black text-purple-400">{isRtl ? 'جاري التحليل...' : 'Analyzing Neural Patterns...'}</span>
+                    <span className="font-black text-purple-400">{t('dashboard_analyzing')}</span>
                     <span className="font-mono text-white">{uploadProgress}%</span>
                   </div>
                   <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden">
@@ -245,7 +245,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-black text-white">{t('pas_output')}</h2>
                 <div className="ml-auto flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-purple-500/30">
                   <Rocket className="w-3.5 h-3.5" />
-                  AI Precision
+                  {t('dashboard_ai_precision')}
                 </div>
               </div>
 
@@ -311,7 +311,7 @@ const Dashboard = () => {
                 />
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">
-                {isRtl ? 'تحليل استجابات القشرة الجبهية المستهدفة.' : 'Targeting prefrontal cortex emotional triggers.'}
+                {t('dashboard_emotional_sub')}
               </p>
             </div>
 
@@ -319,10 +319,10 @@ const Dashboard = () => {
             <div className="lg:col-span-4 glass-panel p-8 bg-brand-primary group overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 -rotate-45 translate-x-12 -translate-y-12" />
                <BarChart3 className="text-white w-10 h-10 mb-6 group-hover:scale-110 transition-transform" />
-               <h3 className="text-xl font-black text-white mb-2">Price Optimization</h3>
-               <p className="text-purple-200 text-sm mb-6">Unlock competitive edge through AI-driven cost structures.</p>
+               <h3 className="text-xl font-black text-white mb-2">{t('dashboard_price_opt')}</h3>
+               <p className="text-purple-200 text-sm mb-6">{t('dashboard_price_desc')}</p>
                <button className="px-4 py-2 bg-white text-purple-900 text-xs font-black rounded-lg group-hover:translate-x-1 transition-transform">
-                 SYSTEM SYNC
+                 {t('dashboard_system_sync')}
                </button>
             </div>
 
@@ -345,11 +345,11 @@ const Dashboard = () => {
                  <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                       <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('gender_target')}</div>
-                      <div className="text-white font-bold">50/50 Optimized</div>
+                      <div className="text-white font-bold">50/50 {t('dashboard_optimized')}</div>
                     </div>
                     <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                       <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('age_target')}</div>
-                      <div className="text-white font-bold">18-35 Viral Tier</div>
+                      <div className="text-white font-bold">18-35 {t('dashboard_viral_tier')}</div>
                     </div>
                  </div>
                  <button className="btn-premium w-full !rounded-2xl py-4 flex items-center justify-center gap-2 group">
