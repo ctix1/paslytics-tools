@@ -169,6 +169,15 @@ export const translations = {
     analysis_complete: "Analysis Complete",
     analyze_another: "Analyze Another Image",
     marketing: "Marketing",
+    dashboard_hero_subtitle: "Transform product features into emotional impact.",
+    dashboard_analyzing: "Analyzing Neural Patterns...",
+    dashboard_ai_precision: "AI Precision",
+    dashboard_emotional_sub: "Targeting prefrontal cortex emotional triggers.",
+    dashboard_price_opt: "Price Optimization",
+    dashboard_price_desc: "Unlock competitive edge through AI-driven cost structures.",
+    dashboard_system_sync: "SYSTEM SYNC",
+    dashboard_optimized: "Optimized",
+    dashboard_viral_tier: "Viral Tier",
 
     // Analysis Results
     analysis_results: "Analysis Results",
@@ -273,6 +282,12 @@ export const translations = {
     checkout_err_card: 'Please enter a valid 16-digit card number.',
     checkout_err_expiry: 'Please enter a valid future expiry date (MM/YY).',
     checkout_err_cvv: 'Please enter a valid CVV.',
+    checkout_processing_title: 'Processing Payment…',
+    checkout_trust_title: 'Why trust PASlytics?',
+    checkout_trust_1_title: 'End-to-End Encryption',
+    checkout_trust_1_desc: 'Your payment details are encrypted before leaving your browser using industry-standard protocols.',
+    checkout_trust_2_title: 'PCI-DSS Compliant',
+    checkout_trust_2_desc: 'We partner with the world\'s most secure payment processors to ensure your data is always safe.',
 
     // Admin Payment Settings
     paysettings_nav: 'Payment Settings',
@@ -348,8 +363,21 @@ export const translations = {
     sub_cancel_proceed: 'Yes, Cancel Subscription',
     sub_cancelled_msg: 'Your subscription has been successfully cancelled.',
 
-    language_ar: 'العربية',
-    language_en: 'English'
+    // Register Page
+    register_hero_title: 'The Future of Product Analysis is Here.',
+    register_hero_desc: 'Join the next generation of product managers using AI to drive exponential growth and consumer resonance.',
+    register_feature_1: 'AI-Driven PAS Framework',
+    register_feature_2: 'Real-time Market Insights',
+    register_feature_3: 'Global Export Support',
+    register_success_title: 'Account Created Successfully!',
+    register_success_desc: 'Welcome to the future of product analysis. You can now sign in and start your first project.',
+    already_have_account: 'Already have an account?',
+    full_name: 'Full Name',
+    terms_privacy_notice: 'By creating an account, you agree to our Terms of Service and Privacy Policy.',
+
+    // Additional Payment Settings
+    saved: 'Saved',
+    quick_actions: 'Quick Actions'
   },
   ar: {
     app_name: 'PASlytics',
@@ -514,6 +542,15 @@ export const translations = {
     faq_pas_a: 'PAS اختصار لـ المشكلة-التهيج-الحل. إنه إطار كتابة إعلانية مثبت يستخدمه مسوقو الاستجابة المباشرة لصياغة رسائل منتجات ذات صدى عاطفي.',
     faq_enterprise_q: 'هل تقدمون خططًا مخصصة للمؤسسات؟',
     faq_enterprise_a: 'نعم. يرجى التواصل معنا عبر قسم اتصل بالمبيعات وسيقوم فريقنا بتصميم خطة تناسب متطلبات مؤسستك.',
+    dashboard_hero_subtitle: "حول ميزات منتجك إلى فوائد عاطفية مقنعة.",
+    dashboard_analyzing: "جاري التحليل...",
+    dashboard_ai_precision: "دقة الذكاء الاصطناعي",
+    dashboard_emotional_sub: "تحليل استجابات القشرة الجبهية المستهدفة.",
+    dashboard_price_opt: "تحسين السعر",
+    dashboard_price_desc: "افتح ميزة تنافسية من خلال هياكل التكلفة المدفوعة بالذكاء الاصطناعي.",
+    dashboard_system_sync: "مزامنة النظام",
+    dashboard_optimized: "محسّن",
+    dashboard_viral_tier: "فئة الانتشار",
 
     // Marketing Manager
     mm_title: 'مدير التسويق',
@@ -608,6 +645,12 @@ export const translations = {
     checkout_err_card: 'يرجى إدخال رقم بطاقة صالح مكون من 16 رقمًا.',
     checkout_err_expiry: 'يرجى إدخال تاريخ انتهاء صالح في المستقبل (MM/YY).',
     checkout_err_cvv: 'يرجى إدخال رمز CVV صالح.',
+    checkout_processing_title: 'جارٍ معالجة الدفع…',
+    checkout_trust_title: 'لماذا تثق في PASlytics؟',
+    checkout_trust_1_title: 'تشفير نهائي شامل',
+    checkout_trust_1_desc: 'يتم تشفير بيانات الدفع الخاصة بك قبل مغادرة متصفحك باستخدام بروتوكولات معيارية عالمية.',
+    checkout_trust_2_title: 'متوافق مع PCI-DSS',
+    checkout_trust_2_desc: 'نحن نشارك أكثر معالجي الدفع أمانًا في العالم لضمان سلامة بياناتك دائمًا.',
 
     // Admin Payment Settings
     paysettings_nav: 'إعدادات الدفع',
@@ -683,8 +726,21 @@ export const translations = {
     sub_cancel_proceed: 'نعم، إلغاء الاشتراك',
     sub_cancelled_msg: 'تم إلغاء اشتراكك بنجاح.',
 
-    language_ar: 'العربية',
-    language_en: 'English'
+    // Register Page
+    register_hero_title: 'مستقبل تحليل المنتجات هنا.',
+    register_hero_desc: 'انضم إلى الجيل القادم من مديري المنتجات الذين يستخدمون الذكاء الاصطناعي لتحقيق نمو هائل ورنين لدى المستهلكين.',
+    register_feature_1: 'إطار عمل PAS مدفوع بالذكاء الاصطناعي',
+    register_feature_2: 'رؤى السوق في الوقت الفعلي',
+    register_feature_3: 'دعم التصدير العالمي',
+    register_success_title: 'تم إنشاء الحساب بنجاح!',
+    register_success_desc: 'مرحباً بك في مستقبل تحليل المنتجات. يمكنك الآن تسجيل الدخول وبدء مشروعك الأول.',
+    already_have_account: 'لديك حساب بالفعل؟',
+    full_name: 'الاسم الكامل',
+    terms_privacy_notice: 'من خلال إنشاء حساب، فإنك توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.',
+
+    // Additional Payment Settings
+    saved: 'تم الحفظ',
+    quick_actions: 'إجراءات سريعة'
   }
 };
 
