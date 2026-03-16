@@ -1,11 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import { useLanguage } from '../i18n/LanguageContext';
 import { FormEvent, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { css } from '../../styled-system/css';
 
 const RegisterPage = () => {
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const isRtl = language === 'ar';
 
@@ -66,7 +67,11 @@ const RegisterPage = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/dashboard'
+          redirectTo: window.location.origin + '/dashboard',
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
         }
       });
       if (error) throw error;
@@ -85,46 +90,7 @@ const RegisterPage = () => {
       flexDirection: 'column' 
     })} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
       
-      {/* Top Navbar Simulation */}
-      <header className={css({ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'between', 
-        padding: '24px 48px', 
-        backgroundColor: 'white', 
-        borderBottom: '1px solid',
-        borderColor: 'slate.100'
-      })}>
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-          <div className={css({ 
-            width: '28px', 
-            height: '28px', 
-            backgroundColor: 'brand.primary', 
-            borderRadius: 'md', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center' 
-          })}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="16" height="16"><path d="M3 14l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
-          <span className={css({ fontSize: 'lg', fontWeight: '800', color: 'slate.900' })}>PASlytics</span>
-        </div>
-        
-        <div className={css({ display: 'flex', gap: '8', fontWeight: 'semibold', fontSize: 'sm', color: 'slate.500' })}>
-          <Link to="/" className={css({ color: 'inherit', textDecoration: 'none', _hover: { color: 'brand.primary' } })}>{t('home')}</Link>
-          <Link to="/plan" className={css({ color: 'inherit', textDecoration: 'none', _hover: { color: 'brand.primary' } })}>{t('plan')}</Link>
-          <Link to="/about" className={css({ color: 'brand.primary', textDecoration: 'none', borderBottom: '2px solid', paddingBottom: '1' })}>{t('about')}</Link>
-        </div>
-        
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-          <button onClick={toggleLanguage} className={css({ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '1.5', color: 'slate.500', fontSize: 'sm', fontWeight: 'medium', cursor: 'pointer' })}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-            {isRtl ? 'English' : 'العربية'}
-          </button>
-          <Link to="/login" className={css({ paddingX: '4', paddingY: '2', backgroundColor: 'slate.100', color: 'slate.600', borderRadius: 'lg', fontSize: 'sm', fontWeight: 'semibold', textDecoration: 'none' })}>{t('login')}</Link>
-          <button onClick={() => alert('Start your journey')} className={css({ paddingX: '4', paddingY: '2', backgroundColor: 'brand.primary', color: 'white', borderRadius: 'lg', fontSize: 'sm', fontWeight: 'semibold', border: 'none', cursor: 'pointer', _hover: { backgroundColor: 'brand.secondary' } })}>{t('get_started')}</button>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className={css({ flex: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px' })}>

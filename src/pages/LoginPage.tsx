@@ -21,7 +21,7 @@ const LoginPage = () => {
           redirectTo: window.location.origin + '/dashboard',
           queryParams: {
             access_type: 'offline',
-            prompt: 'consensus'
+            prompt: 'consent'
           }
         }
       });
