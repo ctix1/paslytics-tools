@@ -48,10 +48,10 @@ const Checkout = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const features = [
-    t('pricing_feature_image'),
-    t('pricing_feature_pas'),
-    t('pricing_feature_logs'),
-    ...(isAnnual ? [t('pricing_feature_team'), t('pricing_feature_support')] : []),
+    t('plan_feature_image'),
+    t('plan_feature_pas'),
+    t('plan_feature_logs'),
+    ...(isAnnual ? [t('plan_feature_team'), t('plan_feature_support')] : []),
   ];
 
   const validate = () => {
