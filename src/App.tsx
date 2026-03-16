@@ -17,7 +17,6 @@ import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { css } from '../styled-system/css';
 
 // Simple Protected Route Wrapper using AuthContext
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -25,34 +24,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   if (loading) {
     return (
-      <div className={css({ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        flexDirection: 'column',
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        backgroundColor: 'slate.50', 
-        color: 'slate.600' 
-      })}>
-        <div className={css({ 
-          width: '40px', 
-          height: '40px', 
-          border: '4px solid', 
-          borderColor: 'brand.light', 
-          borderTopColor: 'brand.primary', 
-          borderRadius: 'full', 
-          animation: 'spin 1s linear infinite',
-          marginBottom: '16px'
-        })} />
-        <span className={css({ fontWeight: 'bold' })}>Authenticating...</span>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-400">
+        <div className="w-10 h-10 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4" />
+        <span className="font-black uppercase tracking-widest text-xs">Authenticating...</span>
       </div>
     );
   }
 
   if (!user) {
-    // Check if we are in the middle of a hash-based callback
+    // Check if we are in the middle of a hash-based callback (Supabase)
     if (window.location.hash.includes('access_token=')) {
-      return <div>Completing login...</div>;
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950">
+          <div className="w-10 h-10 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
+        </div>
+      );
     }
     return <Navigate to="/login" replace />; 
   }
@@ -100,4 +86,4 @@ function App() {
   );
 }
 
-export { App };
+export default App;
