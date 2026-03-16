@@ -1,7 +1,6 @@
 export const translations = {
   en: {
-    // Shared
-    app_name: 'PASlytics (v2)',
+    app_name: 'PASlytics',
     login: 'Login',
     logout: 'Logout',
     get_started: 'Get Started',
@@ -132,11 +131,11 @@ export const translations = {
     change_password: 'Change Password',
 
     // Pricing Page
-    pricing_plans_badge: 'PRICING PLANS',
-    pricing_title_1: 'Simple,',
-    pricing_title_2: 'transparent',
-    pricing_title_3: 'pricing',
-    pricing_subtitle: 'Choose the perfect plan to optimize your PAS marketing framework with our advanced AI analytics.',
+    plan_plans_badge: 'PLANS',
+    plan_title_1: 'Simple,',
+    plan_title_2: 'transparent',
+    plan_title_3: 'plans',
+    plan_subtitle: 'Choose the perfect plan to optimize your PAS marketing framework with our advanced AI analytics.',
     plan_monthly_title: 'Monthly Subscription',
     plan_monthly_desc: 'Perfect for solo marketers and small projects.',
     plan_annual_title: 'Annual Subscription',
@@ -150,11 +149,11 @@ export const translations = {
     whats_included: "WHAT'S INCLUDED",
     everything_monthly_plus: 'EVERYTHING IN MONTHLY, PLUS',
     best_value: 'BEST VALUE',
-    pricing_feature_image: 'AI Image Analysis',
-    pricing_feature_pas: 'PAS Framework Output',
-    pricing_feature_logs: 'Full Analysis Logs',
-    pricing_feature_team: 'Team Management',
-    pricing_feature_support: 'Priority Support',
+    plan_feature_image: 'AI Image Analysis',
+    plan_feature_pas: 'PAS Framework Output',
+    plan_feature_logs: 'Full Analysis Logs',
+    plan_feature_team: 'Team Management',
+    plan_feature_support: 'Priority Support',
     plan_chosen_alert: 'Redirecting to checkout...',
     faq_title: 'Frequently Asked Questions',
     faq_cancel_q: 'Can I cancel my subscription?',
@@ -223,7 +222,7 @@ export const translations = {
 
     // Checkout Page
     checkout_title: 'Complete Your Purchase',
-    checkout_back: 'Back to Pricing',
+    checkout_back: 'Back to Plan',
     checkout_order_summary: 'Order Summary',
     checkout_proceed: 'Continue to Payment',
     checkout_secure: 'Secured & Encrypted',
@@ -336,8 +335,7 @@ export const translations = {
     language_en: 'English'
   },
   ar: {
-    // Shared
-    app_name: 'PASlytics (v2)',
+    app_name: 'PASlytics',
     login: 'تسجيل الدخول',
     logout: 'تسجيل الخروج',
     get_started: 'ابدأ الآن',
@@ -468,11 +466,11 @@ export const translations = {
     change_password: 'تغيير كلمة المرور',
 
     // Pricing Page
-    pricing_plans_badge: 'خطط الأسعار',
-    pricing_title_1: 'أسعار',
-    pricing_title_2: 'شفافة',
-    pricing_title_3: 'وبسيطة',
-    pricing_subtitle: 'اختر الخطة المثالية لتحسين إطار عمل PAS التسويقي الخاص بك مع تحليلات الذكاء الاصطناعي المتقدمة.',
+    plan_plans_badge: 'الخطط',
+    plan_title_1: 'خطة ',
+    plan_title_2: 'شفافة',
+    plan_title_3: 'وبسيطة',
+    plan_subtitle: 'اختر الخطة المثالية لتحسين إطار عمل PAS التسويقي الخاص بك مع تحليلات الذكاء الاصطناعي المتقدمة.',
     plan_monthly_title: 'الاشتراك الشهري',
     plan_monthly_desc: 'مثالي للمسوقين المستقلين والمشاريع الصغيرة.',
     plan_annual_title: 'الاشتراك السنوي',
@@ -486,11 +484,11 @@ export const translations = {
     whats_included: 'ما يشمله الاشتراك',
     everything_monthly_plus: 'كل ما في الشهري، بالإضافة إلى',
     best_value: 'أفضل قيمة',
-    pricing_feature_image: 'تحليل الصور بالذكاء الاصطناعي',
-    pricing_feature_pas: 'مخرجات إطار عمل PAS',
-    pricing_feature_logs: 'سجلات التحليل الكاملة',
-    pricing_feature_team: 'إدارة الفريق',
-    pricing_feature_support: 'الدعم الأولوي',
+    plan_feature_image: 'تحليل الصور بالذكاء الاصطناعي',
+    plan_feature_pas: 'مخرجات إطار عمل PAS',
+    plan_feature_logs: 'سجلات التحليل الكاملة',
+    plan_feature_team: 'إدارة الفريق',
+    plan_feature_support: 'الدعم الأولوي',
     plan_chosen_alert: 'جارٍ التحويل إلى صفحة الدفع...',
     faq_title: 'الأسئلة الشائعة',
     faq_cancel_q: 'هل يمكنني إلغاء اشتراكي؟',
@@ -559,7 +557,7 @@ export const translations = {
 
     // Checkout Page
     checkout_title: 'أكمل عملية الشراء',
-    checkout_back: 'العودة إلى الأسعار',
+    checkout_back: 'العودة إلى الخطة',
     checkout_order_summary: 'ملخص الطلب',
     checkout_proceed: 'المتابعة إلى الدفع',
     checkout_secure: 'آمن ومشفر',
