@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "panda prepare && vite build",
-    "preview": "vite preview",
-    "prepare": "panda prepare"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -26,7 +25,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "~5.7.2",
     "vite": "^6.0.3",
-    "vite-plugin-singlefile": "^2.1.0",
-    "@pandacss/dev": "^0.52.0"
+    "vite-plugin-singlefile": "^2.1.0"
   }
 }
