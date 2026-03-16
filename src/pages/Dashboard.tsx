@@ -5,17 +5,14 @@ import { useSubscription } from '../context/SubscriptionContext';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import {
   Upload, 
   FileText,
   CheckCircle2,
   BrainCircuit,
   Zap,
   ArrowRight,
-  Calculator,
-  Megaphone,
   Plus,
-  BarChart3,
   Lightbulb,
   Target,
   Rocket
@@ -41,25 +38,12 @@ const Dashboard = () => {
     emotional_score: 88
   });
 
-  const [mmDescription, setMmDescription] = useState('');
-  const [pcBase, setPcBase] = useState('');
-  const [pcProfit, setPcProfit] = useState('');
-  const [pcMarketing, setPcMarketing] = useState('');
-
-  const calcFinalPrice = () => {
-    const base = parseFloat(pcBase) || 0;
-    const profit = base * ((parseFloat(pcProfit) || 0) / 100);
-    const marketing = parseFloat(pcMarketing) || 0;
-    return (base + profit + marketing).toFixed(2);
-  };
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsUploading(true);
     setUploadProgress(0);
     
-    // Simulate progress
     const interval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev >= 95) { clearInterval(interval); return 95; }
@@ -234,7 +218,7 @@ const Dashboard = () => {
             </AnimatePresence>
           </section>
 
-          {/* Main Bento Grid */}
+          {/* Main Analysis Output Grid */}
           <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 transition-opacity duration-700 ${analysisComplete ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
             
             {/* Framework Bento Box (Full width) */}
@@ -250,7 +234,7 @@ const Dashboard = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="premium-card bg-red-500/5 border-red-500/20 p-8 group/card">
+                <div className="premium-card bg-red-500/5 border-red-500/20 p-8 group/card hover:bg-red-500/10 transition-colors">
                   <div className="text-red-400 text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                     <Target className="w-4 h-4" />
                     {t('problem')}
@@ -260,7 +244,7 @@ const Dashboard = () => {
                   </p>
                 </div>
 
-                <div className="premium-card bg-orange-500/5 border-orange-500/20 p-8 group/card">
+                <div className="premium-card bg-orange-500/5 border-orange-500/20 p-8 group/card hover:bg-orange-500/10 transition-colors">
                   <div className="text-orange-400 text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                      <Zap className="w-4 h-4" />
                     {t('agitation')}
@@ -270,7 +254,7 @@ const Dashboard = () => {
                   </p>
                 </div>
 
-                <div className="premium-card bg-green-500/5 border-green-500/20 p-8 group/card">
+                <div className="premium-card bg-green-500/5 border-green-500/20 p-8 group/card hover:bg-green-500/10 transition-colors">
                   <div className="text-green-400 text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
                     {t('solution')}
@@ -282,124 +266,40 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Quick Take (Span 4) */}
-            <div className="lg:col-span-4 glass-panel p-8 flex flex-col justify-between overflow-hidden bg-slate-950/40 relative group">
-              <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-purple-500/20 blur-3xl rounded-full" />
+            {/* Quick Take (Span 6) */}
+            <div className="lg:col-span-6 glass-panel p-10 flex flex-col justify-between overflow-hidden bg-slate-950/40 relative group">
+              <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-purple-500/10 blur-3xl rounded-full" />
               <div>
-                <div className="flex items-center gap-2 text-slate-400 text-xs font-black uppercase tracking-widest mb-6">
-                  <Lightbulb className="w-4 h-4 text-amber-400" />
+                <div className="flex items-center gap-2 text-slate-400 text-xs font-black uppercase tracking-widest mb-8">
+                  <Lightbulb className="w-5 h-5 text-amber-400" />
                   {t('ai_quick_take')}
                 </div>
-                <p className="text-white text-lg font-medium leading-relaxed italic relative z-10">
+                <p className="text-white text-2xl font-medium leading-relaxed italic relative z-10">
                   "{pasOutput.ai_quick_take || t('quick_take_text')}"
                 </p>
               </div>
+              <div className="mt-8 pt-8 border-t border-white/5 text-slate-500 text-sm">
+                Generated based on visual content & market trends.
+              </div>
             </div>
 
-            {/* Resonance Score (Span 4) */}
-            <div className="lg:col-span-4 glass-panel p-8 bg-gradient-to-br from-white/5 to-white/[0.02]">
-              <div className="text-slate-400 text-xs font-black uppercase tracking-widest mb-8">{t('emotional_resonance')}</div>
-              <div className="flex items-end gap-3 mb-6">
-                <span className="text-6xl font-black text-white leading-none">{pasOutput.emotional_score}</span>
-                <span className="text-2xl font-black text-purple-400 mb-1">%</span>
+            {/* Resonance Score (Span 6) */}
+            <div className="lg:col-span-6 glass-panel p-10 bg-gradient-to-br from-white/5 to-white/[0.02]">
+              <div className="text-slate-400 text-xs font-black uppercase tracking-widest mb-10">{t('emotional_resonance')}</div>
+              <div className="flex items-end gap-4 mb-8">
+                <span className="text-8xl font-black text-white leading-none tracking-tighter">{pasOutput.emotional_score}</span>
+                <span className="text-4xl font-black text-purple-400 mb-2">%</span>
               </div>
-              <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden mb-4">
+              <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden mb-6">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${pasOutput.emotional_score}%` }}
-                  className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500"
+                  className="h-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
                 />
               </div>
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <p className="text-slate-400 text-lg leading-relaxed">
                 {t('dashboard_emotional_sub')}
               </p>
-            </div>
-
-            {/* Price Insights (Span 4) */}
-            <div className="lg:col-span-4 glass-panel p-8 bg-brand-primary group overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 -rotate-45 translate-x-12 -translate-y-12" />
-               <BarChart3 className="text-white w-10 h-10 mb-6 group-hover:scale-110 transition-transform" />
-               <h3 className="text-xl font-black text-white mb-2">{t('dashboard_price_opt')}</h3>
-               <p className="text-purple-200 text-sm mb-6">{t('dashboard_price_desc')}</p>
-               <button className="px-4 py-2 bg-white text-purple-900 text-xs font-black rounded-lg group-hover:translate-x-1 transition-transform">
-                 {t('dashboard_system_sync')}
-               </button>
-            </div>
-
-            {/* Marketing Manager Widget (Span 7) */}
-            <div className="lg:col-span-7 glass-panel p-8">
-               <div className="flex items-center gap-3 mb-8">
-                 <div className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center">
-                   <Megaphone className="text-amber-400 w-5 h-5" />
-                 </div>
-                 <h3 className="text-xl font-black text-white">{t('mm_title')}</h3>
-               </div>
-               
-               <div className="space-y-6">
-                 <textarea 
-                   value={mmDescription}
-                   onChange={(e) => setMmDescription(e.target.value)}
-                   placeholder={t('mm_product_placeholder')}
-                   className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-6 text-white text-sm focus:border-purple-500/50 outline-none transition-all placeholder:text-slate-600 font-medium"
-                 />
-                 <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-white/5 rounded-xl border border-white/5">
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('gender_target')}</div>
-                      <div className="text-white font-bold">50/50 {t('dashboard_optimized')}</div>
-                    </div>
-                    <div className="p-4 bg-white/5 rounded-xl border border-white/5">
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('age_target')}</div>
-                      <div className="text-white font-bold">18-35 {t('dashboard_viral_tier')}</div>
-                    </div>
-                 </div>
-                 <button className="btn-premium w-full !rounded-2xl py-4 flex items-center justify-center gap-2 group">
-                   {t('mm_generate')}
-                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                 </button>
-               </div>
-            </div>
-
-            {/* Calculator Widget (Span 5) */}
-            <div className="lg:col-span-5 glass-panel p-8 relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-8 pointer-events-none opacity-10">
-                 <Calculator className="w-24 h-24 text-white" />
-               </div>
-               <h3 className="text-xl font-black text-white mb-8 flex items-center gap-3">
-                 <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                    <Calculator className="text-blue-400 w-5 h-5" />
-                 </div>
-                 {t('pc_title')}
-               </h3>
-               
-               <div className="space-y-4">
-                 <div className="space-y-2">
-                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t('pc_base_cost')}</label>
-                   <input 
-                     type="number" value={pcBase} onChange={(e) => setPcBase(e.target.value)}
-                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-blue-500/50 outline-none transition-all font-mono"
-                   />
-                 </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t('pc_profit_margin')}</label>
-                      <input 
-                        type="number" value={pcProfit} onChange={(e) => setPcProfit(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-blue-500/50 outline-none transition-all font-mono"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t('marketing')}</label>
-                      <input 
-                        type="number" value={pcMarketing} onChange={(e) => setPcMarketing(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-blue-500/50 outline-none transition-all font-mono"
-                      />
-                    </div>
-                 </div>
-                 <div className="mt-8 pt-6 border-t border-white/5">
-                   <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('pc_final_price')}</div>
-                   <div className="text-4xl font-black text-white tracking-tighter">${calcFinalPrice()}</div>
-                 </div>
-               </div>
             </div>
 
           </div>
