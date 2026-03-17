@@ -50,6 +50,9 @@ const Sidebar = () => {
           </motion.div>
           <span className="text-xl font-black text-white tracking-tighter">
             PAS<span className="text-purple-400">lytics</span>
+            <div className="absolute -bottom-2 left-14 text-[8px] font-black uppercase tracking-[0.2em] text-purple-400/60 bg-purple-500/5 px-2 py-0.5 rounded-full border border-purple-500/20">
+              v2.0 Active
+            </div>
           </span>
         </Link>
 
