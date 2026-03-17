@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -14,32 +15,12 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-interface LogEntry {
-  id: string;
-  name: string;
-  sku: string;
-  image: string;
-  date: string;
-  score: number | null;
-  type: 'PAS' | 'Marketing' | 'Calculator';
-}
-
-const initialLogs: LogEntry[] = [
-  { id: '1', name: 'Ergonomic Office Chair', sku: 'SKU-88291', image: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=60&q=80', date: 'Oct 24, 2023 14:22', score: 84, type: 'PAS' },
-  { id: '2', name: 'Summer Campaign Plan', sku: 'MKT-44023', image: 'https://images.unsplash.com/photo-1543922596-b3bbaba80649?auto=format&fit=crop&w=60&q=80', date: 'Oct 23, 2023 09:15', score: null, type: 'Marketing' },
-  { id: '3', name: 'Product Calculator v2', sku: 'CALC-99012', image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=60&q=80', date: 'Oct 23, 2023 08:00', score: null, type: 'Calculator' },
-];
-
 const SystemLogs = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
+  const { logs, deleteLog } = useLogs();
 
-  const [logs, setLogs] = useState<LogEntry[]>(initialLogs);
   const [search, setSearch] = useState('');
-
-  const handleDelete = (id: string) => {
-    setLogs(logs.filter(log => log.id !== id));
-  };
 
   const handleDownload = (name: string) => {
     // Premium UI Feedback
@@ -124,7 +105,7 @@ const SystemLogs = () => {
                   {log.type} {isRtl ? 'تقرير' : 'Report'}
                 </div>
                 <button 
-                  onClick={() => handleDelete(log.id)}
+                  onClick={() => deleteLog(log.id)}
                   className="p-2 text-slate-500 hover:text-red-400 transition-colors bg-white/5 rounded-lg"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -172,7 +153,7 @@ const SystemLogs = () => {
                   className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-purple-500/20 transition-all"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  {t('view_report')}
+                  {isRtl ? 'فتح البيانات العصبية' : 'Neural Data Open'}
                 </button>
                 <button 
                   onClick={() => handleDownload(log.name)}

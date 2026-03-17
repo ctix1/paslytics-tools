@@ -4,6 +4,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, 
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const isRtl = language === 'ar';
   const { hasActivePlan } = useSubscription();
   const { profile } = useAuth();
+  const { addLog } = useLogs();
 
   const isAdmin = profile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
@@ -32,12 +34,14 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [pasOutput, setPasOutput] = useState({
     problem: '',
     agitation: '',
     solution: '',
     ai_quick_take: '',
-    emotional_score: 88
+    emotional_score: 88,
+    product_name: 'New Analysis'
   });
 
   const handleSaveToLogs = async () => {
@@ -47,7 +51,15 @@ const Dashboard = () => {
     btn.disabled = true;
     btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'تم الحفظ' : 'Saved'}</span>`;
     
-    // Simulate save to database
+    // Add real data to logs via context
+    addLog({
+      name: pasOutput.product_name || (isRtl ? 'تحليل منتج' : 'Product Analysis'),
+      sku: `PAS-${Math.floor(Math.random() * 10000)}`,
+      image: currentImage || 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=60&q=80',
+      score: pasOutput.emotional_score,
+      type: 'PAS'
+    });
+
     await new Promise(r => setTimeout(r, 1000));
     
     setTimeout(() => {
@@ -59,6 +71,14 @@ const Dashboard = () => {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Preview the image
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCurrentImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
     setIsUploading(true);
     setUploadProgress(0);
     
@@ -69,33 +89,40 @@ const Dashboard = () => {
       });
     }, 100);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      const base64Image = reader.result;
+    const fReader = new FileReader();
+    fReader.readAsDataURL(file);
+    fReader.onload = async () => {
+      const base64Image = fReader.result;
       try {
+        // Enhanced request to ensure Arabic output if needed
         const { data, error } = await supabase.functions.invoke('analyze-product', {
           body: { 
             imageBase64: base64Image,
-            targetLanguage: language // Pass current language to AI
+            targetLanguage: isRtl ? 'ar' : 'en',
+            language: isRtl ? 'ar' : 'en',
+            instruction: isRtl ? "Response MUST be in Arabic language." : "Response in English."
           }
         });
         if (error) throw error;
+        
         setPasOutput({
           problem: data.problem || '',
           agitation: data.agitation || '',
           solution: data.solution || '',
           ai_quick_take: data.ai_quick_take || '',
-          emotional_score: data.emotional_score || 88
+          emotional_score: data.emotional_score || 88,
+          product_name: data.product_name || file.name.split('.')[0]
         });
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);
+        // Fallback for demo/error
         setPasOutput({
           problem: t('problem_text'),
           agitation: t('agitation_text'),
           solution: t('solution_text'),
           ai_quick_take: t('quick_take_text'),
-          emotional_score: 88
+          emotional_score: 88,
+          product_name: file.name.split('.')[0]
         });
       } finally {
         clearInterval(interval);
@@ -152,6 +179,7 @@ const Dashboard = () => {
             <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
             {t('export_report')}
           </button>
+          
           <button 
             id="save-log-btn"
             disabled={!analysisComplete}
@@ -161,11 +189,13 @@ const Dashboard = () => {
             <CheckCircle2 className={`w-5 h-5 ${analysisComplete ? 'text-emerald-400' : 'text-slate-600'}`} />
             {t('save_to_logs')}
           </button>
+
           <button 
             onClick={() => {
               setIsUploading(false);
               setAnalysisComplete(false);
-              setPasOutput({ problem: '', agitation: '', solution: '', ai_quick_take: '', emotional_score: 88 });
+              setCurrentImage(null);
+              setPasOutput({ problem: '', agitation: '', solution: '', ai_quick_take: '', emotional_score: 88, product_name: '' });
             }}
             className="btn-premium flex items-center gap-2"
           >
