@@ -43,9 +43,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const email = user.email || '';
       
       // Admin Detection Logic
-      const isAdmin = email.toLowerCase() === 'koo111333@gmail.com';
+      // Ensure email is trimmed and case-insensitive for reliable matching
+      const userEmail = email.trim().toLowerCase();
+      const isAdmin = userEmail === 'koo111333@gmail.com';
       
-      // Robust Name Extraction
+      console.log('[Auth] Detected User:', userEmail, '| Is Admin:', isAdmin);
       const meta = user.user_metadata || {};
       const name = meta.full_name || meta.name || meta.display_name || (meta.given_name ? `${meta.given_name} ${meta.family_name || ''}` : '') || email.split('@')[0] || 'User';
       const avatar = meta.avatar_url || meta.picture || '';
