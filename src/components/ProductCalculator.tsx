@@ -185,15 +185,31 @@ const ProductCalculator = () => {
                 <span className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">/ {isRtl ? 'وحدة' : 'Unit'}</span>
               </div>
               
-              <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/5 pt-8">
-                <div>
-                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'تكلفة الهبوط' : 'Landed Cost'}</div>
-                  <div className="text-white font-bold font-mono text-sm">${calculations.landedCost.toFixed(2)}</div>
+              <div className="mt-8 flex flex-col gap-4 border-t border-white/5 pt-8">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'تكلفة الهبوط' : 'Landed Cost'}</div>
+                    <div className="text-white font-bold font-mono text-sm">${calculations.landedCost.toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'هامش الربح' : 'Profit Margin'}</div>
+                    <div className="text-green-400 font-bold font-mono text-sm">${calculations.profitAmount.toFixed(2)}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'هامش الربح' : 'Profit Margin'}</div>
-                  <div className="text-green-400 font-bold font-mono text-sm">${calculations.profitAmount.toFixed(2)}</div>
-                </div>
+                <button 
+                  onClick={() => {
+                    const text = `${t('pc_final_price')}: $${calculations.finalPrice.toFixed(2)}\n${isRtl ? 'تكلفة الهبوط' : 'Landed Cost'}: $${calculations.landedCost.toFixed(2)}`;
+                    navigator.clipboard.writeText(text);
+                    const btn = document.activeElement as HTMLButtonElement;
+                    const old = btn.innerHTML;
+                    btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400"><CheckCircle2 class="w-3 h-3" /> ${isRtl ? 'تم النسخ' : 'Copied'}</span>`;
+                    setTimeout(() => { btn.innerHTML = old; }, 2000);
+                  }}
+                  className="w-full py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white hover:bg-blue-500/10 transition-all flex items-center justify-center gap-2"
+                >
+                  <Zap className="w-3 h-3" />
+                  {isRtl ? 'نسخ النتائج' : 'Copy Results'}
+                </button>
               </div>
             </div>
 
