@@ -276,6 +276,9 @@ export const translations = {
     link_snapchat: 'Link Snapchat',
     neural_generating: 'Neural Engine Generating...',
     media_rendering: 'Media Core Rendering...',
+    activate_marketing_assistant: 'Activate Marketing Assistant',
+    audio_player: 'Neural Audio Player',
+    video_preview: 'Promotional Video Preview',
   },
   ar: {
     // App & Shared
@@ -353,9 +356,9 @@ export const translations = {
     analyze_another: 'بدء تزامن آخر',
     pas_output: 'استخراج PAS العصبي',
     dashboard_ai_precision: 'دقة 98.4%',
-    problem: 'المشكلة (Problem)',
-    agitation: 'الإثارة (Agitation)',
-    solution: 'الحل (Solution)',
+    problem: 'المشكلة (Neural Problem)',
+    agitation: 'الإثارة (Neural Agitation)',
+    solution: 'الحل (Neural Solution)',
     problem_text: 'تحديد النقاط المؤلمة في السوق الأساسي بمساعدة الذكاء الاصطناعي.',
     agitation_text: 'رسم خريطة رنين عميقة للمحفزات العاطفية للمستهلك.',
     solution_text: 'هندسة المسار النهائي للقيمة والتحويل.',
@@ -554,6 +557,9 @@ export const translations = {
     link_snapchat: 'ربط سناب شات',
     neural_generating: 'المحرك العصبي يقوم بالتوليد...',
     media_rendering: 'نواة الميديا تقوم بالريندر...',
+    activate_marketing_assistant: 'تفعيل المساعد التسويقي',
+    audio_player: 'مشغل الصوت العصبي',
+    video_preview: 'تحميل ومعاينة الفيديو الترويجي',
   }
 };
 
