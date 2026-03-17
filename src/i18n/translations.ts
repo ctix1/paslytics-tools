@@ -265,6 +265,17 @@ export const translations = {
     pc_marketing_budget: 'Marketing Budget (Fixed)',
     pc_final_price: 'Recommended Retail Price',
     save_to_logs: 'Save Analysis to Records',
+    export_neuro_report: 'Export Neurological Report',
+    synthesize_audio: 'Synthesize Neural Audio',
+    download_audio: 'Download Dialect Audio',
+    render_video: 'Render Promotional Video',
+    download_video: 'Download Video (MP4)',
+    connect_social: 'Connect Social Accounts',
+    link_instagram: 'Link Instagram',
+    link_tiktok: 'Link TikTok',
+    link_snapchat: 'Link Snapchat',
+    neural_generating: 'Neural Engine Generating...',
+    media_rendering: 'Media Core Rendering...',
   },
   ar: {
     // App & Shared
@@ -532,6 +543,17 @@ export const translations = {
     pc_marketing_budget: 'ميزانية التسويق (ثابتة)',
     pc_final_price: 'سعر البيع الموصى به',
     save_to_logs: 'حفظ التحليل في السجلات',
+    export_neuro_report: 'تصدير التقرير العصبي',
+    synthesize_audio: 'توليد الصوت العصبي',
+    download_audio: 'تحميل الصوت بـ اللهجة',
+    render_video: 'ريندر فيديو ترويجي',
+    download_video: 'تحميل الفيديو (MP4)',
+    connect_social: 'ربط حسابات التواصل',
+    link_instagram: 'ربط إنستقرام',
+    link_tiktok: 'ربط تيك توك',
+    link_snapchat: 'ربط سناب شات',
+    neural_generating: 'المحرك العصبي يقوم بالتوليد...',
+    media_rendering: 'نواة الميديا تقوم بالريندر...',
   }
 };
 
