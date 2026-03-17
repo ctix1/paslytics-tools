@@ -1,22 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { css } from '../../styled-system/css';
 
 const DashboardLayout = () => {
   return (
-    <div className={css({
-      display: 'flex',
-      minHeight: '100vh',
-      backgroundColor: 'slate.50',
-      direction: 'var(--direction, ltr)' // Use a CSS variable for direction if needed
-    })}>
+    <div className="flex min-h-screen bg-slate-950 text-white">
       <Sidebar />
-      <main className={css({
-        flex: 1,
-        padding: { base: '16px', md: '32px' },
-        overflowY: 'auto',
-        height: '100vh'
-      })}>
+      <main className="flex-1 p-6 md:p-10 overflow-y-auto h-screen relative">
+        {/* Ambient background glow for the content area */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
         <Outlet />
       </main>
     </div>

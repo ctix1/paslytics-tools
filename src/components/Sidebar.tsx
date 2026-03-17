@@ -11,7 +11,9 @@ import {
   LogOut, 
   HelpCircle,
   Bell,
-  Sparkles
+  Sparkles,
+  CreditCard,
+  FileEdit
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -23,9 +25,13 @@ const Sidebar = () => {
     { icon: Home, label: t('home'), path: '/' },
     { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
     { icon: ClipboardList, label: t('logs'), path: '/logs' },
-    { icon: Users, label: t('user_management'), path: '/management' },
+    { icon: Users, label: t('user_management'), path: '/management', adminOnly: true },
+    { icon: CreditCard, label: t('paysettings_nav'), path: '/admin/payment-settings', adminOnly: true },
+    { icon: FileEdit, label: t('content_manager_nav'), path: '/admin/content', adminOnly: true },
     { icon: Settings, label: t('profile_settings'), path: '/settings' },
   ];
+
+  const filteredItems = menuItems.filter(item => !item.adminOnly || profile?.role === 'admin');
 
   const userInitial = profile?.name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || '?';
 
@@ -47,14 +53,14 @@ const Sidebar = () => {
           </span>
         </Link>
 
-        <nav className="flex-1 px-4 py-6 flex flex-col gap-2 relative z-10">
-          {menuItems.map((item) => {
+        <nav className="flex-1 px-4 py-6 flex flex-col gap-2 relative z-10 overflow-y-auto custom-scrollbar">
+          {filteredItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.label}
                 to={item.path}
-                className="relative group no-underline"
+                className="relative group no-underline shrink-0"
               >
                 <div className={`
                   flex items-center gap-3 px-5 py-4 rounded-xl text-sm font-bold transition-all duration-300 relative z-10
