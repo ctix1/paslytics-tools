@@ -250,7 +250,7 @@ export const translations = {
     paysettings_nav: 'Billing Hub',
     paysettings_active_plan: 'Active Archetype',
 
-    // Product Calculator Keys (from lint errors)
+    // Product Calculator Keys
     pc_base_cost: 'Base Product Cost',
     pc_duties: 'Import Duties (%)',
     pc_profit_margin: 'Desired Profit Margin (%)',
