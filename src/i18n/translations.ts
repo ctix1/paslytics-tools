@@ -279,6 +279,13 @@ export const translations = {
     activate_marketing_assistant: 'Activate Marketing Assistant',
     audio_player: 'Neural Audio Player',
     video_preview: 'Promotional Video Preview',
+    promotional_post: 'Promotional Post Creator',
+    one_click_publish: 'One-Click Neural Publish',
+    publishing_to: 'Publishing to ',
+    published: 'Successfully Published!',
+    send_package: 'Send Agency Package (All Reels + Posts)',
+    batch_sync: 'Batch Social Syncing...',
+    ready_for_sync: 'Ready for Agency Package Sync',
   },
   ar: {
     // App & Shared
@@ -560,6 +567,13 @@ export const translations = {
     activate_marketing_assistant: 'تفعيل المساعد التسويقي',
     audio_player: 'مشغل الصوت العصبي',
     video_preview: 'تحميل ومعاينة الفيديو الترويجي',
+    promotional_post: 'صانع المنشورات الترويجية',
+    one_click_publish: 'نشر عصبي بضغطة واحدة',
+    publishing_to: 'جاري النشر في ',
+    published: 'تم النشر بنجاح!',
+    send_package: 'إرسال باقة الوكالة (جميع الفيديوهات والمنشورات)',
+    batch_sync: 'جاري التزامن الجماعي...',
+    ready_for_sync: 'جاهز لمزامنة باقة الوكالة',
   }
 };
 
