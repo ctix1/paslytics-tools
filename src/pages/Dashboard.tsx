@@ -108,9 +108,12 @@ const Dashboard = () => {
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-4xl font-black text-white tracking-tight"
+            className="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-4"
           >
             {t('pas_analysis_title')}
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400/60 bg-purple-500/5 px-2 py-0.5 rounded-full border border-purple-500/20">
+              v2.0 Active
+            </span>
           </motion.h1>
           <p className="text-slate-400 text-lg">
             {t('dashboard_hero_subtitle')}
@@ -241,7 +244,7 @@ const Dashboard = () => {
                     <Target className="w-4 h-4" />
                     {t('problem')}
                   </div>
-                  <p className="text-slate-200 leading-relaxed font-medium">
+                  <p className="text-slate-200 leading-relaxed font-medium text-sm md:text-base break-words">
                     {pasOutput.problem || t('problem_text')}
                   </p>
                 </div>
@@ -251,7 +254,7 @@ const Dashboard = () => {
                      <Zap className="w-4 h-4" />
                     {t('agitation')}
                   </div>
-                  <p className="text-slate-200 leading-relaxed font-medium">
+                  <p className="text-slate-200 leading-relaxed font-medium text-sm md:text-base break-words">
                     {pasOutput.agitation || t('agitation_text')}
                   </p>
                 </div>
@@ -261,7 +264,7 @@ const Dashboard = () => {
                     <CheckCircle2 className="w-4 h-4" />
                     {t('solution')}
                   </div>
-                  <p className="text-slate-200 leading-relaxed font-medium">
+                  <p className="text-slate-200 leading-relaxed font-medium text-sm md:text-base break-words">
                     {pasOutput.solution || t('solution_text')}
                   </p>
                 </div>
@@ -276,7 +279,7 @@ const Dashboard = () => {
                   <Lightbulb className="w-5 h-5 text-amber-400" />
                   {t('ai_quick_take')}
                 </div>
-                <p className="text-white text-2xl font-medium leading-relaxed italic relative z-10">
+                <p className="text-white text-lg md:text-xl lg:text-2xl font-medium leading-relaxed italic relative z-10 break-words">
                   "{pasOutput.ai_quick_take || t('quick_take_text')}"
                 </p>
               </div>
