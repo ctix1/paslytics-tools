@@ -22,8 +22,6 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Home, label: t('home'), path: '/' },
     { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
-    { icon: Sparkles, label: t('marketing_assistant'), path: '/marketing' },
-    { icon: HelpCircle, label: t('product_calculator'), path: '/calculator' },
     { icon: ClipboardList, label: t('logs'), path: '/logs' },
     { icon: Users, label: t('user_management'), path: '/management' },
     { icon: Settings, label: t('profile_settings'), path: '/settings' },
