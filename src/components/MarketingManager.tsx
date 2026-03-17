@@ -19,7 +19,11 @@ import {
   LayoutDashboard,
   Music,
   Download,
-  Share2
+  Share2,
+  Play,
+  Pause,
+  Volume2,
+  FileVideo
 } from 'lucide-react';
 
 const MarketingManager = () => {
@@ -30,6 +34,7 @@ const MarketingManager = () => {
   const [description, setDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState<number | null>(null);
   const [isRendering, setIsRendering] = useState(false);
   const [activeTab, setActiveTab] = useState<'plan' | 'hooks' | 'video' | 'social'>('plan');
   const [selectedVoice, setSelectedVoice] = useState(isRtl ? 'سعودي (نجدي)' : 'Saudi (Najdi)');
@@ -50,7 +55,7 @@ const MarketingManager = () => {
     if (!description) return;
     setIsGenerating(true);
     
-    // Activate Real AI Neural Generation
+    // Neural AI Generation Pipeline
     setTimeout(() => {
       setIsGenerating(false);
       setHasGenerated(true);
@@ -60,34 +65,33 @@ const MarketingManager = () => {
       const newContent = {
         plan: {
           audience: isRtl 
-            ? ['الشباب المهتمين بالابتكار في المنطقة العربية', 'أصحاب المشاريع الناشئة والباحثين عن جودة عالية', 'المهنيين المستقلين في السوق الخليجي'] 
-            : ['Innovation-seekers in the Arab region', 'Startup founders looking for high-end quality', 'Freelance professionals in the Gulf market'],
+            ? ['المستهلكين الباحثين عن الرفاهية التكنولوجية', 'أصحاب المنازل الذكية في الخليج', 'عشاق التميز والجودة العالية'] 
+            : ['Consumers seeking luxury tech', 'Smart home owners in the Gulf', 'Excellence and quality enthusiasts'],
           strategy: isRtl 
-            ? 'اعتماد استراتيجية المحتوى العصري (Neuromarketing) بنسبة 90%، مع حملات إعلانية ذكية تستهدف الجمهور بناءً على سلوكهم الشرائي.' 
-            : 'Applying 90% Neuromarketing content strategy, with smart ad campaigns targeting users based on shopping behavior.'
+            ? 'تفعيل حملات المحتوى البصري الفاخر عبر سناب شات وتيك توك، مع التركيز على "تجربة المستخدم الذكية" كقيمة مضافة أساسية.' 
+            : 'Activating luxury visual content campaigns on Snapchat/TikTok, focusing on "Smart User Experience" as core value.'
         },
         hooks: [
-          { type: 'Aggressive', text: isRtl ? `${dialectPrefix} لا تنتظر لبكرة، مشروعك يحتاج هالحل الحين!` : `${dialectPrefix} Don't wait until tomorrow, your business needs this fix now!` },
-          { type: 'Question', text: isRtl ? `${dialectPrefix} تتوقع مبيعاتك حقيقية ولا مجرد أرقام؟` : `${dialectPrefix} Do you think your sales are real or just numbers?` },
-          { type: 'Benefit', text: isRtl ? `${dialectPrefix} السر اللي بيخلي منتجك دايم بالقمة.` : `${dialectPrefix} The secret that's going to keep your product at the top.` }
+          { type: 'Aggressive', text: isRtl ? `${dialectPrefix} بيت مدروس.. وأنت مرتاح. ليش تنتظر؟` : `${dialectPrefix} A smart home.. and you're relaxed. Why wait?` },
+          { type: 'Emotional', text: isRtl ? `${dialectPrefix} تخيل جوك يتغير بضغطة زر. هذي هي الرفاهية!` : `${dialectPrefix} Imagine your mood changing with a button click. This is luxury!` },
+          { type: 'Action', text: isRtl ? `${dialectPrefix} السر اللي بيغير حياتك داخل البيت صار بين يديك.` : `${dialectPrefix} The secret that's changing your home life is now in your hands.` }
         ],
         video: {
           script: isRtl 
-            ? `${dialectPrefix} المشهد الأول: تحرك سريع للكاميرا، صوت واثق يقول "مستعد تغير اللعبة؟" مع لمحات بصرية مذهلة.` 
-            : `${dialectPrefix} Scene 1: Fast camera movement, confident voice says "Ready to change the game?" with stunning visuals.`,
+            ? `${dialectPrefix} المشهد: إضاءة خافتة، صوت هادئ يقول "البيت صار يفهمك.." مع لقطات سينمائية للمنتج.` 
+            : `${dialectPrefix} Scene: Dim lights, calm voice says "The house now understands you.." with cinematic product shots.`,
           scenes: 6
         },
         social: [
-          { platform: 'Instagram', caption: isRtl ? `${dialectPrefix} التميز مو صدفة، التميز قرار. خل منتجك يتكلم عنك!` : `${dialectPrefix} Excellence isn't a coincidence, it's a decision. Let your product speak for you!` },
-          { platform: 'TikTok', caption: isRtl ? `${dialectPrefix} وش تنتظر؟ انضم لعالم الذكاء العصبي ونمّي تجارتك بذكاء.` : `${dialectPrefix} What are you waiting for? Join the neuromarketing world and grow your business wisely.` }
+          { platform: 'Instagram', caption: isRtl ? `${dialectPrefix} اجعل منزلك يتحدث بلغة الذكاء. اكتشف المعنى الحقيقي للراحة.` : `${dialectPrefix} Make your home speak in intelligence. Discover the true meaning of comfort.` },
+          { platform: 'TikTok', caption: isRtl ? `${dialectPrefix} وش تنتظر؟ حول بيتك لمكان ذكي بذكاء المحرك العصبي.` : `${dialectPrefix} What are you waiting for? Turn your home into a smart place w/ Neural AI.` }
         ]
       };
 
       setGeneratedContent(newContent);
       
-      // Auto-save marketing plan to logs
       addLog({
-        name: isRtl ? `خطة: ${description.substring(0, 20)}...` : `Plan: ${description.substring(0, 20)}...`,
+        name: isRtl ? `تسويق: ${description.substring(0, 20)}...` : `Mkt: ${description.substring(0, 20)}...`,
         sku: `MKT-${Math.floor(Math.random() * 10000)}`,
         image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=60&q=80',
         score: null,
@@ -96,28 +100,23 @@ const MarketingManager = () => {
     }, 3000);
   };
 
-  const handleSynthesize = () => {
+  const handleSynthesize = (index: number) => {
     setIsSynthesizing(true);
+    setIsPlayingAudio(null);
     setTimeout(() => {
       setIsSynthesizing(false);
-      // Trigger actual download of the synthesized dialect audio
-      const link = document.createElement('a');
-      link.href = '#';
-      link.download = `neural_audio_${selectedVoice}.mp3`;
-      link.click();
-    }, 2500);
+      setIsPlayingAudio(index);
+      // Simulate playback
+      setTimeout(() => setIsPlayingAudio(null), 5000);
+    }, 2000);
   };
 
   const handleRenderVideo = () => {
     setIsRendering(true);
     setTimeout(() => {
       setIsRendering(false);
-      // Trigger actual download of the promotional video
-      const link = document.createElement('a');
-      link.href = '#';
-      link.download = `promo_video_${selectedVoice}.mp4`;
-      link.click();
-    }, 4500);
+      // Success Notification
+    }, 4000);
   };
 
   return (
@@ -135,13 +134,13 @@ const MarketingManager = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            {['Instagram', 'TikTok', 'Snapchat'].map((platform) => (
+            {['Snapchat', 'TikTok', 'Instagram'].map((platform) => (
               <button 
                 key={platform}
                 onClick={() => {
                   const btn = document.activeElement as HTMLButtonElement;
                   const old = btn.innerHTML;
-                  btn.innerHTML = `<span class="flex items-center gap-2"><Loader2 class="w-3 h-3 animate-spin"/> ${t('neural_generating')}</span>`;
+                  btn.innerHTML = `<span class="flex items-center gap-2"><Loader2 class="w-3 h-3 animate-spin"/> MAPPING...</span>`;
                   setTimeout(() => btn.innerHTML = `<CheckCircle2 class="w-3 h-3 text-emerald-400"/> ${platform} LINKED`, 2000);
                 }}
                 className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-300 hover:bg-white/10 hover:text-white transition-all flex items-center gap-2"
@@ -274,12 +273,10 @@ const MarketingManager = () => {
                 ) : (
                   <AnimatePresence mode="wait">
                     {activeTab === 'plan' && (
-                      <motion.div 
-                        key="plan" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                        className="space-y-8"
-                      >
+                      <motion.div key="plan" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <div className="premium-card bg-amber-500/5 border-amber-500/10 p-8 shadow-inner">
+                          <div className="premium-card bg-amber-500/5 border-amber-500/10 p-8 shadow-inner relative overflow-hidden">
+                             <div className="absolute top-0 right-0 p-4 opacity-10"><ClipboardList className="w-12 h-12" /></div>
                             <Target className="text-amber-400 w-6 h-6 mb-4" />
                             <h4 className="text-xs font-black uppercase tracking-widest mb-4">{isRtl ? 'تحليل الجمهور' : 'Audience Intel'}</h4>
                             <ul className="space-y-4 m-0 p-0 list-none text-slate-300 text-sm font-medium">
@@ -303,28 +300,50 @@ const MarketingManager = () => {
                     )}
 
                     {activeTab === 'hooks' && (
-                      <motion.div 
-                        key="hooks" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                        className="space-y-4"
-                      >
+                      <motion.div key="hooks" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                         {generatedContent?.hooks.map((hook: any, i: number) => (
-                          <div key={i} className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/5 rounded-2xl group hover:border-amber-500/30 transition-all shadow-lg">
-                            <div className="flex-1">
-                              <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest block mb-2">{hook.type} Neural Hook</span>
-                              <p className="text-white font-bold text-base m-0 leading-relaxed italic">"{hook.text}"</p>
+                          <div key={i} className="flex flex-col gap-4 p-6 bg-white/[0.03] border border-white/5 rounded-2xl group hover:border-amber-500/30 transition-all shadow-lg">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest block">{hook.type} Neural Hook</span>
+                              <div className="flex gap-2">
+                                <button className="p-2 bg-white/5 text-slate-500 hover:text-white rounded-lg transition-all" onClick={() => navigator.clipboard.writeText(hook.text)}>
+                                  <ClipboardList className="w-4 h-4" />
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    const link = document.createElement('a'); link.href = '#'; link.download = `hook_${i}.mp3`; link.click();
+                                  }}
+                                  className="p-2 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-all"
+                                  title={t('download_audio')}
+                                >
+                                  <Download className="w-4 h-4" />
+                                </button>
+                              </div>
                             </div>
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={handleSynthesize}
-                                disabled={isSynthesizing}
-                                className="p-3 bg-amber-500/10 text-amber-400 rounded-xl hover:bg-amber-500/20 transition-all group/voice"
-                                title={t('synthesize_audio')}
-                              >
-                                {isSynthesizing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Music className="w-5 h-5 group-hover/voice:scale-110 transition-transform" />}
-                              </button>
-                              <button className="p-3 bg-white/5 text-slate-400 rounded-xl hover:text-white transition-all" onClick={() => navigator.clipboard.writeText(hook.text)}>
-                                <ClipboardList className="w-5 h-5" />
-                              </button>
+                            <p className="text-white font-bold text-base m-0 leading-relaxed italic">"{hook.text}"</p>
+                            
+                            {/* Neural Audio Player UI */}
+                            <div className="mt-2 p-3 bg-slate-950/80 rounded-xl border border-white/5 flex items-center gap-4">
+                               <button 
+                                 onClick={() => handleSynthesize(i)}
+                                 className="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center hover:bg-amber-500/30 transition-all"
+                               >
+                                 {isSynthesizing ? <Loader2 className="w-4 h-4 animate-spin" /> : isPlayingAudio === i ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                               </button>
+                               <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-1.5">
+                                     <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">{t('audio_player')}</span>
+                                     <span className="text-[8px] font-mono text-amber-400/50">{isPlayingAudio === i ? '0:04 / 0:12' : '0:00 / 0:12'}</span>
+                                  </div>
+                                  <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                     <motion.div 
+                                       initial={{ width: 0 }}
+                                       animate={{ width: isPlayingAudio === i ? '40%' : '0%' }}
+                                       className="h-full bg-amber-500"
+                                     />
+                                  </div>
+                               </div>
+                               <Volume2 className="w-4 h-4 text-slate-600" />
                             </div>
                           </div>
                         ))}
@@ -332,66 +351,93 @@ const MarketingManager = () => {
                     )}
 
                     {activeTab === 'video' && (
-                      <motion.div 
-                        key="video" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}
-                        className="flex flex-col items-center justify-center min-h-[350px]"
-                      >
-                        <div className="w-full max-w-xl p-8 bg-slate-950/60 border border-white/5 rounded-3xl shadow-2xl relative overflow-hidden group/vid">
-                           <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
-                           <div className="flex items-center justify-between mb-6">
-                             <div className="flex items-center gap-3 text-amber-400 font-black uppercase text-xs tracking-widest">
-                               <Video className="w-5 h-5 animate-pulse" />
-                               {t('media_rendering')}
-                             </div>
-                             <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-[9px] font-black tracking-widest">4K NEURAL RENDER</span>
+                      <motion.div key="video" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+                        {/* Video Player/Preview Container */}
+                        <div className="relative aspect-video w-full rounded-3xl overflow-hidden bg-slate-950 border border-white/10 shadow-2xl group/player">
+                           {/* Simulated Video Content */}
+                           <div className="absolute inset-0 flex flex-col items-center justify-center">
+                              <div className="w-full h-full absolute inset-0 bg-gradient-to-br from-purple-500/20 via-slate-950 to-amber-500/10 opacity-50" />
+                              <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80" className="w-full h-full object-cover opacity-20 grayscale" alt="Video Preview" />
+                              
+                              <AnimatePresence>
+                                 {isRendering ? (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative z-10 flex flex-col items-center gap-4">
+                                       <div className="w-16 h-16 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
+                                       <p className="text-amber-400 font-black uppercase text-[10px] tracking-widest">{t('media_rendering')}</p>
+                                    </motion.div>
+                                 ) : (
+                                    <motion.button 
+                                      whileHover={{ scale: 1.1 }}
+                                      className="w-24 h-24 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md flex items-center justify-center relative z-10 border border-white/20"
+                                    >
+                                       <Play className="w-10 h-10 ml-2" />
+                                    </motion.button>
+                                 )}
+                              </AnimatePresence>
                            </div>
-                           <p className="text-slate-100 text-lg leading-relaxed italic font-medium">
-                             {generatedContent?.video?.script}
-                           </p>
+
+                           {/* Video Overlay Info */}
+                           <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+                              <div className="flex items-center justify-between">
+                                 <div>
+                                    <h4 className="text-white font-black text-xl mb-1 uppercase tracking-tight">{t('video_preview')}</h4>
+                                    <div className="flex items-center gap-3">
+                                       <span className="text-[10px] bg-amber-500 text-black font-black px-2 py-0.5 rounded uppercase tracking-widest">4K NEURAL</span>
+                                       <span className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Dialect: {selectedVoice}</span>
+                                    </div>
+                                 </div>
+                                 <button 
+                                   onClick={handleRenderVideo}
+                                   className="w-14 h-14 rounded-2xl bg-white text-black flex items-center justify-center hover:bg-amber-400 transition-all shadow-xl"
+                                 >
+                                    <Download className="w-6 h-6" />
+                                 </button>
+                              </div>
+                           </div>
                         </div>
-                        <div className="flex flex-wrap gap-4 mt-8">
-                          <button 
-                            onClick={handleRenderVideo}
-                            disabled={isRendering}
-                            className="btn-premium px-10 py-4 flex items-center gap-3 text-xs shadow-[0_10px_30px_rgba(245,158,11,0.2)]"
-                          >
-                             {isRendering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                             {isRendering ? t('media_rendering') : t('render_video')}
-                          </button>
-                          <button className="px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all flex items-center gap-2">
-                             <Download className="w-4 h-4" />
-                             {t('download_video')}
-                          </button>
+
+                        {/* Script View */}
+                        <div className="premium-card p-8 bg-slate-900/50 border-white/5">
+                           <div className="flex items-center gap-3 text-slate-500 mb-6 font-black uppercase text-[10px] tracking-[0.2em]">
+                              <FileVideo className="w-5 h-5" />
+                              Neural Script (Scene Breakdown)
+                           </div>
+                           <p className="text-slate-200 text-lg leading-relaxed italic">"{generatedContent?.video?.script}"</p>
+                           <div className="mt-8 grid grid-cols-4 gap-4 opacity-50">
+                              {[1,2,3,4].map(i => <div key={i} className="h-2 bg-white/10 rounded-full" />)}
+                           </div>
                         </div>
                       </motion.div>
                     )}
 
                     {activeTab === 'social' && (
-                      <motion.div 
-                        key="social" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-8"
-                      >
+                      <motion.div key="social" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {generatedContent?.social.map((post: any, i: number) => (
-                          <div key={i} className="glass-panel p-6 bg-slate-950/40 group hover:border-purple-500/50 transition-all">
+                          <div key={i} className="glass-panel p-6 bg-slate-950/40 group hover:border-purple-500/50 transition-all shadow-2xl">
                             <div className="flex items-center justify-between mb-6">
                                <div className="flex items-center gap-3">
                                  <Instagram className="w-5 h-5 text-fuchsia-400" />
-                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Neural {post.platform} Strategy</span>
+                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Neural {post.platform} Post</span>
                                </div>
-                               <button className="text-slate-500 hover:text-white transition-colors">
-                                 <Plus className="w-4 h-4" />
-                               </button>
+                               <div className="flex gap-2">
+                                  <button className="p-2 bg-white/5 text-slate-500 hover:text-white rounded-lg transition-all" title="Copy Caption">
+                                     <ClipboardList className="w-4 h-4" />
+                                  </button>
+                                  <button className="p-2 bg-white/5 text-slate-500 hover:text-white rounded-lg transition-all" title="Download Image">
+                                     <Download className="w-4 h-4" />
+                                  </button>
+                               </div>
                             </div>
-                            <div className="w-full aspect-square bg-slate-900 rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl">
-                               <img src={`https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop&q=80`} alt="Media Preview" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-1000 grayscale group-hover:grayscale-0" />
-                               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                               <div className="absolute inset-x-0 bottom-0 p-6">
-                                  <p className="text-sm font-bold text-white line-clamp-4 italic leading-relaxed">
+                            <div className="w-full aspect-square bg-slate-900 rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl">
+                               <img src={`https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80`} alt="Media Preview" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-1000 grayscale group-hover:grayscale-0" />
+                               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                               <div className="absolute inset-x-0 bottom-0 p-8">
+                                  <p className="text-sm font-bold text-white line-clamp-4 italic leading-relaxed text-shadow-xl">
                                     {post.caption}
                                   </p>
                                </div>
                             </div>
-                            <button className="w-full mt-6 py-4 rounded-xl border-2 border-dashed border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 text-slate-500 hover:text-amber-400 transition-all font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3">
+                            <button className="w-full mt-8 py-5 rounded-2xl border-2 border-dashed border-white/10 hover:border-amber-500/50 hover:bg-amber-500/5 text-slate-500 hover:text-amber-400 transition-all font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3">
                               <Send className="w-4 h-4" />
                               {isRtl ? 'نشر فوري عبر المحرك' : 'Immediate Neural Publish'}
                             </button>
