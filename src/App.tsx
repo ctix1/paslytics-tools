@@ -48,6 +48,26 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Admin Route Wrapper
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { profile, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-400">
+        <div className="w-10 h-10 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4" />
+        <span className="font-black uppercase tracking-widest text-xs">Verifying Permissions...</span>
+      </div>
+    );
+  }
+
+  if (!profile || profile.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 function App() {
   return (
     <LanguageProvider>
@@ -74,10 +94,12 @@ function App() {
                   <Route path="/marketing" element={<MarketingAssistant />} />
                   <Route path="/calculator" element={<ProductCalculatorPage />} />
                   <Route path="/logs" element={<SystemLogs />} />
-                  <Route path="/management" element={<SiteManagement />} />
                   <Route path="/settings" element={<Profile />} />
-                  <Route path="/admin/payment-settings" element={<PaymentSettings />} />
-                  <Route path="/admin/content" element={<ContentManager />} />
+                  
+                  {/* Admin Only Routes */}
+                  <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
+                  <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
+                  <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
                 </Route>
 
                 <Route path="*" element={<Navigate to="/" replace />} />
