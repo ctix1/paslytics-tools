@@ -17,6 +17,8 @@ import {
   Target,
   Rocket
 } from 'lucide-react';
+import MarketingManager from '../components/MarketingManager';
+import ProductCalculator from '../components/ProductCalculator';
 
 const Dashboard = () => {
   const { t, language } = useLanguage();
@@ -303,6 +305,12 @@ const Dashboard = () => {
             </div>
 
           </div>
+
+          {/* Marketing Manager Integration */}
+          <MarketingManager />
+
+          {/* Product Calculator Integration */}
+          <ProductCalculator />
         </div>
       )}
     </motion.div>
