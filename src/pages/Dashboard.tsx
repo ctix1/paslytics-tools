@@ -94,13 +94,19 @@ const Dashboard = () => {
     fReader.onload = async () => {
       const base64Image = fReader.result;
       try {
-        // High-Authority Arabic Prompt Resolution
+        // ARABIC ABSOLUTE - Priority Neural Prompt
         const { data, error } = await supabase.functions.invoke('analyze-product', {
           body: { 
             imageBase64: base64Image,
             targetLanguage: 'ar',
             language: 'ar',
-            instruction: "SYSTEM: You are a native Arabic Neuromarketing Expert. ANALYZE this product image. YOU MUST RESPOND ONLY IN ARABIC. DO NOT USE ANY ENGLISH WORDS IN THE PROBLEM, AGITATION, SOLUTION, OR QUICK TAKE FIELDS. USE FLUENT, HIGH-CONVERTING ARABIC MARKETING LANGUAGE."
+            instruction: `
+              CRITICAL: YOU ARE AN ARABIC NEUROMARKETING AGENT. 
+              ACTION: ANALYZE THE IMAGE.
+              RESPONSE LANGUAGE: 100% NATIVE ARABIC ONLY.
+              MANDATORY: DO NOT USE ANY ENGLISH CHARACTERS IN THE OUTPUT FIELDS.
+              FORMAT: Return problem, agitation, solution, and ai_quick_take in PROFESSIONAL ARABIC marketing terminology.
+            `
           }
         });
         if (error) throw error;
