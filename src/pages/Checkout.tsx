@@ -249,12 +249,12 @@ const Checkout = () => {
                       <motion.div key="bank-form" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="p-8 bg-white/[0.02] border border-white/5 rounded-3xl">
                          <h3 className="text-lg font-black mb-6 flex items-center gap-2"><Building2 className="w-5 h-5 text-purple-400" />{t('checkout_bank_title')}</h3>
                          <div className="space-y-4">
-                            {[
-                              { label: t('checkout_bank_name'), value: 'PASlytics Global' },
-                              { label: t('checkout_bank_iban'), value: 'SA00 0000 0000 0000 0000 0000' },
-                              { label: t('checkout_bank_swift'), value: 'PASLSAXX' },
-                              { label: t('checkout_bank_amount'), value: `${price} ${period}` },
-                            ].map((row, i) => (
+                             {[
+                               { label: t('admin_bank_holder'), value: 'PASlytics Global Ltd.' },
+                               { label: t('admin_bank_iban'), value: 'SA00 0000 0000 0000 0000 0000' },
+                               { label: t('admin_bank_swift'), value: 'PASLSAXX' },
+                               { label: t('admin_bank_amount'), value: `${price} ${period}` },
+                             ].map((row, i) => (
                               <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-none">
                                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{row.label}</span>
                                 <span className="text-sm font-mono text-white select-all">{row.value}</span>

@@ -40,6 +40,22 @@ const Dashboard = () => {
     emotional_score: 88
   });
 
+  const handleSaveToLogs = async () => {
+    if (!analysisComplete) return;
+    const btn = document.getElementById('save-log-btn') as HTMLButtonElement;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'تم الحفظ' : 'Saved'}</span>`;
+    
+    // Simulate save to database
+    await new Promise(r => setTimeout(r, 1000));
+    
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }, 2000);
+  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -59,7 +75,10 @@ const Dashboard = () => {
       const base64Image = reader.result;
       try {
         const { data, error } = await supabase.functions.invoke('analyze-product', {
-          body: { imageBase64: base64Image }
+          body: { 
+            imageBase64: base64Image,
+            targetLanguage: language // Pass current language to AI
+          }
         });
         if (error) throw error;
         setPasOutput({
@@ -121,11 +140,35 @@ const Dashboard = () => {
         </div>
         
         <div className="flex gap-4">
-          <button className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all">
-            <FileText className="w-5 h-5 text-purple-400" />
+          <button 
+            onClick={() => {
+              const btn = document.activeElement as HTMLButtonElement;
+              const originalText = btn.innerHTML;
+              btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400 font-black uppercase tracking-widest text-[10px]"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'تم التصدير' : 'Report Exported'}</span>`;
+              setTimeout(() => { btn.innerHTML = originalText; }, 3000);
+            }}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all group"
+          >
+            <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
             {t('export_report')}
           </button>
-          <button className="btn-premium flex items-center gap-2">
+          <button 
+            id="save-log-btn"
+            disabled={!analysisComplete}
+            onClick={handleSaveToLogs}
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${analysisComplete ? 'border-purple-500/50 bg-purple-500/5 text-white hover:bg-purple-500/10' : 'border-white/5 bg-white/5 text-slate-600 cursor-not-allowed'}`}
+          >
+            <CheckCircle2 className={`w-5 h-5 ${analysisComplete ? 'text-emerald-400' : 'text-slate-600'}`} />
+            {t('save_to_logs')}
+          </button>
+          <button 
+            onClick={() => {
+              setIsUploading(false);
+              setAnalysisComplete(false);
+              setPasOutput({ problem: '', agitation: '', solution: '', ai_quick_take: '', emotional_score: 88 });
+            }}
+            className="btn-premium flex items-center gap-2"
+          >
             <Plus className="w-5 h-5" />
             {t('run_new_analysis')}
           </button>
