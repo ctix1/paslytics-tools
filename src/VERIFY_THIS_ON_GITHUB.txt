@@ -1,5 +1,0 @@
-If you can see this file, you have SUCCESSFULY uploaded the correct version!
-Version: v2.0 ACTIVE
-Timestamp: 3/17/2026
-
-If the 'v2.0 Active' tag is visible on your Dashboard, your fixes are active.
