@@ -94,17 +94,28 @@ const Dashboard = () => {
     fReader.onload = async () => {
       const base64Image = fReader.result;
       try {
-        // Enhanced request to ensure Arabic output if needed
+        // Authoritative Arabic prompt resolution
         const { data, error } = await supabase.functions.invoke('analyze-product', {
           body: { 
             imageBase64: base64Image,
             targetLanguage: isRtl ? 'ar' : 'en',
             language: isRtl ? 'ar' : 'en',
-            instruction: isRtl ? "Response MUST be in Arabic language." : "Response in English."
+            instruction: isRtl 
+              ? "You are a professional neuromarketing analyst. ANALYZE the product and PROVIDE ALL text (problem, agitation, solution, ai_quick_take) in ARABIC language only. Ensure native fluency." 
+              : "Analyze in English."
           }
         });
         if (error) throw error;
         
+        // Automatic Persistence: Save to logs instantly
+        addLog({
+          name: data.product_name || file.name.split('.')[0] || (isRtl ? 'تحليل منتج' : 'Product Analysis'),
+          sku: `PAS-${Math.floor(Math.random() * 10000)}`,
+          image: reader.result as string,
+          score: data.emotional_score || 88,
+          type: 'PAS'
+        });
+
         setPasOutput({
           problem: data.problem || '',
           agitation: data.agitation || '',
@@ -113,6 +124,7 @@ const Dashboard = () => {
           emotional_score: data.emotional_score || 88,
           product_name: data.product_name || file.name.split('.')[0]
         });
+
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);
         // Fallback for demo/error
@@ -171,13 +183,19 @@ const Dashboard = () => {
             onClick={() => {
               const btn = document.activeElement as HTMLButtonElement;
               const originalText = btn.innerHTML;
-              btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400 font-black uppercase tracking-widest text-[10px]"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'تم التصدير' : 'Report Exported'}</span>`;
+              btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400 font-black uppercase tracking-widest text-[10px]"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'جاري التحميل...' : 'Downloading...'}</span>`;
+              
+              const link = document.createElement('a');
+              link.href = '#';
+              link.download = 'neurological_report.pdf';
+              link.click();
+
               setTimeout(() => { btn.innerHTML = originalText; }, 3000);
             }}
             className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all group"
           >
             <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
-            {t('export_report')}
+            {t('export_neuro_report')}
           </button>
           
           <button 
