@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { 
   Mail, 
@@ -29,7 +29,7 @@ const RegisterPage = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (event === 'SIGNED_IN' && session) {
         navigate('/dashboard');
       }
