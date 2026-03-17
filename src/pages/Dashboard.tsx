@@ -94,14 +94,14 @@ const Dashboard = () => {
     fReader.onload = async () => {
       const base64Image = fReader.result;
       try {
-        // Authoritative Arabic prompt resolution
+        // Forceful Arabic prompt resolution
         const { data, error } = await supabase.functions.invoke('analyze-product', {
           body: { 
             imageBase64: base64Image,
             targetLanguage: isRtl ? 'ar' : 'en',
             language: isRtl ? 'ar' : 'en',
             instruction: isRtl 
-              ? "You are a professional neuromarketing analyst. ANALYZE the product and PROVIDE ALL text (problem, agitation, solution, ai_quick_take) in ARABIC language only. Ensure native fluency." 
+              ? "STRICT REQUIREMENT: Respond ONLY in ARABIC. You are a high-end Neuromarketing Expert. Provide a deep analysis of the product in ARABIC native fluency for these fields: problem, agitation, solution, ai_quick_take." 
               : "Analyze in English."
           }
         });
