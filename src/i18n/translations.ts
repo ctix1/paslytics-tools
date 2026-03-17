@@ -201,7 +201,6 @@ export const translations = {
     active_analysts: 'Active Analysts',
     pending_invites: 'Pending Invites',
     admin_role: 'Network Admin',
-    analyst_role: 'Analysis Expert',
     informed_member: 'Active Node',
     remove: 'Decommission',
     name: 'Name',
@@ -249,6 +248,15 @@ export const translations = {
     content_bio: 'Node Bio',
     paysettings_nav: 'Billing Hub',
     paysettings_active_plan: 'Active Archetype',
+    admin_bank_title: 'Subscription Receiving Account',
+    admin_bank_desc: 'Configure the bank account where customer subscription payments will be sent.',
+    admin_bank_holder: 'Beneficiary / Account Holder',
+    admin_bank_iban: 'IBAN / Account Number',
+    admin_bank_swift: 'SWIFT / BIC',
+    admin_bank_name: 'Bank Name',
+    admin_bank_amount: 'Amount to Transfer',
+    admin_card_title: 'Credit Card Processing',
+    admin_card_desc: 'Manage your Stripe or payment gateway integration keys.',
 
     // Product Calculator Keys
     pc_base_cost: 'Base Product Cost',
@@ -256,6 +264,7 @@ export const translations = {
     pc_profit_margin: 'Desired Profit Margin (%)',
     pc_marketing_budget: 'Marketing Budget (Fixed)',
     pc_final_price: 'Recommended Retail Price',
+    save_to_logs: 'Save Analysis to Records',
   },
   ar: {
     // App & Shared
@@ -506,6 +515,15 @@ export const translations = {
     content_bio: 'السيرة الذاتية للعقدة',
     paysettings_nav: 'مركز الفوترة',
     paysettings_active_plan: 'النموذج النشط',
+    admin_bank_title: 'حساب استقبال الاشتراكات',
+    admin_bank_desc: 'تكوين الحساب البنكي الذي سيتم إرسال مدفوعات اشتراك العملاء إليه.',
+    admin_bank_holder: 'المستفيد / صاحب الحساب',
+    admin_bank_iban: 'رقم الـ IBAN / الحساب',
+    admin_bank_swift: 'رمز SWIFT / BIC',
+    admin_bank_name: 'اسم البنك',
+    admin_bank_amount: 'المبلغ المطلوب تحويله',
+    admin_card_title: 'معالجة البطاقات الائتمانية',
+    admin_card_desc: 'إدارة مفاتيح ربط بوابة الدفع أو Stripe.',
 
     // Product Calculator Keys
     pc_base_cost: 'تكلفة المنتج الأساسية',
@@ -513,6 +531,7 @@ export const translations = {
     pc_profit_margin: 'هامش الربح المطلوب (%)',
     pc_marketing_budget: 'ميزانية التسويق (ثابتة)',
     pc_final_price: 'سعر البيع الموصى به',
+    save_to_logs: 'حفظ التحليل في السجلات',
   }
 };
 
