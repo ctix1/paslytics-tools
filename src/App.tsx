@@ -19,6 +19,7 @@ import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LogProvider } from './context/LogContext';
 
 // Simple Protected Route Wrapper using AuthContext
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -72,41 +73,43 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <SubscriptionProvider>
-          <ContentProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/plan" element={<Plan />} />
-                <Route path="/about" element={<AboutPage />} />
-                
-                {/* Protected Routes */}
-                <Route path="/checkout/:plan" element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                } />
-
-                <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/marketing" element={<MarketingAssistant />} />
-                  <Route path="/calculator" element={<ProductCalculatorPage />} />
-                  <Route path="/logs" element={<SystemLogs />} />
-                  <Route path="/settings" element={<Profile />} />
+        <LogProvider>
+          <SubscriptionProvider>
+            <ContentProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/plan" element={<Plan />} />
+                  <Route path="/about" element={<AboutPage />} />
                   
-                  {/* Admin Only Routes */}
-                  <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
-                  <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
-                  <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
-                </Route>
-
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Router>
-          </ContentProvider>
-        </SubscriptionProvider>
+                  {/* Protected Routes */}
+                  <Route path="/checkout/:plan" element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  } />
+  
+                  <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/marketing" element={<MarketingAssistant />} />
+                    <Route path="/calculator" element={<ProductCalculatorPage />} />
+                    <Route path="/logs" element={<SystemLogs />} />
+                    <Route path="/settings" element={<Profile />} />
+                    
+                    {/* Admin Only Routes */}
+                    <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
+                    <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
+                    <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
+                  </Route>
+  
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Router>
+            </ContentProvider>
+          </SubscriptionProvider>
+        </LogProvider>
       </AuthProvider>
     </LanguageProvider>
   );
