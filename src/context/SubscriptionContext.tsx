@@ -88,7 +88,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     return Math.max(0, Math.floor(diff / 1000));
   };
 
-  const hasActivePlan = subscription.plan !== 'none';
+  const hasActivePlan = true; // Force activate all tools as requested
 
   return (
     <SubscriptionContext.Provider value={{ subscription, hasActivePlan, subscribe, cancel, getTimeRemaining }}>
