@@ -54,12 +54,35 @@ const Dashboard = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = async () => {
-      const base64Image = reader.result;
+      const base64Image = reader.result as string;
       try {
-        const { data, error } = await supabase.functions.invoke('analyze-product', {
-          body: { imageBase64: base64Image }
-        });
-        if (error) throw error;
+        const prompt = `
+          نظام: أنت محلل تسويق ومحتوى رقمي محترف ومبدع.
+          قم بتحليل المنتج في الصورة المرفقة بعمق.
+          
+          يجب أن تكون جميع القيم (values) في ملف JSON باللغة "العربية البيضاء" 
+          (لغة بسيطة ومفهومة لجميع العرب، ليست فصحى معقدة ولا لهجة محلية منغلقة).
+          استخدم هيكل PAS المعتمد (Problem-Agitation-Solution).
+          
+          تنسيق المخرجات المطلوب (JSON الحصري):
+          {
+            "problem": "وصف المشكلة التي يعالجها المنتج",
+            "agitation": "شرح التبعات والمشاعر السلبية للمشكلة",
+            "solution": "كيف يقدم المنتج الحل الأمثل",
+            "ai_quick_take": "فكرة تسويقية سريعة ومبدعة",
+            "emotional_score": (رقم بين 80 و 99)
+          }
+          أجب بملف JSON فقط بدون أي نصوص إضافية.
+        `;
+
+        const { analyzeMarketing } = await import('../lib/gemini');
+        const responseText = await analyzeMarketing(prompt, base64Image);
+        
+        // Robust JSON extraction
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("Could not find valid JSON in AI response");
+        const data = JSON.parse(jsonMatch[0]);
+
         setPasOutput({
           problem: data.problem || '',
           agitation: data.agitation || '',
