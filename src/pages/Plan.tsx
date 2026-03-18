@@ -120,7 +120,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('starter'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
+              onClick={() => { subscribe('starter'); navigate(user ? '/checkout/starter' : '/register?redirect=checkout/starter'); }}
               className="btn-premium w-full !bg-white/5 !text-white !py-3 hover:!bg-white/10 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -159,7 +159,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('monthly'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
+              onClick={() => { subscribe('monthly'); navigate(user ? '/checkout/monthly' : '/register?redirect=checkout/monthly'); }}
               className="btn-premium w-full !bg-white !text-slate-950 !py-3 hover:!bg-purple-50 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -208,7 +208,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('annual'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
+              onClick={() => { subscribe('annual'); navigate(user ? '/checkout/annual' : '/register?redirect=checkout/annual'); }}
               className="btn-premium w-full !py-3 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
