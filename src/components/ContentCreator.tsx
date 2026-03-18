@@ -42,8 +42,6 @@ const ContentCreator = () => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-
-  // Generated Content State
   const [generatedContent, setGeneratedContent] = useState<any>(null);
 
   const voices = [
@@ -62,33 +60,21 @@ const ContentCreator = () => {
       const reader = new FileReader();
       reader.onload = async (event) => {
         const base64Image = event.target?.result as string;
-        setUploadedImage(base64Image); // Set preview immediately
+        setUploadedImage(base64Image); 
         
-        const prompt = isRtl 
-          ? "صف هذا المنتج باختصار شديد (في جملة واحدة) لاستخدامه في حملة تسويقية."
-          : "Describe this product briefly (in one sentence) for a marketing campaign.";
+        const prompt = "صف هذا المنتج باختصار شديد (في جملة واحدة) باللغة العربية حصراً لاستخدامه في حملة تسويقية. ممنوع استخدام الإنجليزية.";
         
         try {
           const { analyzeMarketing } = await import('../lib/gemini');
           const aiDescription = await analyzeMarketing(prompt, base64Image);
-          
-          if (aiDescription) {
-            setDescription(aiDescription.trim());
-          } else {
-            throw new Error("Empty AI response");
-          }
+          if (aiDescription) setDescription(aiDescription.trim());
         } catch (innerError) {
           console.error("Gemini analysis failed:", innerError);
-          // Fallback if AI fails but image is uploaded
-          if (isRtl) setDescription("منتج رائع للمدينة (وصف تلقائي بديل)");
-          else setDescription("Great product for urban life (Auto fallback)");
+          if (isRtl) setDescription("منتج رائع (وصف تلقائي)");
+          else setDescription("Great product (Auto fallback)");
         } finally {
           setIsAnalyzingImage(false);
         }
-      };
-      reader.onerror = () => {
-        setIsAnalyzingImage(false);
-        console.error("File reading failed");
       };
       reader.readAsDataURL(file);
     } catch (error) {
@@ -105,21 +91,21 @@ const ContentCreator = () => {
     try {
       const prompt = `
         نظام: أنت خبير صناعة محتوى رقمي محترف. قم بإنشاء محتوى ترويجي متكامل للمنتج: "${description}"
-        اللغة المطلوبة للقيم: "العربية البيضاء" (لغة بسيطة ومفهومة لجميع العرب، ليست فصحى معقدة). 
+        هام جداً: يجب أن تكون جميع مخرجاتك باللغة "العربية البيضاء" فقط. ممنوع استخدام الإنجليزية.
         استخدم لهجة ${selectedVoice} إذا كان ذلك مناسباً للسيناريو التسويقي.
         
         المطلوب هو كائن JSON حصراً يحتوي على:
-        1. plan: خطة تشمل الجمهور المستهدف (audience - قائمة نصوص) واستراتيجية المحتوى (strategy - نص).
-        2. hooks: قائمة من 2 فيديو هوك (نصوص جذابة).
-        3. video: سيناريو فيديو قصير (script - نص) وعدد المشاهد المتوقعة (scenes - رقم).
-        4. posts: قائمة من كابشن لمنصات التواصل (platform و caption).
+        1. plan: خطة تشمل الجمهور المستهدف (audience - قائمة نصوص بالعربية) واستراتيجية المحتوى (strategy - نص بالعربية).
+        2. hooks: قائمة من 2 فيديو هوك (نصوص جذابة بالعربية).
+        3. video: سيناريو فيديو قصير (script - نص بالعربية) وعدد المشاهد المتوقعة (scenes - رقم).
+        4. posts: قائمة من كابشن لمنصات التواصل (platform بالعربية و caption بالعربية).
         
         تنسيق JSON الإلزامي:
         {
           "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
           "hooks": [
-            { "type": "جذاب", "text": "..." },
-            { "type": "قيمة", "text": "..." }
+            { "type": "هوك عاطفي", "text": "..." },
+            { "type": "هوك فضولي", "text": "..." }
           ],
           "video": { "script": "...", "scenes": 5 },
           "posts": [
@@ -127,18 +113,12 @@ const ContentCreator = () => {
             { "platform": "تيك توك", "caption": "..." }
           ]
         }
-        هام: أجب بملف JSON فقط بدون أي نصوص إضافية أو علامات Markdown.
+        أجب بملف JSON فقط.
       `;
 
       const { analyzeMarketing } = await import('../lib/gemini');
-      const responseText = await analyzeMarketing(prompt);
-      
-      // Robust JSON extraction
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("Could not find valid JSON in AI response");
-      
-      const newContent = JSON.parse(jsonMatch[0]);
-
+      const jsonResponse = await analyzeMarketing(prompt);
+      const newContent = JSON.parse(jsonResponse);
       setGeneratedContent(newContent);
       setHasGenerated(true);
       
@@ -229,7 +209,7 @@ const ContentCreator = () => {
                  {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                  {p}
                </button>
-             ))}
+              ))}
              
              <button 
                onClick={handleBatchSync}
