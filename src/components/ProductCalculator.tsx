@@ -232,7 +232,12 @@ const ProductCalculator = () => {
                       calculations.riskLevel === 'Moderate' ? 'bg-amber-500/10 border-amber-500/50 text-amber-400' : 
                       'bg-rose-500/10 border-rose-500/50 text-rose-400'}
                   `}>
-                    {calculations.riskLevel} Risk
+                    {isRtl ? (
+                      calculations.riskLevel === 'Safe' ? 'مخاطر منخفضة' :
+                      calculations.riskLevel === 'Moderate' ? 'مخاطر متوسطة' : 'مخاطر عالية'
+                    ) : (
+                      `${calculations.riskLevel} Risk`
+                    )}
                   </div>
                   <div className="h-px flex-1 bg-white/5" />
                 </div>
