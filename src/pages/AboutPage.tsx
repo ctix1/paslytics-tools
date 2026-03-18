@@ -234,7 +234,7 @@ const AboutPage = () => {
                 onClick={() => alert('Launching holographic presentation...')}
                 className="px-10 py-5 glass-panel bg-white/10 border-white/20 text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-white/20 transition-all flex items-center justify-center gap-2"
               >
-                {isRtl ? 'شاهد عرضنا تقديمي' : 'Neural Demo'}
+                {isRtl ? 'شاهد العرض الذكي' : 'Smart Demo'}
                 <Sparkles className="w-4 h-4" />
               </button>
             </div>
@@ -256,7 +256,7 @@ const AboutPage = () => {
           <a href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white no-underline transition-colors">{t('contact')}</a>
         </div>
         <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">
-          © {new Date().getFullYear()} PASLYTICS NEURAL. {t('all_rights_reserved')}
+          © {new Date().getFullYear()} PASLYTICS AI. {t('all_rights_reserved')}
         </div>
       </footer>
     </div>

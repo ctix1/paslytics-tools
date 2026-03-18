@@ -228,7 +228,7 @@ const PaymentSettingsPage = () => {
           </motion.div>
 
           <div className="text-center pt-4">
-            <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest tracking-[0.3em]">PASLYTICS NEURAL SYSTEMS © 2026</p>
+            <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest tracking-[0.3em]">PASLYTICS AI SYSTEMS © 2026</p>
           </div>
 
         </div>

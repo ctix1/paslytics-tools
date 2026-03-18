@@ -31,7 +31,7 @@ const SystemLogs = () => {
     document.body.appendChild(toast);
     
     // Functional Download Simulation (Creating a real blob)
-    const content = `PASLYTICS NEURAL REPORT\n\nProduct: ${log.name}\nDate: ${log.date}\nType: ${log.type}\nScore: ${log.score}%\n\n--- NEURAL DATA ---\n${isRtl ? 'تم استخراج البيانات بنجاح.' : 'Data extracted successfully.'}`;
+    const content = `PASLYTICS AI REPORT\n\nProduct: ${log.name}\nDate: ${log.date}\nType: ${log.type}\nScore: ${log.score}%\n\n--- AI DATA ---\n${isRtl ? 'تم استخراج البيانات بنجاح.' : 'Data extracted successfully.'}`;
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -208,11 +208,28 @@ const SystemLogs = () => {
               </div>
 
               <div className="space-y-6 relative z-10">
-                 <div className="p-6 bg-white/[0.03] border border-white/5 rounded-2xl">
+                 <div className="p-6 bg-white/[0.03] border border-white/5 rounded-2xl space-y-4">
                     <h4 className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-4">Final PAS Outcome</h4>
-                    <p className="text-white text-lg leading-relaxed italic font-medium">
-                       {isRtl ? 'جاري استرجاع البيانات العصبية الأصلية... (التقرير قيد العرض)' : 'Neuro Data successfully retrieved. Report viewer active.'}
-                    </p>
+                    {selectedLog.type === 'PAS' ? (
+                      <div className="space-y-4">
+                         <div className="bg-red-500/5 p-4 rounded-xl border border-red-500/10">
+                            <h5 className="text-[9px] font-black text-red-400 uppercase mb-2">{t('problem')}</h5>
+                            <p className="text-white text-sm italic">{selectedLog.problem || (isRtl ? 'المنتج يعاني من نقص في البيانات.' : 'Product data missing.')}</p>
+                         </div>
+                         <div className="bg-orange-500/5 p-4 rounded-xl border border-orange-500/10">
+                            <h5 className="text-[9px] font-black text-orange-400 uppercase mb-2">{t('agitation')}</h5>
+                            <p className="text-white text-sm italic">{selectedLog.agitation || (isRtl ? 'المنتج يحتاج لتحليل إضافي.' : 'Product needs more analysis.')}</p>
+                         </div>
+                         <div className="bg-green-500/5 p-4 rounded-xl border border-green-500/10">
+                            <h5 className="text-[9px] font-black text-green-400 uppercase mb-2">{t('solution')}</h5>
+                            <p className="text-white text-sm italic">{selectedLog.solution || (isRtl ? 'المنتج جاهز للانطلاق.' : 'Product ready for launch.')}</p>
+                         </div>
+                      </div>
+                    ) : (
+                      <p className="text-white text-lg leading-relaxed italic font-medium">
+                         {isRtl ? 'هذا التقرير لا يحتوي على بيانات PAS مدمجة.' : 'This report does not contain embedded PAS data.'}
+                      </p>
+                    )}
                  </div>
                  
                  <div className="grid grid-cols-2 gap-4">
@@ -230,7 +247,7 @@ const SystemLogs = () => {
       </AnimatePresence>
 
       <footer className="pt-20 pb-10 text-center text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] opacity-40">
-        © {new Date().getFullYear()} PASLYTICS NEURAL ENGINE. {t('all_rights_reserved')}
+        © {new Date().getFullYear()} PASLYTICS AI ENGINE. {t('all_rights_reserved')}
       </footer>
     </motion.div>
   );

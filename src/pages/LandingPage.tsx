@@ -90,7 +90,7 @@ const LandingPage = () => {
                   <Rocket className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </Link>
                 <button 
-                  onClick={() => alert('Launching neural interface...')}
+                  onClick={() => alert('Launching smart interface...')}
                   className="flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white font-bold transition-all text-lg"
                 >
                   <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
@@ -129,7 +129,7 @@ const LandingPage = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent" />
                 <div className="w-full h-full bg-slate-900/80 rounded-[34px] flex items-center justify-center overflow-hidden">
-                   {/* Abstract Neural Grid */}
+                   {/* Abstract Smart Grid */}
                    <div className="absolute inset-0 opacity-20 pointer-events-none" 
                         style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #6366f1 1px, transparent 0)', backgroundSize: '24px 24px'}} />
                    <BrainCircuit className="w-32 h-32 text-purple-500/50 relative z-10" />
@@ -145,7 +145,7 @@ const LandingPage = () => {
               >
                  <Zap className="text-amber-400 w-8 h-8 mb-3" />
                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Processing</div>
-                 <div className="text-lg font-black text-white">Neuro-PAS™</div>
+                 <div className="text-lg font-black text-white">Smart-PAS™</div>
               </motion.div>
 
               <motion.div 
@@ -204,7 +204,7 @@ const LandingPage = () => {
                 </span>
               </Link>
               <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">
-                Neural Marketing Intelligence
+                Smart Marketing Intelligence
               </p>
             </div>
             

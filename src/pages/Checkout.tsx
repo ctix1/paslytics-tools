@@ -50,8 +50,9 @@ const Checkout = () => {
   const { subscribe } = useSubscription();
 
   const isAnnual = plan === 'annual';
-  const price = isAnnual ? '$204' : '$19';
-  const period = isAnnual ? t('per_year') : t('per_month');
+  const isStarter = plan === 'starter';
+  const price = isAnnual ? '$49' : isStarter ? '$3.94' : '$19';
+  const period = t('per_month'); // Both are now "5 Days" in translations
 
   const [step, setStep] = useState<Step>('summary');
   const [tab, setTab] = useState<PaymentTab>('card');
@@ -67,7 +68,8 @@ const Checkout = () => {
     t('plan_feature_image'),
     t('plan_feature_pas'),
     t('plan_feature_logs'),
-    ...(isAnnual ? [t('plan_feature_team'), t('plan_feature_support')] : []),
+    t('plan_feature_tools'),
+    t('plan_feature_support'),
   ];
 
   const validate = () => {
@@ -89,7 +91,7 @@ const Checkout = () => {
     setCardNumber('');
     setCvv('');
     setTimeout(() => {
-      subscribe(isAnnual ? 'annual' : 'monthly');
+      subscribe(isAnnual ? 'annual' : isStarter ? 'starter' : 'monthly');
       setStep('success');
     }, 2500);
   };
@@ -115,7 +117,7 @@ const Checkout = () => {
           <h1 className="text-3xl font-black text-white mb-4 tracking-tighter">{t('checkout_success_title')}</h1>
           <p className="text-slate-400 font-medium mb-10">{t('checkout_success_desc')}</p>
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-10">
-            <div className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] mb-2">{isAnnual ? t('plan_annual_title') : t('plan_monthly_title')}</div>
+            <div className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] mb-2">{isAnnual ? t('plan_annual_title') : isStarter ? t('plan_starter_title') : t('plan_monthly_title')}</div>
             <div className="text-5xl font-black text-white tracking-tighter">{price}<span className="text-sm font-medium text-slate-500 ml-2">{period}</span></div>
           </div>
           <div className="flex flex-col gap-4">
@@ -168,7 +170,7 @@ const Checkout = () => {
                     <div className="flex justify-between items-end mb-8 pb-8 border-b border-white/5">
                       <div>
                         <div className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] mb-1">Current Plan Selection</div>
-                        <div className="text-3xl font-black text-white tracking-tighter">{isAnnual ? t('plan_annual_title') : t('plan_monthly_title')}</div>
+                        <div className="text-3xl font-black text-white tracking-tighter">{isAnnual ? t('plan_annual_title') : isStarter ? t('plan_starter_title') : t('plan_monthly_title')}</div>
                       </div>
                       <div className="text-right">
                         <div className="text-4xl font-black text-white tracking-tighter">{price}</div>

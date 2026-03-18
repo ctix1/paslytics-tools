@@ -1,5 +1,5 @@
 import { useLanguage } from '../i18n/LanguageContext';
-import MarketingManager from '../components/MarketingManager';
+import ContentCreator from '../components/ContentCreator';
 
 const MarketingAssistant = () => {
   const { language } = useLanguage();
@@ -7,7 +7,7 @@ const MarketingAssistant = () => {
 
   return (
     <div className={`p-8 max-w-7xl mx-auto min-h-screen ${isRtl ? 'font-arabic' : ''}`} style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
-      <MarketingManager />
+      <ContentCreator />
     </div>
   );
 };

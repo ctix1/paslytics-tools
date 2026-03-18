@@ -18,7 +18,7 @@ import {
   Target,
   Rocket
 } from 'lucide-react';
-import MarketingManager from '../components/MarketingManager';
+import ContentCreator from '../components/ContentCreator';
 import ProductCalculator from '../components/ProductCalculator';
 
 const Dashboard = () => {
@@ -101,10 +101,10 @@ const Dashboard = () => {
             targetLanguage: 'ar',
             language: 'ar',
             instruction: `
-              STRICT SYSTEM ROLE: You are a professional ARABIC Neuromarketing Expert.
+              STRICT SYSTEM ROLE: You are a professional ARABIC AI Marketing Expert.
               MANDATORY OUTPUT FORMAT: You must return a JSON object.
               MANDATORY LANGUAGE: Every value in the JSON MUST be in NATIVE ARABIC.
-              NO ENGLISH: Do not use any English words or characters in the analysis.
+              NO ENGLISH: Do not use any English words, letters, or suffixes (like 'Neural' or 'Problem').
               FIELDS TO ANALYZE: problem, agitation, solution, ai_quick_take.
               EXAMPLE: {"problem": "نص عربي...", "agitation": "نص عربي...", "solution": "نص عربي...", "ai_quick_take": "نص عربي..."}
             `
@@ -192,7 +192,7 @@ const Dashboard = () => {
               
               const link = document.createElement('a');
               link.href = '#';
-              link.download = 'neurological_report.pdf';
+              link.download = 'ai_analysis_report.pdf';
               link.click();
 
               setTimeout(() => { btn.innerHTML = originalText; }, 3000);
@@ -200,7 +200,7 @@ const Dashboard = () => {
             className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all group"
           >
             <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
-            {t('export_neuro_report')}
+            {t('export_ai_report')}
           </button>
           
           <button 
@@ -405,8 +405,8 @@ const Dashboard = () => {
 
           </div>
 
-          {/* Marketing Manager Integration */}
-          <MarketingManager />
+          {/* Content Creator Integration */}
+          <ContentCreator />
 
           {/* Product Calculator Integration */}
           <ProductCalculator />

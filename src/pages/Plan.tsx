@@ -2,24 +2,23 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import Navbar from '../components/Navbar';
-import { useSubscription } from '../context/SubscriptionContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  CheckCircle2, 
-  ChevronDown, 
-  Zap, 
-  ShieldCheck, 
-  Users, 
+import {
+  CheckCircle2,
+  ChevronDown,
+  Zap,
+  ShieldCheck,
   Headphones,
   Sparkles,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext'; // Changed from useSubscription to useAuth
 
 const Plan = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
   const navigate = useNavigate();
-  const { subscription } = useSubscription();
+  const { } = useAuth(); // Removed unused user
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const faqs = [
@@ -28,20 +27,12 @@ const Plan = () => {
     { q: t('faq_enterprise_q'), a: t('faq_enterprise_a') },
   ];
 
-  const monthlyFeatures = [
+  const allFeatures = [
     { label: t('plan_feature_image'), icon: Sparkles },
     { label: t('plan_feature_pas'), icon: CheckCircle2 },
+    { label: t('plan_feature_tools'), icon: Zap },
     { label: t('plan_feature_logs'), icon: ShieldCheck },
-    { label: t('plan_feature_team'), icon: Users, disabled: true },
-    { label: t('plan_feature_support'), icon: Headphones, disabled: true },
-  ];
-
-  const annualFeatures = [
-    { label: t('plan_feature_image'), icon: Sparkles },
-    { label: t('plan_feature_pas'), icon: CheckCircle2 },
-    { label: t('plan_feature_logs'), icon: ShieldCheck },
-    { label: t('plan_feature_team'), icon: Users, highlight: true },
-    { label: t('plan_feature_support'), icon: Headphones, highlight: true },
+    { label: t('plan_feature_support'), icon: Headphones },
   ];
 
   const containerVariants = {
@@ -94,114 +85,139 @@ const Plan = () => {
         </section>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-32 items-stretch">
           
-          {/* Monthly Plan */}
+          {/* Starter Plan */}
           <motion.div 
             variants={itemVariants}
-            className="glass-panel p-10 group relative flex flex-col h-full bg-slate-900/40"
+            className="glass-panel p-8 group relative flex flex-col h-full bg-slate-900/40 border-white/5"
           >
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-white mb-2">{t('plan_monthly_title')}</h2>
-              <p className="text-slate-400 text-sm">{t('plan_monthly_desc')}</p>
+              <h2 className="text-xl font-black text-white mb-2">{t('plan_starter_title')}</h2>
+              <p className="text-slate-400 text-xs">{t('plan_starter_desc')}</p>
             </div>
 
             <div className="mb-10 flex items-end gap-2">
-              <span className="text-6xl font-black text-white tracking-tighter">$19</span>
-              <span className="text-slate-500 font-bold mb-2 uppercase text-xs tracking-widest">/ {t('per_month')}</span>
+              <span className="text-5xl font-black text-white tracking-tighter">$3.94</span>
+              <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_month')}</span>
             </div>
 
-            <div className="flex-grow space-y-8 mb-10">
+            <div className="flex-grow space-y-6 mb-10">
                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
                 {t('whats_included')}
               </div>
               <ul className="space-y-4">
-                {monthlyFeatures.map((f, i) => (
-                  <li key={i} className={`flex items-center gap-4 transition-opacity ${f.disabled ? 'opacity-30' : 'opacity-100'}`}>
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.disabled ? 'bg-slate-800' : 'bg-purple-500/20'}`}>
-                      <f.icon className={`w-4 h-4 ${f.disabled ? 'text-slate-600' : 'text-purple-400'}`} />
+                {allFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-white/5">
+                      <f.icon className="w-3.5 h-3.5 text-slate-400" />
                     </div>
-                    <span className="text-sm font-bold text-slate-200">{f.label}</span>
+                    <span className="text-xs font-bold text-slate-300">{f.label}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {subscription.plan === 'monthly' ? (
-              <div className="w-full py-4 bg-purple-500/10 border border-purple-500/30 text-purple-400 font-black rounded-2xl text-center text-sm">
-                 ✓ {t('paysettings_active_plan')}
+            <button
+              onClick={() => navigate('/checkout/starter')}
+              className="btn-premium w-full !bg-white/5 !text-white !py-3 hover:!bg-white/10 group flex items-center justify-center gap-2"
+            >
+              {t('choose_plan')}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
+
+          {/* Monthly Plan */}
+          <motion.div 
+            variants={itemVariants}
+            className="glass-panel p-8 group relative flex flex-col h-full bg-slate-900/40"
+          >
+            <div className="mb-8">
+              <h2 className="text-xl font-black text-white mb-2">{t('plan_monthly_title')}</h2>
+              <p className="text-slate-400 text-xs">{t('plan_monthly_desc')}</p>
+            </div>
+
+            <div className="mb-10 flex items-end gap-2">
+              <span className="text-5xl font-black text-white tracking-tighter">$19</span>
+              <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_month')}</span>
+            </div>
+
+            <div className="flex-grow space-y-6 mb-10">
+               <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                {t('whats_included')}
               </div>
-            ) : (
-              <button
-                onClick={() => subscription.plan === 'none' && navigate('/checkout/monthly')}
-                disabled={subscription.plan === 'annual'}
-                className="btn-premium w-full !bg-white !text-slate-950 !py-4 hover:!bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
-              >
-                {t('choose_plan')}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            )}
+              <ul className="space-y-4">
+                {allFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-purple-500/20">
+                      <f.icon className="w-3.5 h-3.5 text-purple-400" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-200">{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <button
+              onClick={() => navigate('/checkout/monthly')}
+              className="btn-premium w-full !bg-white !text-slate-950 !py-3 hover:!bg-purple-50 group flex items-center justify-center gap-2"
+            >
+              {t('choose_plan')}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
           </motion.div>
 
           {/* Annual Plan */}
           <motion.div 
             variants={itemVariants}
-            className="glass-panel p-10 group relative border-purple-500/50 flex flex-col h-full bg-gradient-to-br from-purple-500/10 to-transparent"
+            className="glass-panel p-8 group relative border-purple-500/50 flex flex-col h-full bg-gradient-to-br from-purple-500/10 to-transparent"
           >
             {/* Recommendation Badge */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1.5 bg-brand-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-[0_5px_15px_rgba(109,40,217,0.4)]">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 bg-brand-primary text-white text-[8px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl">
               {t('best_value')}
             </div>
 
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-white mb-2">{t('plan_annual_title')}</h2>
-              <p className="text-slate-400 text-sm">{t('plan_annual_desc')}</p>
+              <h2 className="text-xl font-black text-white mb-2">{t('plan_annual_title')}</h2>
+              <p className="text-slate-400 text-xs">{t('plan_annual_desc')}</p>
             </div>
 
-            <div className="mb-10 min-h-[100px]">
+            <div className="mb-10">
               <div className="flex items-end gap-2">
-                <span className="text-6xl font-black text-white tracking-tighter">$204</span>
-                <span className="text-slate-500 font-bold mb-2 uppercase text-xs tracking-widest">/ {t('per_year')}</span>
+                <span className="text-5xl font-black text-white tracking-tighter">$49</span>
+                <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_year')}</span>
               </div>
-              <div className="text-brand-primary font-black text-xs uppercase tracking-widest mt-2 flex items-center gap-2">
+              <div className="text-brand-primary font-black text-[10px] uppercase tracking-widest mt-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 {t('annual_savings')}
               </div>
             </div>
 
-            <div className="flex-grow space-y-8 mb-10">
+            <div className="flex-grow space-y-6 mb-10">
                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
-                {t('everything_monthly_plus')}
+                {t('whats_included')}
               </div>
               <ul className="space-y-4">
-                {annualFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.highlight ? 'bg-amber-500/20' : 'bg-purple-500/20'}`}>
-                      <f.icon className={`w-4 h-4 ${f.highlight ? 'text-amber-400' : 'text-purple-400'}`} />
+                {allFeatures.map((f, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-purple-500/20">
+                      <f.icon className="w-3.5 h-3.5 text-purple-400" />
                     </div>
-                    <span className={`text-sm font-bold ${f.highlight ? 'text-amber-400' : 'text-slate-200'}`}>
+                    <span className="text-xs font-bold text-slate-200">
                       {f.label}
                     </span>
-                    {f.highlight && <div className="ml-auto text-[8px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">Pro</div>}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {subscription.plan === 'annual' ? (
-              <div className="w-full py-4 bg-brand-primary/20 border border-brand-primary/50 text-white font-black rounded-2xl text-center text-sm">
-                 ✓ {t('paysettings_active_plan')}
-              </div>
-            ) : (
-              <button
-                onClick={() => subscription.plan !== 'annual' && navigate('/checkout/annual')}
-                disabled={subscription.plan === 'monthly'}
-                className="btn-premium w-full !py-4 disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
-              >
-                {t('choose_plan')}
-                <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </button>
-            )}
+            <button
+              onClick={() => navigate('/checkout/annual')}
+              className="btn-premium w-full !py-3 group flex items-center justify-center gap-2"
+            >
+              {t('choose_plan')}
+              <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </button>
           </motion.div>
         </div>
 
