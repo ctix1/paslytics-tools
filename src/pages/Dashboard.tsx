@@ -4,7 +4,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, 
@@ -18,15 +17,12 @@ import {
   Target,
   Rocket
 } from 'lucide-react';
-import ContentCreator from '../components/ContentCreator';
-import ProductCalculator from '../components/ProductCalculator';
 
 const Dashboard = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
   const { hasActivePlan } = useSubscription();
   const { profile } = useAuth();
-  const { addLog } = useLogs();
 
   const isAdmin = profile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
@@ -34,51 +30,17 @@ const Dashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [pasOutput, setPasOutput] = useState({
     problem: '',
     agitation: '',
     solution: '',
     ai_quick_take: '',
-    emotional_score: 88,
-    product_name: 'New Analysis'
+    emotional_score: 88
   });
-
-  const handleSaveToLogs = async () => {
-    if (!analysisComplete) return;
-    const btn = document.getElementById('save-log-btn') as HTMLButtonElement;
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'تم الحفظ' : 'Saved'}</span>`;
-    
-    // Add real data to logs via context
-    addLog({
-      name: pasOutput.product_name || (isRtl ? 'تحليل منتج' : 'Product Analysis'),
-      sku: `PAS-${Math.floor(Math.random() * 10000)}`,
-      image: currentImage || 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=60&q=80',
-      score: pasOutput.emotional_score,
-      type: 'PAS'
-    });
-
-    await new Promise(r => setTimeout(r, 1000));
-    
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.innerHTML = originalText;
-    }, 2000);
-  };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
-    // Preview the image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setCurrentImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
     setIsUploading(true);
     setUploadProgress(0);
     
@@ -89,57 +51,30 @@ const Dashboard = () => {
       });
     }, 100);
 
-    const fReader = new FileReader();
-    fReader.readAsDataURL(file);
-    fReader.onload = async () => {
-      const base64Image = fReader.result;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const base64Image = reader.result;
       try {
-        // JSON-STRUCTURED ARABIC PRIORITY PROMPT
         const { data, error } = await supabase.functions.invoke('analyze-product', {
-          body: { 
-            imageBase64: base64Image,
-            targetLanguage: 'ar',
-            language: 'ar',
-            instruction: `
-              STRICT SYSTEM ROLE: You are a professional ARABIC AI Marketing Expert.
-              MANDATORY OUTPUT FORMAT: You must return a JSON object.
-              MANDATORY LANGUAGE: Every value in the JSON MUST be in NATIVE ARABIC.
-              NO ENGLISH: Do not use any English words, letters, or suffixes (like 'Neural' or 'Problem').
-              FIELDS TO ANALYZE: problem, agitation, solution, ai_quick_take.
-              EXAMPLE: {"problem": "نص عربي...", "agitation": "نص عربي...", "solution": "نص عربي...", "ai_quick_take": "نص عربي..."}
-            `
-          }
+          body: { imageBase64: base64Image }
         });
         if (error) throw error;
-        
-        // Automatic Persistence: Save to logs instantly
-        addLog({
-          name: data.product_name || file.name.split('.')[0] || (isRtl ? 'تحليل منتج' : 'Product Analysis'),
-          sku: `PAS-${Math.floor(Math.random() * 10000)}`,
-          image: reader.result as string,
-          score: data.emotional_score || 88,
-          type: 'PAS'
-        });
-
         setPasOutput({
           problem: data.problem || '',
           agitation: data.agitation || '',
           solution: data.solution || '',
           ai_quick_take: data.ai_quick_take || '',
-          emotional_score: data.emotional_score || 88,
-          product_name: data.product_name || file.name.split('.')[0]
+          emotional_score: data.emotional_score || 88
         });
-
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);
-        // Fallback for demo/error
         setPasOutput({
           problem: t('problem_text'),
           agitation: t('agitation_text'),
           solution: t('solution_text'),
           ai_quick_take: t('quick_take_text'),
-          emotional_score: 88,
-          product_name: file.name.split('.')[0]
+          emotional_score: 88
         });
       } finally {
         clearInterval(interval);
@@ -184,44 +119,11 @@ const Dashboard = () => {
         </div>
         
         <div className="flex gap-4">
-          <button 
-            onClick={() => {
-              const btn = document.activeElement as HTMLButtonElement;
-              const originalText = btn.innerHTML;
-              btn.innerHTML = `<span class="flex items-center gap-2 text-emerald-400 font-black uppercase tracking-widest text-[10px]"><CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'جاري التحميل...' : 'Downloading...'}</span>`;
-              
-              const link = document.createElement('a');
-              link.href = '#';
-              link.download = 'ai_analysis_report.pdf';
-              link.click();
-
-              setTimeout(() => { btn.innerHTML = originalText; }, 3000);
-            }}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all group"
-          >
-            <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
-            {t('export_ai_report')}
+          <button className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all">
+            <FileText className="w-5 h-5 text-purple-400" />
+            {t('export_report')}
           </button>
-          
-          <button 
-            id="save-log-btn"
-            disabled={!analysisComplete}
-            onClick={handleSaveToLogs}
-            className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all ${analysisComplete ? 'border-purple-500/50 bg-purple-500/5 text-white hover:bg-purple-500/10' : 'border-white/5 bg-white/5 text-slate-600 cursor-not-allowed'}`}
-          >
-            <CheckCircle2 className={`w-5 h-5 ${analysisComplete ? 'text-emerald-400' : 'text-slate-600'}`} />
-            {t('save_to_logs')}
-          </button>
-
-          <button 
-            onClick={() => {
-              setIsUploading(false);
-              setAnalysisComplete(false);
-              setCurrentImage(null);
-              setPasOutput({ problem: '', agitation: '', solution: '', ai_quick_take: '', emotional_score: 88, product_name: '' });
-            }}
-            className="btn-premium flex items-center gap-2"
-          >
+          <button className="btn-premium flex items-center gap-2">
             <Plus className="w-5 h-5" />
             {t('run_new_analysis')}
           </button>
@@ -330,7 +232,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-black text-white">{t('pas_output')}</h2>
                 <div className="ml-auto flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-purple-500/30">
                   <Rocket className="w-3.5 h-3.5" />
-                  {t('dashboard_ai_precision')}
+                  Gemini API v1.5
                 </div>
               </div>
 
@@ -405,11 +307,6 @@ const Dashboard = () => {
 
           </div>
 
-          {/* Content Creator Integration */}
-          <ContentCreator />
-
-          {/* Product Calculator Integration */}
-          <ProductCalculator />
         </div>
       )}
     </motion.div>
