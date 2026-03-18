@@ -366,7 +366,7 @@ export const translations = {
     pas_output: 'استخراج PAS',
     dashboard_ai_precision: 'دقة 98.4%',
     problem: 'المشكلة',
-    agitation: 'تحليل الإثارة',
+    agitation: 'التأثير',
     solution: 'الحل المقترح',
     problem_text: 'تحديد النقاط المؤلمة في السوق الأساسي بمساعدة الذكاء الاصطناعي.',
     agitation_text: 'رسم خريطة رنين عميقة للمحفزات العاطفية للمستهلك.',
