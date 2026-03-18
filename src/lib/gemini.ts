@@ -10,7 +10,6 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
   try {
     let result;
     if (imageBase64) {
-      // Remove data:image/...;base64, prefix if present
       const base64Data = imageBase64.split(',')[1] || imageBase64;
       
       const imagePart = {
@@ -26,7 +25,15 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
     }
     
     const response = await result.response;
-    return response.text();
+    const text = response.text();
+    
+    // Clean JSON if the prompt asks for it
+    if (prompt.toLowerCase().includes('json')) {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      return jsonMatch ? jsonMatch[0] : text;
+    }
+    
+    return text.trim();
   } catch (error) {
     console.error("Gemini API Error:", error);
     throw error;
