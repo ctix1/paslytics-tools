@@ -1,97 +1,65 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "npm:@google/generative-ai";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.1"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const { imageBase64, targetLanguage } = await req.json();
-    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    const { image } = await req.json()
+    const apiKey = Deno.env.get('GEMINI_API_KEY')
     
-    if (!geminiKey) {
-      throw new Error("Missing GEMINI_API_KEY environment variable.");
+    if (!apiKey) {
+      throw new Error('Missing GEMINI_API_KEY')
     }
 
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const isArabic = targetLanguage === 'ar' || true; // Default to Arabic as per user request
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
     const prompt = `
-      نظام: أنت محلل تسويق ومحتوى رقمي محترف ومبدع.
-      قم بتحليل المنتج في الصورة المرفقة (أو الوصف المقدم) بعمق.
+      نظام: أنت محلل تسويق محترف. حلل المنتج في الصورة.
+      يجب أن تكون المخرجات باللغة "العربية البيضاء" (White Arabic) حصراً، وهي اللغة المفهومة والبسيطة والمستخدمة في الإعلانات ووسائل التواصل الاجتماعي، وليست العربية الفصحى الجامدة أو المعقدة.
+      ممنوع استخدام الإنجليزية.
+      التزم بهيكل PAS (Problem-Agitation-Solution).
       
-      هام جداً: يجب أن تكون جميع القيم (values) في ملف JSON باللغة "العربية البيضاء" (White Arabic) حصراً، وهي اللغة المفهومة، البسيطة، والمعاصرة المستخدمة في التسويق ووسائل التواصل الاجتماعي، وليست العربية الفصحى الجامدة أو المعقدة.
-      ممنوع استخدام اللغة الإنجليزية نهائياً في مخرجات التحليل.
-      
-      استخدم هيكل PAS المعتمد (Problem-Agitation-Solution).
-      
-      تنسيق المخرجات المطلوب (JSON الحصري):
+      المخرجات المطلوبة كملف JSON فقط:
       {
         "problem": "المشكلة بالعربية البيضاء",
-        "agitation": "التبعات والمشاعر بالعربية البيضاء",
-        "solution": "الحل الأمثل بالعربية البيضاء",
-        "ai_quick_take": "فكرة تسويقية سريعة بالعربية البيضاء",
-        "emotional_score": (رقم بين 80 و 99),
-        "product_name": "اسم المنتج بالعربية البيضاء"
+        "agitation": "التبعات بالعربية البيضاء",
+        "solution": "الحل بالعربية البيضاء",
+        "ai_quick_take": "نظرة سريعة بالعربية البيضاء",
+        "emotional_score": 90
       }
-      أجب بملف JSON فقط بدون أي نصوص إضافية.
-    `;
+    `
 
-    let result;
-    if (imageBase64) {
-      // Remove data:image/...;base64, prefix if present
-      const base64Data = imageBase64.split(',')[1] || imageBase64;
-      result = await model.generateContent([
-        prompt,
-        {
-          inlineData: {
-            data: base64Data,
-            mimeType: "image/jpeg",
-          },
-        },
-      ]);
-    } else {
-      result = await model.generateContent(prompt);
-    }
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          data: image,
+          mimeType: "image/jpeg"
+        }
+      }
+    ])
 
-    const response = await result.response;
-    const text = response.text();
-    
-    // Attempt to parse the response as JSON
-    let parsedOutput;
-    try {
-      const cleanedJson = text.replace(/```json/i, '').replace(/```/i, '').trim();
-      parsedOutput = JSON.parse(cleanedJson);
-    } catch (e) {
-      console.error("Failed to parse Gemini response as JSON:", text);
-      parsedOutput = {
-        problem: "Analysis completed. (Raw format fallback)",
-        agitation: text,
-        solution: "Could not parse structured output properly.",
-        ai_quick_take: "Parsing error: " + e.message,
-        emotional_score: 70,
-        product_name: "Unknown"
-      };
-    }
+    const response = await result.response
+    const text = response.text()
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    const data = JSON.parse(jsonMatch ? jsonMatch[0] : text)
 
-    return new Response(JSON.stringify(parsedOutput), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+    return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   } catch (error) {
-    console.error("Gemini Edge Function Error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   }
-});
-
+})
