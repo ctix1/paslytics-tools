@@ -25,7 +25,6 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Home, label: t('home'), path: '/' },
     { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
-    { icon: Sparkles, label: t('marketing_assistant'), path: '/marketing' },
     { icon: FileEdit, label: t('content_builder'), path: '/content-builder' },
     { icon: Zap, label: t('product_calculator'), path: '/calculator' },
     { icon: ClipboardList, label: t('logs'), path: '/logs' },
