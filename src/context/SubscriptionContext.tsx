@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type PlanType = 'none' | 'monthly' | 'annual';
+export type PlanType = 'none' | 'starter' | 'monthly' | 'annual';
 
 interface Subscription {
   plan: PlanType;
@@ -11,7 +11,7 @@ interface Subscription {
 interface SubscriptionContextType {
   subscription: Subscription;
   hasActivePlan: boolean;
-  subscribe: (plan: 'monthly' | 'annual') => void;
+  subscribe: (plan: 'starter' | 'monthly' | 'annual') => void;
   cancel: () => void;
 }
 
@@ -22,6 +22,7 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(u
 
 export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   const [subscription, setSubscription] = useState<Subscription>(() => {
+    if (typeof window === 'undefined') return defaultSubscription;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       return stored ? JSON.parse(stored) : defaultSubscription;
@@ -34,14 +35,10 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(subscription));
   }, [subscription]);
 
-  const subscribe = (plan: 'monthly' | 'annual') => {
+  const subscribe = (plan: 'starter' | 'monthly' | 'annual') => {
     const now = new Date();
     const renewsAt = new Date(now);
-    if (plan === 'monthly') {
-      renewsAt.setMonth(renewsAt.getMonth() + 1);
-    } else {
-      renewsAt.setFullYear(renewsAt.getFullYear() + 1);
-    }
+    renewsAt.setDate(renewsAt.getDate() + 5);
     setSubscription({
       plan,
       activatedAt: now.toISOString(),
