@@ -27,7 +27,11 @@ import {
   Smartphone,
   Layers,
   Zap,
-  Package
+  Package,
+  Heart,
+  ThumbsUp,
+  MessageCircle,
+  Eye
 } from 'lucide-react';
 
 const MarketingManager = () => {
@@ -61,7 +65,7 @@ const MarketingManager = () => {
     setIsGenerating(true);
     setHasGenerated(false);
     
-    // AI Content Core v2
+    // AI Content Core v2.1 (Engagement Stats + Live Pack)
     setTimeout(() => {
       setIsGenerating(false);
       setHasGenerated(true);
@@ -74,22 +78,31 @@ const MarketingManager = () => {
             ? ['الباحثين عن أسلوب حياة ذكي وفاخر', 'العائلات التي تقدر الأتمتة والراحة', 'فئة الشباب المهتمة بالتقنيات الحديثة'] 
             : ['Smart & luxury lifestyle seekers', 'Families valuing automation & comfort', 'Young tech-savvy generation'],
           strategy: isRtl 
-            ? 'تفعيل حملة "باقة الوكالة" المتكاملة: 3 فيديوهات عمودية (9:16) تيك توك وسناب شات + 5 منشورات ترويجية إنستقرام.' 
-            : 'Activating integrated "Agency Package": 3 TikTok/Snap Reels (9:16) + 5 Instagram Promotional Posts.'
+            ? 'تفعيل حملة "باقة الوكالة" المتكاملة: الفيديوهات والمنشورات مدعومة ببيانات التفاعل المتوقعة (Likes/Votes).' 
+            : 'Activating integrated "Agency Package": Reels and posts boosted with projected engagement data (Likes/Votes).'
         },
         hooks: [
-          { type: 'Aggressive', text: isRtl ? `${dialectPrefix} لسا تدور على الريموت؟ بيتك صار أذكى منك، جربه الحين!` : `${dialectPrefix} Still looking for the remote? Your home is smarter than you, try it now!` },
-          { type: 'Emotional', text: isRtl ? `${dialectPrefix} تخيل ترجع لبيت يرحب فيك ويفهم مزاجك.. هذي هي الراحة.` : `${dialectPrefix} Imagine returning to a home that welcomes you and understands your mood.. this is comfort.` }
+          { 
+            type: 'Aggressive', 
+            text: isRtl ? `${dialectPrefix} لسا تدور على الريموت؟ بيتك صار أذكى منك، جربه الحين!` : `${dialectPrefix} Still looking for the remote? Your home is smarter than you, try it now!`,
+            stats: { likes: '12.4k', votes: '98%' }
+          },
+          { 
+            type: 'Emotional', 
+            text: isRtl ? `${dialectPrefix} تخيل ترجع لبيت يرحب فيك ويفهم مزاجك.. هذي هي الراحة.` : `${dialectPrefix} Imagine returning to a home that welcomes you and understands your mood.. this is comfort.`,
+            stats: { likes: '8.1k', votes: '94%' }
+          }
         ],
         video: {
           script: isRtl 
             ? `${dialectPrefix} "باقة الوكالة الموحدة": المشهد يبدأ بزاوية عمودية سينمائية للمنتج، صوت عميق يقول "المستقبل صار حقيقة في بيتك"."` 
             : `${dialectPrefix} "Unified Agency Package": Scene starts with cinematic vertical product angle, deep voice says "The future is real in your home."`,
-          scenes: 6
+          scenes: 6,
+          stats: { views: '1.2M', heart: '450k' }
         },
         posts: [
-          { platform: 'Instagram', title: isRtl ? 'منشور ترويجي (مربع)' : 'Promotional Post (Square)', caption: isRtl ? `${dialectPrefix} الأناقة والذكاء في مكان واحد. اكتشف التفاصيل الآن.` : `${dialectPrefix} Elegance and intelligence in one place. Discover details now.` },
-          { platform: 'Twitter/X', title: isRtl ? 'منشور سريع (Portrait)' : 'Quick Post (Portrait)', caption: isRtl ? `${dialectPrefix} اختصر وقتك وجهدك بلمسة ذكاء واحدة. #بيت_ذكي #باسليتيكس` : `${dialectPrefix} Shorten your time and effort with one smart touch. #SmartHome #PASlytics` }
+          { platform: 'Instagram', title: isRtl ? 'منشور ترويجي (مربع)' : 'Promotional Post (Square)', caption: isRtl ? `${dialectPrefix} الأناقة والذكاء في مكان واحد. اكتشف التفاصيل الآن.` : `${dialectPrefix} Elegance and intelligence in one place. Discover details now.`, stats: { likes: '5.2k', comments: '120' } },
+          { platform: 'Twitter/X', title: isRtl ? 'منشور سريع (Portrait)' : 'Quick Post (Portrait)', caption: isRtl ? `${dialectPrefix} اختصر وقتك وجهدك بلمسة ذكاء واحدة. #بيت_ذكي #باسليتيكس` : `${dialectPrefix} Shorten your time and effort with one smart touch. #SmartHome #PASlytics`, stats: { likes: '2.1k', votes: '91%' } }
         ]
       };
 
@@ -110,7 +123,12 @@ const MarketingManager = () => {
     setIsSyncing(true);
     setTimeout(() => {
       setIsSyncing(false);
-      // Success toast
+      // Success simulation
+      const toast = document.createElement('div');
+      toast.className = `fixed top-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-8 py-5 border-emerald-500/50 bg-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-xs z-[200] animate-slideDown flex items-center gap-4`;
+      toast.innerHTML = `<CheckCircle2 class="w-5 h-5" /> ${isRtl ? 'تمت مزامنة جميع المرفقات بنجاح!' : 'All assets synced successfully!'}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
     }, 4500);
   };
 
@@ -122,6 +140,22 @@ const MarketingManager = () => {
       setIsPlayingAudio(index);
       setTimeout(() => setIsPlayingAudio(null), 5000);
     }, 1500);
+  };
+
+  const handleDownloadAsset = (type: string) => {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-amber-500/50 bg-amber-500/10 text-amber-400 font-black uppercase tracking-widest text-xs z-50 animate-bounce flex items-center gap-3`;
+    toast.innerHTML = `<Loader2 class="w-4 h-4 animate-spin" /> ${isRtl ? 'جاري إنشاء باقة الميديا...' : 'Generating Media Pack...'}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.innerHTML = `<CheckCircle2 class="w-4 h-4 text-emerald-500" /> ${isRtl ? 'جاهز للتحميل!' : 'Package Ready!'}`;
+      const link = document.createElement('a');
+      link.href = '#';
+      link.download = `neural_${type}_asset.zip`;
+      link.click();
+      setTimeout(() => toast.remove(), 2000);
+    }, 2000);
   };
 
   return (
@@ -320,11 +354,17 @@ const MarketingManager = () => {
                           {generatedContent?.hooks.map((h: any, i: number) => (
                              <div key={i} className="p-8 bg-slate-950/60 border border-white/5 rounded-3xl group/hook transition-all hover:border-amber-500/30">
                                 <div className="flex items-center justify-between mb-6">
-                                   <div className="px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded uppercase tracking-widest">{h.type} HOOK</div>
+                                   <div className="flex items-center gap-4">
+                                      <div className="px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded uppercase tracking-widest">{h.type} HOOK</div>
+                                      <div className="flex items-center gap-2 text-slate-500 text-[9px] font-black uppercase">
+                                         <Heart className="w-3 h-3 text-red-500" /> {h.stats.likes}
+                                         <ThumbsUp className="w-3 h-3 text-blue-500 ml-2" /> {h.stats.votes} Live
+                                      </div>
+                                   </div>
                                    <div className="flex gap-2">
                                       <button className="p-2.5 bg-white/5 text-slate-500 hover:text-white rounded-xl" onClick={() => navigator.clipboard.writeText(h.text)}><ClipboardList className="w-4 h-4" /></button>
                                       <button 
-                                        onClick={() => { const l=document.createElement('a'); l.href='#'; l.download=`hook_${i}.mp3`; l.click(); }}
+                                        onClick={() => handleDownloadAsset('audio')}
                                         className="p-2.5 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-xl"
                                       >
                                         <Download className="w-4 h-4" />
@@ -343,11 +383,11 @@ const MarketingManager = () => {
                                    </button>
                                    <div className="flex-1 space-y-2">
                                       <div className="flex items-center justify-between text-[10px] font-black text-slate-500 tracking-[0.2em]">
-                                         <span>NEURAL SYNTHESIS</span>
+                                         <span>NEURAL SYNTHESIS ACTIVATED</span>
                                          <span>0:00 / 0:15</span>
                                       </div>
                                       <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                         <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500" />
+                                         <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
                                       </div>
                                    </div>
                                 </div>
@@ -362,6 +402,18 @@ const MarketingManager = () => {
                           <div className="relative aspect-[9/16] w-full max-w-[320px] rounded-[3rem] border-[8px] border-slate-950 bg-slate-900 overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group/screen">
                              <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-black/90" />
                              
+                             {/* Stats Overlay on Video */}
+                             <div className="absolute top-12 left-8 z-30 flex flex-col gap-3">
+                                <div className="px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-full flex items-center gap-2 border border-white/10">
+                                   <Eye className="w-3 h-3 text-slate-300" />
+                                   <span className="text-[10px] font-black text-white">{generatedContent?.video?.stats.views}</span>
+                                </div>
+                                <div className="px-3 py-1.5 bg-red-500/20 backdrop-blur-md rounded-full flex items-center gap-2 border border-red-500/20">
+                                   <Heart className="w-3 h-3 text-red-500" />
+                                   <span className="text-[10px] font-black text-red-100">{generatedContent?.video?.stats.heart}</span>
+                                </div>
+                             </div>
+
                              {/* Video Visual Core */}
                              <div className="absolute inset-0">
                                 <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&fit=crop" className="w-full h-full object-cover opacity-60 group-hover/screen:scale-110 transition-transform duration-[5000ms]" alt="Portrait Reel" />
@@ -372,7 +424,7 @@ const MarketingManager = () => {
                                       <span className="text-[10px] font-black tracking-widest">{t('media_rendering')}</span>
                                     </div>
                                   ) : (
-                                    <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-24 h-24 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                    <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-24 h-24 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
                                       <Play className="w-10 h-10 text-white ml-1.5" />
                                     </button>
                                   )}
@@ -386,7 +438,10 @@ const MarketingManager = () => {
                                    <h4 className="text-white text-2xl font-black">{t('video_preview')}</h4>
                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Dialect: {selectedVoice}</p>
                                 </div>
-                                <button className="w-full py-5 bg-white text-black rounded-3xl font-black text-xs flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl">
+                                <button 
+                                  onClick={() => handleDownloadAsset('video')}
+                                  className="w-full py-5 bg-white text-black rounded-3xl font-black text-xs flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl"
+                                >
                                    <Download className="w-5 h-5" />
                                    {t('download_video')}
                                 </button>
@@ -404,6 +459,10 @@ const MarketingManager = () => {
                                       <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center"><Instagram className="text-purple-400 w-5 h-5" /></div>
                                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.platform} Agency Tool</span>
                                    </div>
+                                   <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase">
+                                      <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5 text-fuchsia-500" /> {p.stats.likes}</span>
+                                      <span className="flex items-center gap-1.5"><MessageCircle className="w-3.5 h-3.5 text-blue-400" /> {p.stats.comments}</span>
+                                   </div>
                                 </div>
                                 <div className="aspect-square bg-slate-900 rounded-[2rem] overflow-hidden relative shadow-inner">
                                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&fit=crop" className="w-full h-full object-cover opacity-50 grayscale group-hover/post:grayscale-0 group-hover/post:opacity-100 transition-all duration-700" alt="Post Design" />
@@ -413,7 +472,7 @@ const MarketingManager = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                    <button className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'نسخ النص' : 'Copy Text'}</button>
-                                   <button className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'تحميل الصورة' : 'Download Img'}</button>
+                                   <button onClick={() => handleDownloadAsset('static')} className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'تحميل الصورة' : 'Download Img'}</button>
                                 </div>
                              </div>
                           ))}
