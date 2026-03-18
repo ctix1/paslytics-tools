@@ -175,7 +175,7 @@ export const translations = {
     checkout_bank_swift: 'SWIFT / BIC',
     checkout_bank_amount: 'Exact Amount',
     checkout_bank_note: 'Internal Reference: SUBS-PAS-2026',
-    checkout_trust_title: 'Security Protocol',
+    checkout_trust_title: 'بروتوكول الأمان',
     checkout_trust_1_title: 'PCI-DSS v4.0 Certified',
     checkout_trust_1_desc: 'Military-grade encryption for all financial handshakes.',
     checkout_trust_2_title: 'Data Sovereignty',
