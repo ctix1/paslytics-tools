@@ -197,7 +197,7 @@ const ContentCreator = () => {
              </div>
              <div>
                 <h2 className="text-2xl font-black text-white">{t('marketing_assistant')}</h2>
-                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'محرك ذكي مدعوم بـ OpenAI GPT-4' : 'Smart Engine powered by OpenAI GPT-4'}</p>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'محرك ذكي مدعوم بـ Gemini API' : 'Smart Engine powered by Gemini API'}</p>
              </div>
           </div>
           {hasGenerated && (

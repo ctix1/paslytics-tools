@@ -13,7 +13,9 @@ import {
   Bell,
   Sparkles,
   CreditCard,
-  FileEdit
+  FileEdit,
+  PenTool,
+  Calculator
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -24,6 +26,8 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Home, label: t('home'), path: '/' },
     { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
+    { icon: PenTool, label: t('marketing_assistant'), path: '/marketing' },
+    { icon: Calculator, label: t('product_calculator'), path: '/calculator' },
     { icon: ClipboardList, label: t('logs'), path: '/logs' },
     { icon: Users, label: t('user_management'), path: '/management', adminOnly: true },
     { icon: CreditCard, label: t('paysettings_nav'), path: '/admin/payment-settings', adminOnly: true },

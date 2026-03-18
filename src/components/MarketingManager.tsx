@@ -211,7 +211,7 @@ const MarketingManager = () => {
              </div>
              <div>
                 <h2 className="text-2xl font-black text-white">{t('marketing_assistant')}</h2>
-                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'المحرك العصبي مدعوم بـ OpenAI GPT-4' : 'Neural Engine powered by OpenAI GPT-4'}</p>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'المحرك العصبي مدعوم بـ Gemini API' : 'Neural Engine powered by Gemini API'}</p>
              </div>
           </div>
           {hasGenerated && (
