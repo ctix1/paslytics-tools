@@ -75,14 +75,23 @@ const ContentCreator = () => {
           : "Describe this product briefly (in one sentence) for a marketing campaign.";
         
         const { analyzeMarketing } = await import('../lib/gemini');
-        // @ts-ignore - analyzeMarketing supports 2 args in gemini.ts implementation
         const aiDescription = await analyzeMarketing(prompt, base64Image);
-        setDescription(aiDescription.trim());
+        
+        if (aiDescription) {
+          setDescription(aiDescription.trim());
+        } else {
+          throw new Error("Empty AI response");
+        }
         setIsAnalyzingImage(false);
       };
     } catch (error) {
       console.error("Image analysis failed:", error);
       setIsAnalyzingImage(false);
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-red-500/50 bg-red-500/10 text-red-400 font-black uppercase tracking-widest text-xs z-50 animate-bounce`;
+      toast.innerHTML = isRtl ? 'فشل تحليل الصورة. حاول مرة أخرى.' : 'Image analysis failed. Try again.';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
   };
 
@@ -92,35 +101,41 @@ const ContentCreator = () => {
     setHasGenerated(false);
     
     try {
-      const dialectPrefix = isRtl ? `[بلهجة ${selectedVoice}] ` : `[In ${selectedVoice} dialect] `;
       const prompt = `
-        نظام: أنت خبير صناعة محتوى. قم بإنشاء محتوى ترويجي للمنتج: "${description}"
-        ${dialectPrefix}
-        المطلوب:
-        1. خطة محتوى (جمهور واستراتيجية)
-        2. هوك (Hook) للفيديوهات.
-        3. سيناريو فيديو قصير (Reel)
-        4. كابشن لمنشورات التواصل الاجتماعي.
+        نظام: أنت خبير صناعة محتوى رقمي محترف. قم بإنشاء محتوى ترويجي متكامل للمنتج: "${description}"
+        اللغة المطلوبة للقيم: "العربية البيضاء" (لغة بسيطة ومفهومة لجميع العرب، ليست فصحى معقدة). 
+        استخدم لهجة ${selectedVoice} إذا كان ذلك مناسباً للسيناريو التسويقي.
         
-        أجب بتنسيق JSON حصراً:
+        المطلوب هو كائن JSON حصراً يحتوي على:
+        1. plan: خطة تشمل الجمهور المستهدف (audience - قائمة نصوص) واستراتيجية المحتوى (strategy - نص).
+        2. hooks: قائمة من 2 فيديو هوك (نصوص جذابة).
+        3. video: سيناريو فيديو قصير (script - نص) وعدد المشاهد المتوقعة (scenes - رقم).
+        4. posts: قائمة من كابشن لمنصات التواصل (platform و caption).
+        
+        تنسيق JSON الإلزامي:
         {
           "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
           "hooks": [
-            { "type": "Catchy", "text": "..." },
-            { "type": "Value", "text": "..." }
+            { "type": "جذاب", "text": "..." },
+            { "type": "قيمة", "text": "..." }
           ],
           "video": { "script": "...", "scenes": 5 },
           "posts": [
-            { "platform": "Instagram", "caption": "..." },
-            { "platform": "Twitter", "caption": "..." }
+            { "platform": "إنستغرام", "caption": "..." },
+            { "platform": "تيك توك", "caption": "..." }
           ]
         }
+        هام: أجب بملف JSON فقط بدون أي نصوص إضافية أو علامات Markdown.
       `;
 
       const { analyzeMarketing } = await import('../lib/gemini');
       const responseText = await analyzeMarketing(prompt);
-      const cleanedJson = responseText.replace(/```json/i, '').replace(/```/i, '').trim();
-      const newContent = JSON.parse(cleanedJson);
+      
+      // Robust JSON extraction
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("Could not find valid JSON in AI response");
+      
+      const newContent = JSON.parse(jsonMatch[0]);
 
       setGeneratedContent(newContent);
       setHasGenerated(true);
@@ -194,11 +209,20 @@ const ContentCreator = () => {
           </div>
           
           <div className="flex flex-wrap items-center justify-center gap-4">
-             {['Snapchat', 'TikTok', 'Instagram'].map((p) => (
+              {['Snapchat', 'TikTok', 'Instagram'].map((p) => (
                <button 
                  key={p}
-                onClick={() => setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase() as keyof typeof socialLinked] }))}
-                className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white'}`}
+                 onClick={() => {
+                   if (!socialLinked[p.toLowerCase() as keyof typeof socialLinked]) {
+                     const toast = document.createElement('div');
+                     toast.className = `fixed top-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-emerald-500/50 bg-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-[10px] z-[200] animate-slideDown flex items-center gap-3`;
+                     toast.innerHTML = `<CheckCircle2 class="w-4 h-4" /> ${isRtl ? `تم ربط حساب ${p} بنجاح!` : `${p} account linked successfully!`}`;
+                     document.body.appendChild(toast);
+                     setTimeout(() => toast.remove(), 3000);
+                   }
+                   setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase() as keyof typeof socialLinked] }));
+                 }}
+                 className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white'}`}
                >
                  {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                  {p}
@@ -457,8 +481,8 @@ const ContentCreator = () => {
                              <div className="absolute inset-0 flex items-center justify-center z-10">
                                 {isRendering ? (
                                   <div className="flex flex-col items-center gap-4 text-amber-400">
-                                    <Loader2 className="w-12 h-12 animate-spin" />
-                                    <span className="text-[10px] font-black tracking-widest">{t('media_rendering')}</span>
+                                    <Loader2 className="w-12 h-12 animate-spin text-amber-500" />
+                                    <span className="text-[10px] font-black tracking-widest text-amber-500">{isRtl ? 'جاري معالجة الفيديو ذكياً...' : 'Smart Processing Video...'}</span>
                                   </div>
                                 ) : (
                                   <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
