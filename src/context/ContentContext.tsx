@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 export interface HomepageContent {
   heroTitle1_en: string; heroTitle1_ar: string;
@@ -45,7 +45,7 @@ export const defaultHomepage: HomepageContent = {
   ctaHeading_en: 'Ready to revolutionize your product marketing?',
   ctaHeading_ar: 'هل أنت مستعد لإحداث ثورة في تسويق منتجاتك؟',
   ctaDesc_en: 'Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.',
-  ctaDesc_ar: 'انضم إلى مئات مديري المنتجات الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
+  ctaDesc_ar: 'انضم إلى مئات من صنّاع المحتوى الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
   f1Title_en: 'AI Image Analysis',        f1Title_ar: 'تحليل الصور بالذكاء الاصطناعي',
   f1Desc_en: 'Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.',
   f1Desc_ar: 'ارفع صور المنتجات ودع الذكاء الاصطناعي يحدد نقاط البيع البصرية الرئيسية والخصائص الجسدية التي تحفز نية الشراء.',
@@ -76,7 +76,7 @@ export const defaultAbout: AboutContent = {
   tm1Bio_en: '10+ years of expertise in AI',
   tm1Bio_ar: 'سنوات 10 خبير في الذكاء الاصطناعي',
   tm2Name_en: 'Sara Khalid',      tm2Name_ar: 'سارة خالد',
-  tm2Role_en: 'Marketing Director', tm2Role_ar: 'مدير التسويق',
+  tm2Role_en: 'Content Creator', tm2Role_ar: 'صانع المحتوى',
   tm2Bio_en: 'Expert in e-commerce product marketing',
   tm2Bio_ar: 'خبيرة في تسويق المنتجات عبر الإنترنت',
   tm3Name_en: 'Ali Ahmad',        tm3Name_ar: 'علي أحمد',
@@ -104,6 +104,7 @@ const ContentContext = createContext<ContentContextType | null>(null);
 
 export const ContentProvider = ({ children }: { children: React.ReactNode }) => {
   const [homepage, setHomepageState] = useState<HomepageContent>(() => {
+    if (typeof window === 'undefined') return defaultHomepage;
     try {
       const stored = localStorage.getItem(STORAGE_KEY_HOME);
       return stored ? { ...defaultHomepage, ...JSON.parse(stored) } : defaultHomepage;
@@ -111,6 +112,7 @@ export const ContentProvider = ({ children }: { children: React.ReactNode }) => 
   });
 
   const [about, setAboutState] = useState<AboutContent>(() => {
+    if (typeof window === 'undefined') return defaultAbout;
     try {
       const stored = localStorage.getItem(STORAGE_KEY_ABOUT);
       return stored ? { ...defaultAbout, ...JSON.parse(stored) } : defaultAbout;
