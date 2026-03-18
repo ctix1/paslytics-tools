@@ -1,113 +1,85 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
-interface UserProfile {
-  email: string;
-  name: string;
-  role: 'admin' | 'user';
-  avatar_url?: string;
+interface Profile {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: 'user' | 'admin';
 }
 
 interface AuthContextType {
-  user: any | null;
-  profile: UserProfile | null;
+  user: User | null;
+  profile: Profile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, name: string) => Promise<any>;
-  signOut: () => Promise<void>;
+  isAdmin: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  profile: null,
+  loading: true,
+  isAdmin: false,
+});
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check initial session
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session);
     });
 
-    // 2. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       handleSession(session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const handleSession = (session: any) => {
-    console.log('Handling Auth Session:', session?.user?.email);
-    if (session) {
-      const user = session.user;
-      const email = user.email || '';
-      
-      // Admin Detection Logic
-      // Ensure email is trimmed and case-insensitive for reliable matching
-      const userEmail = email.trim().toLowerCase();
-      const isAdmin = userEmail === 'koo111333@gmail.com';
-      
-      console.log('[Auth] Detected User:', userEmail, '| Is Admin:', isAdmin);
-      const meta = user.user_metadata || {};
-      const name = meta.full_name || meta.name || meta.display_name || (meta.given_name ? `${meta.given_name} ${meta.family_name || ''}` : '') || email.split('@')[0] || 'User';
-      const avatar = meta.avatar_url || meta.picture || '';
+  const handleSession = async (session: any) => {
+    const currentUser = session?.user ?? null;
+    setUser(currentUser);
 
-      const newProfile: UserProfile = {
-        email: email,
-        name: name.trim(),
-        role: isAdmin ? 'admin' : 'user',
-        avatar_url: avatar
-      };
+    if (currentUser) {
+      // Fetch profile
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
 
-      setUser(user);
-      setProfile(newProfile);
-      
-      // Keep localStorage in sync for older components or quick-load
-      localStorage.setItem('user_profile', JSON.stringify(newProfile));
-      console.log('Profile Sync Complete:', newProfile.name);
+      if (!error && data) {
+        setProfile(data);
+      } else {
+        // Fallback for new users or if profile fetch fails
+        setProfile({
+          id: currentUser.id,
+          full_name: currentUser.user_metadata?.full_name || 'User',
+          avatar_url: currentUser.user_metadata?.avatar_url || null,
+          role: currentUser.email === 'mastr@mastr.com' ? 'admin' : 'user', // Basic admin logic
+        });
+      }
     } else {
-      setUser(null);
       setProfile(null);
-      localStorage.removeItem('user_profile');
     }
     setLoading(false);
   };
 
-  const signIn = async (email: string, password: string) => {
-    return await supabase.auth.signInWithPassword({ email, password });
-  };
-
-  const signUp = async (email: string, password: string, name: string) => {
-    return await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name,
-        },
-      },
-    });
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem('user_profile');
-    window.location.href = '/login';
-  };
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mastr@mastr.com';
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
