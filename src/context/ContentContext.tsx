@@ -38,14 +38,14 @@ export interface AboutContent {
 }
 
 export const defaultHomepage: HomepageContent = {
-  heroTitle1_en: 'AI-Powered Product ',  heroTitle1_ar: 'تحليل المنتجات ',
-  heroTitle2_en: 'Analysis',             heroTitle2_ar: 'بالذكاء الاصطناعي',
-  heroDesc_en: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by advanced artificial intelligence. Transform features into emotional benefits.',
-  heroDesc_ar: 'استكشف رؤى المستهلكين العميقة باستخدام إطار عمل PAS (المشكلة-التهيج-الحل) المدعوم بالذكاء الاصطناعي المتقدم. حوّل ميزات المنتجات إلى فوائد عاطفية.',
+  heroTitle1_en: 'Gemini-Powered Product ',  heroTitle1_ar: 'تحليل المنتجات ',
+  heroTitle2_en: 'Analysis v1.5',             heroTitle2_ar: 'بواسطة Gemini API',
+  heroDesc_en: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by the advanced Gemini 1.5 Flash API. Transform features into emotional benefits.',
+  heroDesc_ar: 'استكشف رؤى المستهلكين العميقة باستخدام إطار عمل PAS (المشكلة-التهيج-الحل) المدعوم بـ Gemini 1.5 Flash API المتطور. حوّل ميزات المنتجات إلى فوائد عاطفية.',
   ctaHeading_en: 'Ready to revolutionize your product marketing?',
   ctaHeading_ar: 'هل أنت مستعد لإحداث ثورة في تسويق منتجاتك؟',
   ctaDesc_en: 'Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.',
-  ctaDesc_ar: 'انضم إلى مئات من صنّاع المحتوى الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
+  ctaDesc_ar: 'انضم إلى مئات مديري المنتجات الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
   f1Title_en: 'AI Image Analysis',        f1Title_ar: 'تحليل الصور بالذكاء الاصطناعي',
   f1Desc_en: 'Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.',
   f1Desc_ar: 'ارفع صور المنتجات ودع الذكاء الاصطناعي يحدد نقاط البيع البصرية الرئيسية والخصائص الجسدية التي تحفز نية الشراء.',
@@ -58,10 +58,10 @@ export const defaultHomepage: HomepageContent = {
 };
 
 export const defaultAbout: AboutContent = {
-  badge_en: 'About Us',           badge_ar: 'عن الموقع',
-  heading_en: 'About PASlytics',  heading_ar: 'نبذة عن PASlytics',
-  subheading_en: 'We are a leading company in the field of AI product analysis, aiming to help companies improve their marketing strategies and increase conversion rates.',
-  subheading_ar: 'نحن شركة رائدة في مجال تحليل المنتجات باستخدام الذكاء الاصطناعي، نهدف إلى مساعدة الشركات في تحسين استراتيجيات تسويقها وزيادة معدلات التحويل.',
+  badge_en: 'Powered by Gemini 1.5',           badge_ar: 'مدعوم بـ Gemini 1.5',
+  heading_en: 'About the Gemini Integration',  heading_ar: 'حول تكامل Gemini',
+  subheading_en: 'We are reaching a new era in AI product analysis, leveraging the Google Gemini API to help companies improve their marketing strategies with unprecedented precision.',
+  subheading_ar: 'نحن نصل إلى عصر جديد في تحليل المنتجات بالذكاء الاصطناعي، مستفيدين من Google Gemini API لمساعدة الشركات في تحسين استراتيجيات تسويقها بدقة غير مسبوقة.',
   visionTitle_en: 'Our Vision',   visionTitle_ar: 'رؤيتنا',
   visionText_en: 'To be the first partner for companies in transforming product data into a practical vision that helps them outperform competitors and achieve their commercial goals.',
   visionText_ar: 'أن نكون الشريك الأول للشركات في تحويل بيانات المنتجات إلى رؤى عملية تساعدها في التفوق على المنافسين وتحقيق أهدافها التجارية.',
@@ -76,7 +76,7 @@ export const defaultAbout: AboutContent = {
   tm1Bio_en: '10+ years of expertise in AI',
   tm1Bio_ar: 'سنوات 10 خبير في الذكاء الاصطناعي',
   tm2Name_en: 'Sara Khalid',      tm2Name_ar: 'سارة خالد',
-  tm2Role_en: 'Content Creator', tm2Role_ar: 'صانع المحتوى',
+  tm2Role_en: 'Marketing Director', tm2Role_ar: 'مدير التسويق',
   tm2Bio_en: 'Expert in e-commerce product marketing',
   tm2Bio_ar: 'خبيرة في تسويق المنتجات عبر الإنترنت',
   tm3Name_en: 'Ali Ahmad',        tm3Name_ar: 'علي أحمد',
