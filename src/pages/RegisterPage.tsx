@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -20,6 +20,9 @@ const RegisterPage = () => {
   const { t, language } = useLanguage();
   const { signUp } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get('redirect');
   const isRtl = language === 'ar';
 
   const [formData, setFormData] = useState({
@@ -70,10 +73,10 @@ const RegisterPage = () => {
             {t('register_success_desc')}
           </p>
           <button 
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(redirect ? `/${redirect}` : '/login')}
             className="btn-premium w-full py-4 rounded-2xl flex items-center justify-center gap-3 group"
           >
-            {t('login')}
+            {redirect ? t('next') : t('login')}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </motion.div>

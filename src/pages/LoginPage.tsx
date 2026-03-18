@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
@@ -8,6 +8,9 @@ import { Sparkles, Mail, Lock, Globe, ShieldCheck, ArrowRight, Loader2 } from 'l
 const LoginPage = () => {
   const { t, language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get('redirect');
   const isRtl = language === 'ar';
 
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +21,7 @@ const LoginPage = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/dashboard',
+          redirectTo: window.location.origin + (redirect ? `/${redirect}` : '/dashboard'),
           queryParams: {
             access_type: 'offline',
             prompt: 'consent'
@@ -50,7 +53,7 @@ const LoginPage = () => {
       if (error) throw error;
 
       if (data.session) {
-        navigate('/dashboard');
+        navigate(redirect ? `/${redirect}` : '/dashboard');
       }
 
     } catch (error: any) {
