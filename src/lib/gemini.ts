@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
-  systemInstruction: "أنت خبير تسويق رقمي. يجب أن تكون جميع مخرجاتك باللغة العربية (العربية البيضاء المفهومة لجميع العرب) مالم يُطلب منك غير ذلك. التزم بالدقة والاحترافية والأسلوب الجذاب."
+  systemInstruction: "أنت خبير تسويق رقمي محترف. يجب أن تكون جميع مخرجاتك باللغة العربية (العربية البيضاء المفهومة لجميع العرب) مالم يُطلب منك غير ذلك. التزم بالدقة والاحترافية والأسلوب الجذاب. يمنع استخدام الإنجليزية تماماً في المخرجات."
 });
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
@@ -11,14 +11,12 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
     let result;
     if (imageBase64) {
       const base64Data = imageBase64.split(',')[1] || imageBase64;
-      
       const imagePart = {
         inlineData: {
           data: base64Data,
           mimeType: "image/jpeg"
         }
       };
-      
       result = await model.generateContent([prompt, imagePart]);
     } else {
       result = await model.generateContent(prompt);
@@ -27,7 +25,7 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
     const response = await result.response;
     const text = response.text();
     
-    // Clean JSON if the prompt asks for it
+    // Robust JSON cleaning
     if (prompt.toLowerCase().includes('json')) {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return jsonMatch ? jsonMatch[0] : text;
