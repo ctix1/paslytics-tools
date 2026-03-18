@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
-  systemInstruction: "أنت خبير تسويق رقمي محترف. يجب أن تكون جميع مخرجاتك باللغة العربية (العربية البيضاء المفهومة لجميع العرب) مالم يُطلب منك غير ذلك. التزم بالدقة والاحترافية والأسلوب الجذاب. يمنع استخدام الإنجليزية تماماً في المخرجات."
+  systemInstruction: "أنت خبير تسويق رقمي محترف. يجب أن تكون جميع مخرجاتك باللغة 'العربية البيضاء' (White Arabic) حصراً، وهي لغة عصرية، بسيطة، ومفهومة للجميع، وتستخدم في السيناريوهات الإعلانية والمحتوى الرقمي، وليست اللغة الفصحى الجامدة أو الأكاديمية. يمنع استخدام الإنجليزية تماماً في المخرجات."
 });
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
