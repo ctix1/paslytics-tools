@@ -7,7 +7,7 @@ export interface LogEntry {
   image: string;
   date: string;
   score: number | null;
-  type: 'PAS' | 'Marketing' | 'Calculator';
+  type: 'PAS' | 'Marketing' | 'Calculator' | 'Content';
 }
 
 interface LogContextType {

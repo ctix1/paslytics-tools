@@ -38,15 +38,15 @@ export interface AboutContent {
 }
 
 export const defaultHomepage: HomepageContent = {
-  heroTitle1_en: 'Gemini-Powered Product ',  heroTitle1_ar: 'تحليل المنتجات ',
-  heroTitle2_en: 'Analysis v1.5',             heroTitle2_ar: 'بواسطة Gemini API',
-  heroDesc_en: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by the advanced Gemini 1.5 Flash API. Transform features into emotional benefits.',
-  heroDesc_ar: 'استكشف رؤى المستهلكين العميقة باستخدام إطار عمل PAS (المشكلة-التهيج-الحل) المدعوم بـ Gemini 1.5 Flash API المتطور. حوّل ميزات المنتجات إلى فوائد عاطفية.',
+  heroTitle1_en: 'Advanced Neural ',  heroTitle1_ar: 'التحليل العصبي ',
+  heroTitle2_en: 'Marketing Intelligence',             heroTitle2_ar: 'الذكي للمنتجات',
+  heroDesc_en: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by the advanced neural engine. Transform features into emotional benefits.',
+  heroDesc_ar: 'استكشف رؤى المستهلكين العميقة باستخدام إطار عمل PAS (المشكلة-التهيج-الحل) المحسن والمطور. حوّل ميزات المنتجات إلى فوائد عاطفية.',
   ctaHeading_en: 'Ready to revolutionize your product marketing?',
   ctaHeading_ar: 'هل أنت مستعد لإحداث ثورة في تسويق منتجاتك؟',
   ctaDesc_en: 'Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.',
   ctaDesc_ar: 'انضم إلى مئات مديري المنتجات الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
-  f1Title_en: 'AI Image Analysis',        f1Title_ar: 'تحليل الصور بالذكاء الاصطناعي',
+  f1Title_en: 'AI Vision Analysis',        f1Title_ar: 'تحليل الرؤية الذكي',
   f1Desc_en: 'Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.',
   f1Desc_ar: 'ارفع صور المنتجات ودع الذكاء الاصطناعي يحدد نقاط البيع البصرية الرئيسية والخصائص الجسدية التي تحفز نية الشراء.',
   f2Title_en: 'PAS Framework Output',     f2Title_ar: 'موثوق PAS إطار عمل',
@@ -58,10 +58,10 @@ export const defaultHomepage: HomepageContent = {
 };
 
 export const defaultAbout: AboutContent = {
-  badge_en: 'Powered by Gemini 1.5',           badge_ar: 'مدعوم بـ Gemini 1.5',
-  heading_en: 'About the Gemini Integration',  heading_ar: 'حول تكامل Gemini',
-  subheading_en: 'We are reaching a new era in AI product analysis, leveraging the Google Gemini API to help companies improve their marketing strategies with unprecedented precision.',
-  subheading_ar: 'نحن نصل إلى عصر جديد في تحليل المنتجات بالذكاء الاصطناعي، مستفيدين من Google Gemini API لمساعدة الشركات في تحسين استراتيجيات تسويقها بدقة غير مسبوقة.',
+  badge_en: 'Protocol v2.0',           badge_ar: 'بروتوكول 2.0',
+  heading_en: 'About the Neural Integration',  heading_ar: 'حول التكامل العصبي',
+  subheading_en: 'We are reaching a new era in product analysis, leveraging advanced neural networks to help companies improve their marketing strategies with unprecedented precision.',
+  subheading_ar: 'نحن نصل إلى عصر جديد في تحليل المنتجات بالذكاء الاصطناعي، مستفيدين من الشبكات العصبية المتطورة لمساعدة الشركات في تحسين استراتيجيات تسويقها بدقة غير مسبوقة.',
   visionTitle_en: 'Our Vision',   visionTitle_ar: 'رؤيتنا',
   visionText_en: 'To be the first partner for companies in transforming product data into a practical vision that helps them outperform competitors and achieve their commercial goals.',
   visionText_ar: 'أن نكون الشريك الأول للشركات في تحويل بيانات المنتجات إلى رؤى عملية تساعدها في التفوق على المنافسين وتحقيق أهدافها التجارية.',

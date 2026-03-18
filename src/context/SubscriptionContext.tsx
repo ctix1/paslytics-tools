@@ -13,6 +13,7 @@ interface SubscriptionContextType {
   hasActivePlan: boolean;
   subscribe: (plan: 'starter' | 'monthly' | 'annual') => void;
   cancel: () => void;
+  getTimeRemaining: () => number; // seconds
 }
 
 const defaultSubscription: Subscription = { plan: 'none', activatedAt: null, renewsAt: null };
@@ -25,7 +26,15 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window === 'undefined') return defaultSubscription;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : defaultSubscription;
+      if (!stored) return defaultSubscription;
+      
+      const parsed = JSON.parse(stored);
+      // Automatic cancellation logic on load
+      if (parsed.renewsAt && new Date(parsed.renewsAt) < new Date()) {
+        localStorage.removeItem(STORAGE_KEY);
+        return defaultSubscription;
+      }
+      return parsed;
     } catch {
       return defaultSubscription;
     }
@@ -33,12 +42,34 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(subscription));
+    
+    // Timer to handle expiration in real-time
+    if (subscription.renewsAt) {
+      const expirationDate = new Date(subscription.renewsAt).getTime();
+      const checkExpiry = () => {
+        if (Date.now() >= expirationDate) {
+          setSubscription(defaultSubscription);
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      };
+      
+      const interval = setInterval(checkExpiry, 1000);
+      return () => clearInterval(interval);
+    }
   }, [subscription]);
 
   const subscribe = (plan: 'starter' | 'monthly' | 'annual') => {
     const now = new Date();
     const renewsAt = new Date(now);
-    renewsAt.setDate(renewsAt.getDate() + 5);
+    
+    if (plan === 'starter') {
+      renewsAt.setDate(renewsAt.getDate() + 5);
+    } else if (plan === 'monthly') {
+      renewsAt.setMonth(renewsAt.getMonth() + 1);
+    } else if (plan === 'annual') {
+      renewsAt.setFullYear(renewsAt.getFullYear() + 1);
+    }
+
     setSubscription({
       plan,
       activatedAt: now.toISOString(),
@@ -51,10 +82,16 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const getTimeRemaining = () => {
+    if (!subscription.renewsAt) return 0;
+    const diff = new Date(subscription.renewsAt).getTime() - Date.now();
+    return Math.max(0, Math.floor(diff / 1000));
+  };
+
   const hasActivePlan = subscription.plan !== 'none';
 
   return (
-    <SubscriptionContext.Provider value={{ subscription, hasActivePlan, subscribe, cancel }}>
+    <SubscriptionContext.Provider value={{ subscription, hasActivePlan, subscribe, cancel, getTimeRemaining }}>
       {children}
     </SubscriptionContext.Provider>
   );
