@@ -57,41 +57,43 @@ const ContentCreator = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setUploadedImage(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-
     setIsAnalyzingImage(true);
     try {
-      const readerBase64 = new FileReader();
-      readerBase64.readAsDataURL(file);
-      readerBase64.onload = async () => {
-        const base64Image = readerBase64.result as string;
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64Image = event.target?.result as string;
+        setUploadedImage(base64Image); // Set preview immediately
+        
         const prompt = isRtl 
           ? "صف هذا المنتج باختصار شديد (في جملة واحدة) لاستخدامه في حملة تسويقية."
           : "Describe this product briefly (in one sentence) for a marketing campaign.";
         
-        const { analyzeMarketing } = await import('../lib/gemini');
-        const aiDescription = await analyzeMarketing(prompt, base64Image);
-        
-        if (aiDescription) {
-          setDescription(aiDescription.trim());
-        } else {
-          throw new Error("Empty AI response");
+        try {
+          const { analyzeMarketing } = await import('../lib/gemini');
+          const aiDescription = await analyzeMarketing(prompt, base64Image);
+          
+          if (aiDescription) {
+            setDescription(aiDescription.trim());
+          } else {
+            throw new Error("Empty AI response");
+          }
+        } catch (innerError) {
+          console.error("Gemini analysis failed:", innerError);
+          // Fallback if AI fails but image is uploaded
+          if (isRtl) setDescription("منتج رائع للمدينة (وصف تلقائي بديل)");
+          else setDescription("Great product for urban life (Auto fallback)");
+        } finally {
+          setIsAnalyzingImage(false);
         }
-        setIsAnalyzingImage(false);
       };
+      reader.onerror = () => {
+        setIsAnalyzingImage(false);
+        console.error("File reading failed");
+      };
+      reader.readAsDataURL(file);
     } catch (error) {
-      console.error("Image analysis failed:", error);
+      console.error("Image upload process failed:", error);
       setIsAnalyzingImage(false);
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-red-500/50 bg-red-500/10 text-red-400 font-black uppercase tracking-widest text-xs z-50 animate-bounce`;
-      toast.innerHTML = isRtl ? 'فشل تحليل الصورة. حاول مرة أخرى.' : 'Image analysis failed. Try again.';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
     }
   };
 
