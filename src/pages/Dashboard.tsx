@@ -21,7 +21,7 @@ import {
 const Dashboard = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
-  const { hasActivePlan } = useSubscription();
+  const { hasActivePlan, subscription, getTimeRemaining } = useSubscription();
   const { profile } = useAuth();
 
   const isAdmin = profile?.role === 'admin';
@@ -130,6 +130,26 @@ const Dashboard = () => {
         </div>
       </header>
 
+      {hasActivePlan && (
+        <div className="mb-12 glass-panel p-6 bg-emerald-500/5 border-emerald-500/20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
+              <Zap className="text-emerald-400 w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{isRtl ? 'الاشتراك النشط' : 'Active Subscription'}</div>
+              <div className="text-white font-black uppercase text-xs">{t(`plan_${subscription.plan}_title` as any)}</div>
+            </div>
+          </div>
+          <div className="flex flex-col items-end">
+             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'الوقت المتبقي' : 'Time Remaining'}</div>
+             <div className="text-white font-mono text-xl font-black">
+                {Math.floor(getTimeRemaining() / 3600)}h : {Math.floor((getTimeRemaining() % 3600) / 60)}m : {getTimeRemaining() % 60}s
+             </div>
+          </div>
+        </div>
+      )}
+
       {!hasAccess ? (
         <motion.div 
           className="glass-panel p-16 text-center shadow-2xl relative overflow-hidden group"
@@ -232,7 +252,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-black text-white">{t('pas_output')}</h2>
                 <div className="ml-auto flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-purple-500/30">
                   <Rocket className="w-3.5 h-3.5" />
-                  Gemini API v1.5
+                  v2.0 Active
                 </div>
               </div>
 
@@ -278,7 +298,7 @@ const Dashboard = () => {
                   {t('ai_quick_take')}
                 </div>
                 <p className="text-white text-lg md:text-xl lg:text-2xl font-medium leading-relaxed italic relative z-10 break-words">
-                  "{pasOutput.ai_quick_take || t('quick_take_text')}"
+                   "{pasOutput.ai_quick_take || t('quick_take_text')}"
                 </p>
               </div>
               <div className="mt-8 pt-8 border-t border-white/5 text-slate-500 text-sm">
@@ -297,6 +317,7 @@ const Dashboard = () => {
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${pasOutput.emotional_score}%` }}
+                  transition={{ duration: 1.5 }}
                   className="h-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
                 />
               </div>

@@ -3,22 +3,24 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import Navbar from '../components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSubscription } from '../context/SubscriptionContext';
 import {
   CheckCircle2,
-  ChevronDown,
   Zap,
   ShieldCheck,
   Headphones,
   Sparkles,
   ArrowRight,
+  ChevronDown
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; // Changed from useSubscription to useAuth
+import { useAuth } from '../context/AuthContext';
 
 const Plan = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
   const navigate = useNavigate();
-  const { } = useAuth(); // Removed unused user
+  const { subscribe } = useSubscription();
+  const { } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const faqs = [
@@ -67,7 +69,7 @@ const Plan = () => {
 
           <motion.h1 
             variants={itemVariants}
-            className="text-6xl md:text-7xl font-black mb-8 tracking-tighter leading-tight"
+            className="text-5xl md:text-6xl font-black mb-8 tracking-tighter leading-tight"
           >
             {t('plan_title_1')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-500">
@@ -93,13 +95,12 @@ const Plan = () => {
             className="glass-panel p-8 group relative flex flex-col h-full bg-slate-900/40 border-white/5"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-black text-white mb-2">{t('plan_starter_title')}</h2>
-              <p className="text-slate-400 text-xs">{t('plan_starter_desc')}</p>
+              <h2 className="text-xl font-black text-white mb-2">{isRtl ? 'خطة المبتدئين' : 'Beginner Plan'}</h2>
+              <p className="text-slate-400 text-xs">{isRtl ? 'صالحة لمدة 5 أيام' : 'Valid for 5 days'}</p>
             </div>
 
             <div className="mb-10 flex items-end gap-2">
               <span className="text-5xl font-black text-white tracking-tighter">$3.94</span>
-              <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_month')}</span>
             </div>
 
             <div className="flex-grow space-y-6 mb-10">
@@ -119,7 +120,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => navigate('/checkout/starter')}
+              onClick={() => { subscribe('starter'); navigate('/dashboard'); }}
               className="btn-premium w-full !bg-white/5 !text-white !py-3 hover:!bg-white/10 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -133,13 +134,12 @@ const Plan = () => {
             className="glass-panel p-8 group relative flex flex-col h-full bg-slate-900/40"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-black text-white mb-2">{t('plan_monthly_title')}</h2>
-              <p className="text-slate-400 text-xs">{t('plan_monthly_desc')}</p>
+              <h2 className="text-xl font-black text-white mb-2">{isRtl ? 'خطة برو' : 'Pro Plan'}</h2>
+              <p className="text-slate-400 text-xs">{isRtl ? 'لمدة 1 شهر' : 'For 1 month'}</p>
             </div>
 
             <div className="mb-10 flex items-end gap-2">
               <span className="text-5xl font-black text-white tracking-tighter">$19</span>
-              <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_month')}</span>
             </div>
 
             <div className="flex-grow space-y-6 mb-10">
@@ -159,7 +159,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => navigate('/checkout/monthly')}
+              onClick={() => { subscribe('monthly'); navigate('/dashboard'); }}
               className="btn-premium w-full !bg-white !text-slate-950 !py-3 hover:!bg-purple-50 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -172,21 +172,17 @@ const Plan = () => {
             variants={itemVariants}
             className="glass-panel p-8 group relative border-purple-500/50 flex flex-col h-full bg-gradient-to-br from-purple-500/10 to-transparent"
           >
-            {/* Recommendation Badge */}
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 bg-brand-primary text-white text-[8px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl">
               {t('best_value')}
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-black text-white mb-2">{t('plan_annual_title')}</h2>
-              <p className="text-slate-400 text-xs">{t('plan_annual_desc')}</p>
+              <h2 className="text-xl font-black text-white mb-2">{isRtl ? 'خطة بريميوم' : 'Premium Plan'}</h2>
+              <p className="text-slate-400 text-xs">{isRtl ? 'لمدة 1 سنة' : 'For 1 year'}</p>
             </div>
 
             <div className="mb-10">
-              <div className="flex items-end gap-2">
                 <span className="text-5xl font-black text-white tracking-tighter">$49</span>
-                <span className="text-slate-500 font-bold mb-1 uppercase text-[10px] tracking-widest">/ {t('per_year')}</span>
-              </div>
               <div className="text-brand-primary font-black text-[10px] uppercase tracking-widest mt-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 {t('annual_savings')}
@@ -212,7 +208,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => navigate('/checkout/annual')}
+              onClick={() => { subscribe('annual'); navigate('/dashboard'); }}
               className="btn-premium w-full !py-3 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
