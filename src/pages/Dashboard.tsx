@@ -110,7 +110,7 @@ const Dashboard = () => {
           >
             {t('pas_analysis_title')}
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400/60 bg-purple-500/5 px-2 py-0.5 rounded-full border border-purple-500/20">
-              v2.0 Active
+              {t('v2_active')}
             </span>
           </motion.h1>
           <p className="text-slate-400 text-lg">
@@ -137,7 +137,7 @@ const Dashboard = () => {
               <Zap className="text-emerald-400 w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{isRtl ? 'الاشتراك النشط' : 'Active Subscription'}</div>
+              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('active_subscription')}</div>
               <div className="text-white font-black uppercase text-xs">{t(`plan_${subscription.plan}_title` as any)}</div>
             </div>
           </div>
@@ -252,7 +252,7 @@ const Dashboard = () => {
                 <h2 className="text-2xl font-black text-white">{t('pas_output')}</h2>
                 <div className="ml-auto flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-purple-500/30">
                   <Rocket className="w-3.5 h-3.5" />
-                  v2.0 Active
+                  {t('v2_active')}
                 </div>
               </div>
 
@@ -302,7 +302,7 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="mt-8 pt-8 border-t border-white/5 text-slate-500 text-sm">
-                Generated based on visual content & market trends.
+                {t('generated_on_visual')}
               </div>
             </div>
 
