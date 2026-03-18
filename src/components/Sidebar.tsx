@@ -23,15 +23,15 @@ const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { icon: Home, label: t('home'), path: '/' },
-    { icon: LayoutDashboard, label: t('dashboard'), path: '/dashboard' },
-    { icon: FileEdit, label: t('content_builder'), path: '/content-builder' },
-    { icon: Zap, label: t('product_calculator'), path: '/calculator' },
-    { icon: ClipboardList, label: t('logs'), path: '/logs' },
-    { icon: Users, label: t('user_management'), path: '/management', adminOnly: true },
-    { icon: CreditCard, label: t('paysettings_nav'), path: '/admin/payment-settings', adminOnly: true },
-    { icon: FileEdit, label: t('content_manager_nav'), path: '/admin/content', adminOnly: true },
-    { icon: Settings, label: t('profile_settings'), path: '/settings' },
+    { icon: Home, label: t('nav_home'), path: '/' },
+    { icon: LayoutDashboard, label: t('nav_dashboard'), path: '/dashboard' },
+    { icon: FileEdit, label: t('nav_content_builder'), path: '/content-builder' },
+    { icon: Zap, label: t('nav_product_calculator'), path: '/calculator' },
+    { icon: ClipboardList, label: t('nav_logs'), path: '/logs' },
+    { icon: Users, label: t('nav_user_management'), path: '/management', adminOnly: true },
+    { icon: CreditCard, label: t('nav_paysettings_nav'), path: '/admin/payment-settings', adminOnly: true },
+    { icon: FileEdit, label: t('nav_content_manager_nav'), path: '/admin/content', adminOnly: true },
+    { icon: Settings, label: t('nav_profile_settings'), path: '/settings' },
   ];
 
   const filteredItems = menuItems.filter(item => !item.adminOnly || profile?.role === 'admin');
@@ -54,7 +54,7 @@ const Sidebar = () => {
           <span className="text-xl font-black text-white tracking-tighter">
             PAS<span className="text-purple-400">lytics</span>
             <div className="absolute -bottom-2 left-14 text-[8px] font-black uppercase tracking-[0.2em] text-purple-400/60 bg-purple-500/5 px-2 py-0.5 rounded-full border border-purple-500/20">
-              v2.0 Active
+              {t('v2_active')}
             </div>
           </span>
         </Link>
