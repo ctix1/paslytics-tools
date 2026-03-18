@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+document.getElementById('dashboard-upload'); // dummy
 import {
   Upload, 
   FileText,
@@ -60,28 +60,26 @@ const Dashboard = () => {
           نظام: أنت محلل تسويق ومحتوى رقمي محترف ومبدع.
           قم بتحليل المنتج في الصورة المرفقة بعمق.
           
-          يجب أن تكون جميع القيم (values) في ملف JSON باللغة "العربية البيضاء" 
-          (لغة بسيطة ومفهومة لجميع العرب، ليست فصحى معقدة ولا لهجة محلية منغلقة).
+          هام جداً: يجب أن تكون جميع القيم (values) في ملف JSON باللغة "العربية البيضاء" فقط.
+          ممنوع استخدام اللغة الإنجليزية نهائياً في مخرجات التحليل.
+          (استخدم لغة وسطى مفهومة لجميع العرب، ليست فصحى معقدة ولا لهجة محلية منغلقة).
+          
           استخدم هيكل PAS المعتمد (Problem-Agitation-Solution).
           
           تنسيق المخرجات المطلوب (JSON الحصري):
           {
-            "problem": "وصف المشكلة التي يعالجها المنتج",
-            "agitation": "شرح التبعات والمشاعر السلبية للمشكلة",
-            "solution": "كيف يقدم المنتج الحل الأمثل",
-            "ai_quick_take": "فكرة تسويقية سريعة ومبدعة",
+            "problem": "وصف المشكلة التي يعالجها المنتج بالعربية",
+            "agitation": "شرح التبعات والمشاعر السلبية للمشكلة بالعربية",
+            "solution": "كيف يقدم المنتج الحل الأمثل بالعربية",
+            "ai_quick_take": "فكرة تسويقية سريعة ومبدعة بالعربية",
             "emotional_score": (رقم بين 80 و 99)
           }
-          أجب بملف JSON فقط بدون أي نصوص إضافية.
+          أجب بملف JSON فقط.
         `;
 
         const { analyzeMarketing } = await import('../lib/gemini');
-        const responseText = await analyzeMarketing(prompt, base64Image);
-        
-        // Robust JSON extraction
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("Could not find valid JSON in AI response");
-        const data = JSON.parse(jsonMatch[0]);
+        const jsonResponse = await analyzeMarketing(prompt, base64Image);
+        const data = JSON.parse(jsonResponse);
 
         setPasOutput({
           problem: data.problem || '',
@@ -123,7 +121,6 @@ const Dashboard = () => {
       className={`p-8 max-w-7xl mx-auto min-h-screen ${isRtl ? 'font-arabic' : ''}`}
       style={{ direction: isRtl ? 'rtl' : 'ltr' }}
     >
-      {/* Premium Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 relative z-10">
         <div className="space-y-2">
           <motion.h1 
@@ -191,7 +188,6 @@ const Dashboard = () => {
         </motion.div>
       ) : (
         <div className="space-y-12">
-          {/* Bento Upload Section */}
           <section className={`
             glass-panel p-10 border-2 border-dashed transition-all duration-500
             ${isUploading ? 'border-purple-500 bg-purple-500/5' : 'border-white/10 hover:border-purple-500/50'}
@@ -264,10 +260,7 @@ const Dashboard = () => {
             </AnimatePresence>
           </section>
 
-          {/* Main Analysis Output Grid */}
           <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 transition-opacity duration-700 ${analysisComplete ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-            
-            {/* Framework Bento Box (Full width) */}
             <div className="lg:col-span-12 glass-panel p-10 relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-1 h-full bg-purple-500/50" />
               <div className="flex items-center gap-4 mb-10">
@@ -312,7 +305,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Quick Take (Span 6) */}
             <div className="lg:col-span-6 glass-panel p-10 flex flex-col justify-between overflow-hidden bg-slate-950/40 relative group">
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-purple-500/10 blur-3xl rounded-full" />
               <div>
@@ -329,7 +321,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Resonance Score (Span 6) */}
             <div className="lg:col-span-6 glass-panel p-10 bg-gradient-to-br from-white/5 to-white/[0.02]">
               <div className="text-slate-400 text-xs font-black uppercase tracking-widest mb-10">{t('emotional_resonance')}</div>
               <div className="flex items-end gap-4 mb-8">
@@ -348,9 +339,7 @@ const Dashboard = () => {
                 {t('dashboard_emotional_sub')}
               </p>
             </div>
-
           </div>
-
         </div>
       )}
     </motion.div>
