@@ -25,20 +25,24 @@ serve(async (req) => {
     const isArabic = targetLanguage === 'ar' || true; // Default to Arabic as per user request
 
     const prompt = `
-      نظام: أنت محلل تسويق ومحتوى رقمي محترف. 
-      قم بتحليل المنتج في الصورة المرفقة (أو الوصف إذا لم تتوفر صورة).
-      يجب أن تكون المخرجات باللغة العربية الفصحى المعاصرة.
-      استخدم هيكل PAS: المشكلة (Problem) - التأثير (Impact/Agitation) - الحل (Solution).
+      نظام: أنت محلل تسويق ومحتوى رقمي محترف ومبدع.
+      قم بتحليل المنتج في الصورة المرفقة (أو الوصف المقدم) بعمق.
       
-      MANDATORY OUTPUT FORMAT: JSON object.
-      MANDATORY STRUCTURE: {
-        "problem": "...", 
-        "agitation": "...", 
-        "solution": "...", 
-        "ai_quick_take": "...",
-        "emotional_score": 88,
-        "product_name": "..."
+      يجب أن تكون جميع القيم (values) في ملف JSON باللغة "العربية البيضاء" 
+      (لغة وسطى مفهومة لجميع العرب، ليست فصحى معقدة ولا لهجة محلية منغلقة).
+      استخدم هيكل PAS المعتمد (Problem-Agitation-Solution).
+      
+      تنسيق المخرجات المطلوب (JSON الحصري):
+      {
+        "problem": "هنا وصف دقيق للمشكلة التي يعالجها المنتج (بالعربية)",
+        "agitation": "هنا شرح للتبعات والمشاعر السلبية الناتجة عن المشكلة (بالعربية)",
+        "solution": "كيف يقدم المنتج الحل الأمثل (بالعربية)",
+        "ai_quick_take": "فكرة تسويقية سريعة ومبدعة (بالعربية)",
+        "emotional_score": (رقم بين 80 و 99 يعبر عن قوة الجذب العاطفي),
+        "product_name": "اسم المنتج المستخلص"
       }
+      
+      هام جداً: لا تستخدم أي لغة أخرى غير العربية في القيم. لا تستخدم Markdown أو أي نصوص خارج الـ JSON.
     `;
 
     let result;
@@ -61,9 +65,22 @@ serve(async (req) => {
     const response = await result.response;
     const text = response.text();
     
-    // Clean JSON response
-    const cleanedJson = text.replace(/```json/i, '').replace(/```/i, '').trim();
-    const parsedOutput = JSON.parse(cleanedJson);
+    // Attempt to parse the response as JSON
+    let parsedOutput;
+    try {
+      const cleanedJson = text.replace(/```json/i, '').replace(/```/i, '').trim();
+      parsedOutput = JSON.parse(cleanedJson);
+    } catch (e) {
+      console.error("Failed to parse Gemini response as JSON:", text);
+      parsedOutput = {
+        problem: "Analysis completed. (Raw format fallback)",
+        agitation: text,
+        solution: "Could not parse structured output properly.",
+        ai_quick_take: "Parsing error: " + e.message,
+        emotional_score: 70,
+        product_name: "Unknown"
+      };
+    }
 
     return new Response(JSON.stringify(parsedOutput), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
