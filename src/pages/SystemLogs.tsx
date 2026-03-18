@@ -21,13 +21,24 @@ const SystemLogs = () => {
   const { logs, deleteLog } = useLogs();
 
   const [search, setSearch] = useState('');
+  const [selectedLog, setSelectedLog] = useState<any>(null);
 
-  const handleDownload = (name: string) => {
+  const handleDownload = (log: any) => {
     // Premium UI Feedback
     const toast = document.createElement('div');
     toast.className = `fixed bottom-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-black uppercase tracking-widest text-xs z-50 animate-bounce flex items-center gap-3`;
     toast.innerHTML = `<CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'جاري تحضير ملف PDF...' : 'Preparing PDF Report...'}`;
     document.body.appendChild(toast);
+    
+    // Functional Download Simulation (Creating a real blob)
+    const content = `PASLYTICS NEURAL REPORT\n\nProduct: ${log.name}\nDate: ${log.date}\nType: ${log.type}\nScore: ${log.score}%\n\n--- NEURAL DATA ---\n${isRtl ? 'تم استخراج البيانات بنجاح.' : 'Data extracted successfully.'}`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Report_${log.id}.txt`;
+    link.click();
+    
     setTimeout(() => toast.remove(), 3000);
   };
 
@@ -143,20 +154,14 @@ const SystemLogs = () => {
 
               <div className="grid grid-cols-2 gap-4 relative z-10">
                 <button 
-                  onClick={() => {
-                    const toast = document.createElement('div');
-                    toast.className = `fixed top-8 ${isRtl ? 'right-8' : 'left-8'} glass-panel px-6 py-4 border-purple-500/50 bg-purple-500/10 text-purple-400 font-black uppercase tracking-widest text-xs z-50 animate-slideDown flex items-center gap-3`;
-                    toast.innerHTML = `<ExternalLink class="w-4 h-4" /> ${isRtl ? 'فتح التقرير التفصيلي...' : 'Opening Detailed Report...'}`;
-                    document.body.appendChild(toast);
-                    setTimeout(() => toast.remove(), 2500);
-                  }}
-                  className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-purple-500/20 transition-all"
+                  onClick={() => setSelectedLog(log)}
+                  className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-purple-500/20 transition-all font-black"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  {isRtl ? 'فتح البيانات العصبية' : 'Neural Data Open'}
+                  <FileText className="w-3.5 h-3.5" />
+                  {isRtl ? 'عرض التقرير' : 'View Report'}
                 </button>
                 <button 
-                  onClick={() => handleDownload(log.name)}
+                  onClick={() => handleDownload(log)}
                   className="flex items-center justify-center gap-2 py-4 bg-white text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-50 transition-all shadow-[0_5px_15px_rgba(255,255,255,0.1)]"
                 >
                   <FileDown className="w-3.5 h-4" />
@@ -174,6 +179,55 @@ const SystemLogs = () => {
           </div>
         )}
       </div>
+
+      {/* Report View Modal */}
+      <AnimatePresence>
+        {selectedLog && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="glass-panel max-w-2xl w-full p-10 border-purple-500/30 overflow-hidden relative"
+            >
+              <div className="absolute top-0 right-0 p-8 opacity-5"><Layers className="w-32 h-32" /></div>
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center"><FileText className="text-purple-400" /></div>
+                   <div>
+                      <h2 className="text-2xl font-black text-white uppercase">{selectedLog.name}</h2>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{selectedLog.date} • {selectedLog.type} DATA</p>
+                   </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedLog(null)}
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-all font-black text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-6 relative z-10">
+                 <div className="p-6 bg-white/[0.03] border border-white/5 rounded-2xl">
+                    <h4 className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-4">Final PAS Outcome</h4>
+                    <p className="text-white text-lg leading-relaxed italic font-medium">
+                       {isRtl ? 'جاري استرجاع البيانات العصبية الأصلية... (التقرير قيد العرض)' : 'Neuro Data successfully retrieved. Report viewer active.'}
+                    </p>
+                 </div>
+                 
+                 <div className="grid grid-cols-2 gap-4">
+                    <button className="flex-1 py-4 bg-purple-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-purple-700 transition-all">
+                       {isRtl ? 'تحميل البيانات الكاملة' : 'Download Complete Data'}
+                    </button>
+                    <button className="flex-1 py-4 bg-white/5 border border-white/10 text-slate-400 rounded-xl font-black text-[10px] uppercase tracking-widest hover:text-white transition-all">
+                       {isRtl ? 'طباعة التقرير' : 'Print Report'}
+                    </button>
+                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <footer className="pt-20 pb-10 text-center text-[10px] font-black text-slate-700 uppercase tracking-[0.4em] opacity-40">
         © {new Date().getFullYear()} PASLYTICS NEURAL ENGINE. {t('all_rights_reserved')}

@@ -94,18 +94,19 @@ const Dashboard = () => {
     fReader.onload = async () => {
       const base64Image = fReader.result;
       try {
-        // ARABIC ABSOLUTE - Priority Neural Prompt
+        // JSON-STRUCTURED ARABIC PRIORITY PROMPT
         const { data, error } = await supabase.functions.invoke('analyze-product', {
           body: { 
             imageBase64: base64Image,
             targetLanguage: 'ar',
             language: 'ar',
             instruction: `
-              CRITICAL: YOU ARE AN ARABIC NEUROMARKETING AGENT. 
-              ACTION: ANALYZE THE IMAGE.
-              RESPONSE LANGUAGE: 100% NATIVE ARABIC ONLY.
-              MANDATORY: DO NOT USE ANY ENGLISH CHARACTERS IN THE OUTPUT FIELDS.
-              FORMAT: Return problem, agitation, solution, and ai_quick_take in PROFESSIONAL ARABIC marketing terminology.
+              STRICT SYSTEM ROLE: You are a professional ARABIC Neuromarketing Expert.
+              MANDATORY OUTPUT FORMAT: You must return a JSON object.
+              MANDATORY LANGUAGE: Every value in the JSON MUST be in NATIVE ARABIC.
+              NO ENGLISH: Do not use any English words or characters in the analysis.
+              FIELDS TO ANALYZE: problem, agitation, solution, ai_quick_take.
+              EXAMPLE: {"problem": "نص عربي...", "agitation": "نص عربي...", "solution": "نص عربي...", "ai_quick_take": "نص عربي..."}
             `
           }
         });
