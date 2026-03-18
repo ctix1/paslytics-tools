@@ -60,53 +60,46 @@ const MarketingManager = () => {
     { id: 'levantine', label: isRtl ? 'شامي' : 'Levantine' }
   ];
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!description) return;
     setIsGenerating(true);
     setHasGenerated(false);
     
-    // AI Content Core v2.1 (Engagement Stats + Live Pack)
-    setTimeout(() => {
-      setIsGenerating(false);
-      setHasGenerated(true);
-      
+    try {
       const dialectPrefix = isRtl ? `[بلهجة ${selectedVoice}] ` : `[In ${selectedVoice} dialect] `;
-      
-      const newContent = {
-        plan: {
-          audience: isRtl 
-            ? ['الباحثين عن أسلوب حياة ذكي وفاخر', 'العائلات التي تقدر الأتمتة والراحة', 'فئة الشباب المهتمة بالتقنيات الحديثة'] 
-            : ['Smart & luxury lifestyle seekers', 'Families valuing automation & comfort', 'Young tech-savvy generation'],
-          strategy: isRtl 
-            ? 'تفعيل حملة "باقة الوكالة" المتكاملة: الفيديوهات والمنشورات مدعومة ببيانات التفاعل المتوقعة (Likes/Votes).' 
-            : 'Activating integrated "Agency Package": Reels and posts boosted with projected engagement data (Likes/Votes).'
-        },
-        hooks: [
-          { 
-            type: 'Aggressive', 
-            text: isRtl ? `${dialectPrefix} لسا تدور على الريموت؟ بيتك صار أذكى منك، جربه الحين!` : `${dialectPrefix} Still looking for the remote? Your home is smarter than you, try it now!`,
-            stats: { likes: '12.4k', votes: '98%' }
-          },
-          { 
-            type: 'Emotional', 
-            text: isRtl ? `${dialectPrefix} تخيل ترجع لبيت يرحب فيك ويفهم مزاجك.. هذي هي الراحة.` : `${dialectPrefix} Imagine returning to a home that welcomes you and understands your mood.. this is comfort.`,
-            stats: { likes: '8.1k', votes: '94%' }
-          }
-        ],
-        video: {
-          script: isRtl 
-            ? `${dialectPrefix} "باقة الوكالة الموحدة": المشهد يبدأ بزاوية عمودية سينمائية للمنتج، صوت عميق يقول "المستقبل صار حقيقة في بيتك"."` 
-            : `${dialectPrefix} "Unified Agency Package": Scene starts with cinematic vertical product angle, deep voice says "The future is real in your home."`,
-          scenes: 6,
-          stats: { views: '1.2M', heart: '450k' }
-        },
-        posts: [
-          { platform: 'Instagram', title: isRtl ? 'منشور ترويجي (مربع)' : 'Promotional Post (Square)', caption: isRtl ? `${dialectPrefix} الأناقة والذكاء في مكان واحد. اكتشف التفاصيل الآن.` : `${dialectPrefix} Elegance and intelligence in one place. Discover details now.`, stats: { likes: '5.2k', comments: '120' } },
-          { platform: 'Twitter/X', title: isRtl ? 'منشور سريع (Portrait)' : 'Quick Post (Portrait)', caption: isRtl ? `${dialectPrefix} اختصر وقتك وجهدك بلمسة ذكاء واحدة. #بيت_ذكي #باسليتيكس` : `${dialectPrefix} Shorten your time and effort with one smart touch. #SmartHome #PASlytics`, stats: { likes: '2.1k', votes: '91%' } }
-        ]
-      };
+      const prompt = `
+        نظام: أنت محلل تسويق محترف. قم بتحليل المنتج التالي: "${description}"
+        المطلوب: توليد خطة تسويقية بهيكل PAS (Problem, Agitation, Solution) باللغة العربية.
+        ${dialectPrefix}
+        يجب أن يتضمن المخرج:
+        1. الجمهور المستهدف (3 فئات)
+        2. استراتيجية الباقة
+        3. 2 هوك (Hook) إبداعي (واحد هجومي والآخر عاطفي) مع إحصائيات تفاعل وهمية.
+        4. نص فيديو قصير (Reel)
+        5. منشورين (Instagram و Twitter) مع كابشن جذاب.
+        
+        أجب بتنسيق JSON حصراً:
+        {
+          "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
+          "hooks": [
+            { "type": "Aggressive", "text": "...", "stats": { "likes": "10k", "votes": "95%" } },
+            { "type": "Emotional", "text": "...", "stats": { "likes": "8k", "votes": "90%" } }
+          ],
+          "video": { "script": "...", "scenes": 5, "stats": { "views": "1M", "heart": "500k" } },
+          "posts": [
+            { "platform": "Instagram", "caption": "...", "stats": { "likes": "5k", "comments": "150" } },
+            { "platform": "Twitter", "caption": "...", "stats": { "likes": "2k", "votes": "92%" } }
+          ]
+        }
+      `;
+
+      const { analyzeMarketing } = await import('../lib/gemini');
+      const responseText = await analyzeMarketing(prompt);
+      const cleanedJson = responseText.replace(/```json/i, '').replace(/```/i, '').trim();
+      const newContent = JSON.parse(cleanedJson);
 
       setGeneratedContent(newContent);
+      setHasGenerated(true);
       
       addLog({
         name: isRtl ? `وكالة: ${description.substring(0, 20)}...` : `Agency: ${description.substring(0, 20)}...`,
@@ -115,7 +108,12 @@ const MarketingManager = () => {
         score: null,
         type: 'Marketing'
       });
-    }, 3000);
+    } catch (error) {
+      console.error("Gemini Generation Failed:", error);
+      // Fallback or Toast error
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleBatchSync = () => {
