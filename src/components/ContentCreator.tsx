@@ -42,6 +42,8 @@ const ContentCreator = () => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
+  // Generated Content State
   const [generatedContent, setGeneratedContent] = useState<any>(null);
 
   const voices = [
@@ -62,12 +64,15 @@ const ContentCreator = () => {
         const base64Image = event.target?.result as string;
         setUploadedImage(base64Image); 
         
-        const prompt = "صف هذا المنتج باختصار شديد (في جملة واحدة) باللغة العربية حصراً لاستخدامه في حملة تسويقية. ممنوع استخدام الإنجليزية.";
+        const prompt = "صف هذا المنتج باختصار شديد (في جملة واحدة) باللغة 'العربية البيضاء' (White Arabic) حصراً. استخدم لغة بسيطة وعصرية بعيدة عن الفصحى الجامدة، مخصصة للتسويق الرقمي. ممنوع استخدام الإنجليزية.";
         
         try {
           const { analyzeMarketing } = await import('../lib/gemini');
           const aiDescription = await analyzeMarketing(prompt, base64Image);
-          if (aiDescription) setDescription(aiDescription.trim());
+          
+          if (aiDescription) {
+            setDescription(aiDescription.trim());
+          }
         } catch (innerError) {
           console.error("Gemini analysis failed:", innerError);
           if (isRtl) setDescription("منتج رائع (وصف تلقائي)");
@@ -91,14 +96,16 @@ const ContentCreator = () => {
     try {
       const prompt = `
         نظام: أنت خبير صناعة محتوى رقمي محترف. قم بإنشاء محتوى ترويجي متكامل للمنتج: "${description}"
-        هام جداً: يجب أن تكون جميع مخرجاتك باللغة "العربية البيضاء" فقط. ممنوع استخدام الإنجليزية.
-        استخدم لهجة ${selectedVoice} إذا كان ذلك مناسباً للسيناريو التسويقي.
+        
+        هام جداً: يجب أن تكون جميع مخرجاتك باللغة "العربية البيضاء" (White Arabic) حصراً، وهي اللغة البسيطة والمفهومة التي تستخدم في الإعلانات ووسائل التواصل الاجتماعي حالياً، وليست العربية الفصحى الأكاديمية أو الجامدة.
+        استخدم لهجة ${selectedVoice} لزيادة القرب من الجمهور إذا كان ذلك مناسباً للسيناريو التسويقي.
+        ممنوع استخدام الإنجليزية تماماً.
         
         المطلوب هو كائن JSON حصراً يحتوي على:
-        1. plan: خطة تشمل الجمهور المستهدف (audience - قائمة نصوص بالعربية) واستراتيجية المحتوى (strategy - نص بالعربية).
-        2. hooks: قائمة من 2 فيديو هوك (نصوص جذابة بالعربية).
-        3. video: سيناريو فيديو قصير (script - نص بالعربية) وعدد المشاهد المتوقعة (scenes - رقم).
-        4. posts: قائمة من كابشن لمنصات التواصل (platform بالعربية و caption بالعربية).
+        1. plan: خطة تشمل الجمهور المستهدف (audience - قائمة نصوص بالعربية البيضاء) واستراتيجية المحتوى (strategy - نص بالعربية البيضاء).
+        2. hooks: قائمة من 2 فيديو هوك (نصوص جذابة بالعربية البيضاء).
+        3. video: سيناريو فيديو قصير (script - نص بالعربية البيضاء) وعدد المشاهد المتوقعة (scenes - رقم).
+        4. posts: قائمة من كابشن لمنصات التواصل (platform بالعربية البيضاء و caption بالعربية البيضاء).
         
         تنسيق JSON الإلزامي:
         {
@@ -119,6 +126,7 @@ const ContentCreator = () => {
       const { analyzeMarketing } = await import('../lib/gemini');
       const jsonResponse = await analyzeMarketing(prompt);
       const newContent = JSON.parse(jsonResponse);
+
       setGeneratedContent(newContent);
       setHasGenerated(true);
       
@@ -209,7 +217,7 @@ const ContentCreator = () => {
                  {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                  {p}
                </button>
-              ))}
+             ))}
              
              <button 
                onClick={handleBatchSync}
@@ -447,7 +455,7 @@ const ContentCreator = () => {
                           <div className="relative aspect-[9/16] w-full max-w-[300px] rounded-[3rem] border-[8px] border-slate-950 bg-slate-900 overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group/screen">
                              <div className="absolute inset-x-0 bottom-0 p-10 z-20 space-y-6 bg-gradient-to-t from-black to-transparent">
                                 <div>
-                                   <div className="inline-flex px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded uppercase mb-4">9:16 REEL</div>
+                                   <div className="inline-flex px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded mb-4">9:16 REEL</div>
                                    <h4 className="text-white text-xl font-black">{t('video_preview')}</h4>
                                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{selectedVoice}</p>
                                 </div>
