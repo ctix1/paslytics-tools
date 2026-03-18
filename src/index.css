@@ -15,9 +15,9 @@
   --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   
-  /* Neural Theme */
-  --color-neural-violet: #8b5cf6;
-  --color-neural-dark: #0f172a;
+  /* Smart Theme */
+  --color-smart-violet: #8b5cf6;
+  --color-smart-dark: #0f172a;
 }
 
 @layer base {
