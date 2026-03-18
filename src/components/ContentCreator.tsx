@@ -150,7 +150,7 @@ const ContentCreator = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shadow-2xl">
-              <Layers className="text-white w-7 h-7" />
+              <Layers className="text-white v-7 h-7" />
             </div>
             <div className="text-center md:text-left">
               <h3 className="text-xl font-black text-white tracking-tight uppercase">{t('one_click_publish')}</h3>
@@ -196,7 +196,7 @@ const ContentCreator = () => {
                 <Megaphone className="text-amber-400 w-6 h-6" />
              </div>
              <div>
-                <h2 className="text-2xl font-black text-white">{t('marketing_assistant')}</h2>
+                <h2 className="text-2xl font-black text-white">{t('content_builder')}</h2>
                 <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'محرك ذكي مدعوم بـ Gemini API' : 'Smart Engine powered by Gemini API'}</p>
              </div>
           </div>
@@ -334,7 +334,7 @@ const ContentCreator = () => {
                      )}
 
                      {activeTab === 'hooks' && (
-                       <motion.div key="hooks" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                       <motion.div key="hooks" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                           {generatedContent?.hooks.map((h: any, i: number) => (
                              <div key={i} className="p-8 bg-slate-950/60 border border-white/5 rounded-3xl group/hook transition-all hover:border-amber-500/30">
                                 <div className="flex items-center justify-between mb-6">

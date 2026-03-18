@@ -176,7 +176,7 @@ const MarketingManager = () => {
              {['Snapchat', 'TikTok', 'Instagram'].map((p) => (
                <button 
                  key={p}
-                 onClick={() => setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase()] }))}
+                 onClick={() => setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase() as keyof typeof socialLinked] }))}
                  className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white'}`}
                >
                  {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
@@ -471,7 +471,7 @@ const MarketingManager = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                    <button className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'نسخ النص' : 'Copy Text'}</button>
                                    <button onClick={() => handleDownloadAsset('static')} className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'تحميل الصورة' : 'Download Img'}</button>
-                                </div>
+                                 </div>
                              </div>
                           ))}
                        </motion.div>
