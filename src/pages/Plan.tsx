@@ -20,7 +20,7 @@ const Plan = () => {
   const isRtl = language === 'ar';
   const navigate = useNavigate();
   const { subscribe } = useSubscription();
-  const { } = useAuth();
+  const { user } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const faqs = [
@@ -120,7 +120,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('starter'); navigate('/dashboard'); }}
+              onClick={() => { subscribe('starter'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
               className="btn-premium w-full !bg-white/5 !text-white !py-3 hover:!bg-white/10 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -159,7 +159,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('monthly'); navigate('/dashboard'); }}
+              onClick={() => { subscribe('monthly'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
               className="btn-premium w-full !bg-white !text-slate-950 !py-3 hover:!bg-purple-50 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
@@ -208,7 +208,7 @@ const Plan = () => {
             </div>
 
             <button
-              onClick={() => { subscribe('annual'); navigate('/dashboard'); }}
+              onClick={() => { subscribe('annual'); navigate(user ? '/checkout' : '/register?redirect=checkout'); }}
               className="btn-premium w-full !py-3 group flex items-center justify-center gap-2"
             >
               {t('choose_plan')}
