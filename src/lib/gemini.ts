@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 console.log("check API key:", import.meta.env.VITE_GEMINI_API_KEY ? "loaded" : "missing")
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-1.5-flash-latest",
   systemInstruction: "أنت خبير تسويق رقمي محترف. يجب أن تكون جميع مخرجاتك باللغة 'العربية البيضاء' (White Arabic) حصراً، وهي لغة عصرية، بسيطة، ومفهومة للجميع، وتستخدم في السيناريوهات الإعلانية والمحتوى الرقمي، وليست اللغة الفصحى الجامدة أو الأكاديمية. يمنع استخدام الإنجليزية تماماً في المخرجات."
 });
 
