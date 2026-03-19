@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useAuth } from './AuthContext';
 
 export type PlanType = 'none' | 'starter' | 'monthly' | 'annual';
 
@@ -88,7 +89,9 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     return Math.max(0, Math.floor(diff / 1000));
   };
 
-  const hasActivePlan = true; // Force activate all tools as requested
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === 'admin';
+  const hasActivePlan = isAdmin || subscription.plan !== 'none';
 
   return (
     <SubscriptionContext.Provider value={{ subscription, hasActivePlan, subscribe, cancel, getTimeRemaining }}>
