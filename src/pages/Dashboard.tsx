@@ -79,7 +79,10 @@ const Dashboard = () => {
 
         const { analyzeMarketing } = await import('../lib/gemini');
         const jsonResponse = await analyzeMarketing(prompt, base64Image);
-        const data = JSON.parse(jsonResponse);
+        
+        // Robust JSON parsing
+        const cleanedJson = jsonResponse.replace(/```json/i, '').replace(/```/i, '').trim();
+        const data = JSON.parse(cleanedJson);
 
         setPasOutput({
           problem: data.problem || '',
@@ -106,6 +109,7 @@ const Dashboard = () => {
           setAnalysisComplete(true);
         }, 500);
       }
+
     };
   };
 
