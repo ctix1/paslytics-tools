@@ -39,24 +39,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const handleSession = (session: any) => {
-    console.log('Handling Auth Session:', session?.user?.email);
     if (session) {
       const user = session.user;
-      const email = user.email || '';
+      const email = (user.email || user.user_metadata?.email || '').trim().toLowerCase();
+      
+      console.log('[Auth] Handling Session for:', email);
       
       // Admin Detection Logic
       // 1. check hardcoded email
-      const userEmail = email.trim().toLowerCase();
-      const isHardcodedAdmin = userEmail === 'koo111333@gmail.com';
+      const isHardcodedAdmin = email === 'koo111333@gmail.com';
       
       // 2. check metadata (Supabase user metadata or app metadata)
       const meta = user.user_metadata || {};
       const appMeta = user.app_metadata || {};
-      const isMetaAdmin = meta.is_admin === true || appMeta.role === 'admin';
+      const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
       
       const isAdmin = isHardcodedAdmin || isMetaAdmin;
       
-      console.log('[Auth] Detected User:', userEmail, '| Is Admin:', isAdmin, '(Hardcoded:', isHardcodedAdmin, '| Meta:', isMetaAdmin, ')');
+      console.log('[Auth] Admin Check:', { email, isAdmin, isHardcodedAdmin, isMetaAdmin });
       
       const name = meta.full_name || meta.name || meta.display_name || (meta.given_name ? `${meta.given_name} ${meta.family_name || ''}` : '') || email.split('@')[0] || 'User';
       const avatar = meta.avatar_url || meta.picture || '';
