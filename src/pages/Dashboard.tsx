@@ -14,7 +14,8 @@ import {
   Plus,
   Lightbulb,
   Target,
-  Rocket
+  Rocket,
+  AlertCircle
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -36,6 +37,7 @@ const Dashboard = () => {
     ai_quick_take: '',
     emotional_score: 88
   });
+  const [error, setError] = useState<string | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,6 +90,7 @@ const Dashboard = () => {
         });
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);
+        setError(isRtl ? 'فشل تحليل الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.' : 'AI Analysis failed. Please try again.');
         setPasOutput({
           problem: t('problem_text'),
           agitation: t('agitation_text'),
@@ -149,23 +152,29 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {hasActivePlan && (
+      {hasAccess && (
         <div className="mb-12 glass-panel p-6 bg-emerald-500/5 border-emerald-500/20 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
               <Zap className="text-emerald-400 w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('active_subscription')}</div>
-              <div className="text-white font-black uppercase text-xs">{t(`plan_${subscription.plan}_title` as any)}</div>
+              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                {isAdmin && subscription.plan === 'none' ? (isRtl ? 'وصول المسؤول' : 'ADMIN ACCESS') : t('active_subscription')}
+              </div>
+              <div className="text-white font-black uppercase text-xs">
+                {isAdmin && subscription.plan === 'none' ? (isRtl ? 'اشتراك غير محدود' : 'UNLIMITED ACCESS') : t(`plan_${subscription.plan}_title` as any)}
+              </div>
             </div>
           </div>
-          <div className="flex flex-col items-end">
-             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'الوقت المتبقي' : 'Time Remaining'}</div>
-             <div className="text-white font-mono text-xl font-black">
-                {Math.floor(getTimeRemaining() / 3600)}h : {Math.floor((getTimeRemaining() % 3600) / 60)}m : {getTimeRemaining() % 60}s
-             </div>
-          </div>
+          {subscription.plan !== 'none' && (
+            <div className="flex flex-col items-end">
+               <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isRtl ? 'الوقت المتبقي' : 'Time Remaining'}</div>
+               <div className="text-white font-mono text-xl font-black">
+                  {Math.floor(getTimeRemaining() / 3600)}h : {Math.floor((getTimeRemaining() % 3600) / 60)}m : {getTimeRemaining() % 60}s
+               </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -259,6 +268,23 @@ const Dashboard = () => {
               )}
             </AnimatePresence>
           </section>
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-500 text-xs font-bold"
+            >
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              {error}
+              <button 
+                onClick={() => setError(null)}
+                className="ml-auto text-[10px] uppercase tracking-widest hover:text-white transition-colors border-none bg-transparent cursor-pointer font-black"
+              >
+                {isRtl ? 'إغلاق' : 'Dismiss'}
+              </button>
+            </motion.div>
+          )}
 
           {/* Main Analysis Output Grid */}
           <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 transition-opacity duration-700 ${analysisComplete ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
