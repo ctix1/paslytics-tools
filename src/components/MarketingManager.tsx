@@ -5,10 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Megaphone, 
   Sparkles, 
-  Video, 
   Mic, 
   Instagram,
-  Send,
   Loader2,
   CheckCircle2,
   PenTool,
@@ -16,22 +14,17 @@ import {
   Rocket,
   Plus,
   ClipboardList,
-  LayoutDashboard,
-  Music,
-  Download,
-  Share2,
-  Play,
-  Pause,
-  Volume2,
-  FileVideo,
-  Smartphone,
   Layers,
   Zap,
   Package,
   Heart,
   ThumbsUp,
   MessageCircle,
-  Eye
+  Eye,
+  Download,
+  Play,
+  Pause,
+  Smartphone
 } from 'lucide-react';
 
 const MarketingManager = () => {
@@ -109,7 +102,7 @@ const MarketingManager = () => {
         type: 'Marketing'
       });
     } catch (error) {
-      console.error("Gemini Generation Failed:", error);
+      console.error("Gemini analysis failed:", error);
       // Fallback or Toast error
     } finally {
       setIsGenerating(false);
@@ -471,7 +464,7 @@ const MarketingManager = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                    <button className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'نسخ النص' : 'Copy Text'}</button>
                                    <button onClick={() => handleDownloadAsset('static')} className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'تحميل الصورة' : 'Download Img'}</button>
-                                 </div>
+                                </div>
                              </div>
                           ))}
                        </motion.div>
