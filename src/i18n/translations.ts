@@ -108,6 +108,7 @@ export const translations = {
     records_title: 'Analysis Records',
     marketing_assistant: 'Marketing Assistant',
     content_builder: 'Content Creator',
+    activate_marketing_assistant: 'Activate AI Engine',
     product_calculator: 'Product Calculator',
     pas_output_title: 'PAS Output',
     copy_clipboard: 'Copy to Clipboard',
@@ -406,6 +407,7 @@ export const translations = {
     records_title: 'سجلات التحليل',
     marketing_assistant: 'مساعد التسويق',
     content_builder: 'منشئ المحتوى',
+    activate_marketing_assistant: 'تنشيط المحرك الذكي',
     product_calculator: 'حاسبة المنتج',
     pas_output_title: 'مخرجات PAS',
     copy_clipboard: 'نسخ إلى الحافظة',
@@ -598,3 +600,4 @@ export const translations = {
 };
 
 export type TranslationKey = keyof typeof translations.en;
+
