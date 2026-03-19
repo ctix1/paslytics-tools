@@ -1,4 +1,4 @@
-import{analyzemarketing} from '../lib/gemini';
+import{analyzeMarketing} from '../lib/gemini';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
