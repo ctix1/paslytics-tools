@@ -7,13 +7,14 @@ import Plan from './pages/Plan';
 import AboutPage from './pages/AboutPage';
 import Checkout from './pages/Checkout';
 import DashboardLayout from './components/DashboardLayout';
+import Sidebar from './components/Sidebar';
+import ErrorBoundary from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import SystemLogs from './pages/SystemLogs';
 import SiteManagement from './pages/SiteManagement';
 import Profile from './pages/Profile';
 import PaymentSettings from './pages/PaymentSettings';
 import ContentManager from './pages/ContentManager';
-import MarketingAssistant from './pages/MarketingAssistant';
 import ContentBuilderPage from './pages/ContentBuilderPage';
 import ProductCalculatorPage from './pages/ProductCalculatorPage';
 import { LanguageProvider } from './i18n/LanguageContext';
@@ -78,37 +79,39 @@ function App() {
           <ContentProvider>
             <LogProvider>
               <Router>
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/plan" element={<Plan />} />
-                <Route path="/about" element={<AboutPage />} />
-                
-                {/* Protected Routes */}
-                <Route path="/checkout/:plan" element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                } />
+                <ErrorBoundary>
+                  <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/plan" element={<Plan />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    
+                    {/* Protected Routes */}
+                    <Route path="/checkout/:plan" element={
+                      <ProtectedRoute>
+                        <Checkout />
+                      </ProtectedRoute>
+                    } />
 
-                <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/marketing" element={<MarketingAssistant />} />
-                  <Route path="/content-builder" element={<ContentBuilderPage />} />
-                  <Route path="/calculator" element={<ProductCalculatorPage />} />
-                  <Route path="/logs" element={<SystemLogs />} />
-                  <Route path="/settings" element={<Profile />} />
-                  
-                  {/* Admin Only Routes */}
-                  <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
-                  <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
-                  <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
-                </Route>
+                    <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                      <Route path="/dashboard" element={<Dashboard />} />
 
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Router>
+                      <Route path="/content-builder" element={<ContentBuilderPage />} />
+                      <Route path="/calculator" element={<ProductCalculatorPage />} />
+                      <Route path="/logs" element={<SystemLogs />} />
+                      <Route path="/settings" element={<Profile />} />
+                      
+                      {/* Admin Only Routes */}
+                      <Route path="/management" element={<AdminRoute><SiteManagement /></AdminRoute>} />
+                      <Route path="/admin/payment-settings" element={<AdminRoute><PaymentSettings /></AdminRoute>} />
+                      <Route path="/admin/content" element={<AdminRoute><ContentManager /></AdminRoute>} />
+                    </Route>
+
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </ErrorBoundary>
+              </Router>
           </LogProvider>
         </ContentProvider>
         </SubscriptionProvider>
