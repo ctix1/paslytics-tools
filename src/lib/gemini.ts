@@ -1,8 +1,4 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }, { apiVersion: "v1" });
 
 /**
  * Analyzes marketing content using Gemini AI.
@@ -10,13 +6,16 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }, { a
  */
 export const analyzeMarketing = async (prompt: string, base64Image?: string) => {
   try {
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
+
     let result;
-    
+
     if (base64Image) {
       // Handle image analysis
       const imageData = base64Image.split(',')[1] || base64Image;
       const mimeType = base64Image.match(/data:(.*?);/)?.[1] || 'image/png';
-      
+
       result = await model.generateContent([
         prompt,
         {
@@ -33,11 +32,11 @@ export const analyzeMarketing = async (prompt: string, base64Image?: string) => 
 
     const response = await result.response;
     const text = response.text();
-    
+
     if (!text) {
       throw new Error("Empty response from Gemini API");
     }
-    
+
     return text;
   } catch (error: any) {
     console.error("Gemini API Error:", error);
@@ -46,4 +45,3 @@ export const analyzeMarketing = async (prompt: string, base64Image?: string) => 
 };
 
 export default analyzeMarketing;
-
