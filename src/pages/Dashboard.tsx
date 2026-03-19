@@ -1,3 +1,4 @@
+import{analyzemarketing} from '../lib/gemini';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -77,7 +78,7 @@ const Dashboard = () => {
           أجب بملف JSON فقط.
         `;
 
-        const { analyzeMarketing } = await import('../lib/gemini');
+       
         const jsonResponse = await analyzeMarketing(prompt, base64Image);
         
         // Robust JSON parsing
