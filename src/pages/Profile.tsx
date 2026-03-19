@@ -25,6 +25,15 @@ const Profile = () => {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelledMsg, setCancelledMsg] = useState<string | null>(null);
 
+  // Loading state if profile or subscription are missing initially
+  if (!profile || !subscription) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="w-8 h-8 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   // Sync state with profile once loaded
   useEffect(() => {
     if (profile) {
@@ -248,8 +257,8 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { label: t('sub_current_plan'), val: subscription.plan === 'annual' ? t('plan_annual_title') : t('plan_monthly_title'), active: true },
-                  { label: t('sub_activated'), val: subscription.activatedAt ? new Date(subscription.activatedAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—' },
-                  { label: t('sub_renews'), val: subscription.renewsAt ? new Date(subscription.renewsAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—' }
+                  { label: t('sub_activated'), val: subscription?.activatedAt ? new Date(subscription.activatedAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—' },
+                  { label: t('sub_renews'), val: subscription?.renewsAt ? new Date(subscription.renewsAt).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—' }
                 ].map((stat, i) => (
                   <div key={i} className={`p-6 rounded-2xl border ${stat.active ? 'bg-brand-primary/10 border-brand-primary/30' : 'bg-white/[0.02] border-white/5'}`}>
                     <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${stat.active ? 'text-brand-primary' : 'text-slate-500'}`}>{stat.label}</div>
@@ -292,7 +301,7 @@ const Profile = () => {
                         setTimeout(() => setCancelledMsg(null), 5000);
                       }}
                     >
-                      {t('sub_cancel_proceed')}
+                      {t('sub_cancel_proceed_btn')}
                     </button>
                   </div>
                 </motion.div>
