@@ -1,5 +1,4 @@
-‫ ";import { GoogleGenerativeAI } from "@google/generative-ai
-
+import {GoogleGenerativeAI} from "@google/generative-ai";
 // فحص وجود المفتاح في الكونسول
 console.log("check API key:", import.meta.env.VITE_GEMINI_API_KEY ? "loaded" : "missing");
 
