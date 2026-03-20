@@ -38,49 +38,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSession = (session: any) => {
-    if (session) {
-      const user = session.user;
-      const email = (user.email || user.user_metadata?.email || '').trim().toLowerCase();
-      
-      console.log('[Auth] Handling Session for:', email);
-      
-      // Admin Detection Logic
-      // 1. check hardcoded email
-      const isHardcodedAdmin = email === 'koo111333@gmail.com';
-      
-      // 2. check metadata (Supabase user metadata or app metadata)
-      const meta = user.user_metadata || {};
-      const appMeta = user.app_metadata || {};
-      const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
-      
-      const isAdmin = isHardcodedAdmin || isMetaAdmin;
-      
-      console.log('[Auth] Admin Check:', { email, isAdmin, isHardcodedAdmin, isMetaAdmin });
-      
-      const name = meta.full_name || meta.name || meta.display_name || (meta.given_name ? `${meta.given_name} ${meta.family_name || ''}` : '') || email.split('@')[0] || 'User';
-      const avatar = meta.avatar_url || meta.picture || '';
+  
+  // 1. أهم خطوة: فعّل الـ Loading فوراً لمنع الـ Router من إظهار 404
+  setLoading(true); 
 
-      const newProfile: UserProfile = {
-        email: email,
-        name: name.trim(),
-        role: isAdmin ? 'admin' : 'user',
-        avatar_url: avatar
-      };
+  if (session) {
+    const user = session.user;
+    const email = (user.email || user.user_metadata?.email || '').trim().toLowerCase();
 
-      setUser(user);
-      setProfile(newProfile);
-      
-      // Keep localStorage in sync for older components or quick-load
-      localStorage.setItem('user_profile', JSON.stringify(newProfile));
-      console.log('Profile Sync Complete:', newProfile.name);
-    } else {
-      setUser(null);
-      setProfile(null);
-      localStorage.removeItem('user_profile');
-    }
-    setLoading(false);
-  };
+    // منطق التحقق من الأدمن (تأكد من وجود هذه الأسطر)
+    const isHardcodedAdmin = email === 'koo111333@gmail.com';
+    const meta = user.user_metadata || {};
+    const appMeta = user.app_metadata || {};
+    const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
+    const isAdmin = isHardcodedAdmin || isMetaAdmin;
+
+    const name = meta.full_name || meta.name || meta.display_name || email.split('@')[0] || 'User';
+    const avatar = meta.avatar_url || meta.picture || '';
+
+    const newProfile: UserProfile = {
+      email,
+      name: name.trim(),
+      role: isAdmin ? 'admin' : 'user',
+      avatar_url: avatar
+    };
+
+    // 2. تحديث الحالة
+    setUser(user);
+    setProfile(newProfile);
+    localStorage.setItem('user_profile', JSON.stringify(newProfile));
+  } else {
+    // 3. تنظيف البيانات القديمة عند تسجيل الخروج
+    setUser(null);
+    setProfile(null);
+    localStorage.removeItem('user_profile');
+  }
+
+  // 4. أخيراً: أغلق الـ Loading بعد التأكد من أن كل البيانات أصبحت جاهزة
+  setLoading(false); 
+};
 
   const signIn = async (email: string, password: string) => {
     return await supabase.auth.signInWithPassword({ email, password });
