@@ -8,6 +8,10 @@ export interface LogEntry {
   date: string;
   score: number | null;
   type: 'PAS' | 'Marketing' | 'Calculator' | 'Content';
+  problem?: string;
+  agitation?: string;
+  solution?: string;
+  details?: string;
 }
 
 interface LogContextType {
