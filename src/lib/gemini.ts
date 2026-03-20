@@ -1,4 +1,10 @@
 
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
+  try {
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    
     // اترك المكتبة تختار المسار الصحيح تلقائياً كما يفعل صاحبك
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
