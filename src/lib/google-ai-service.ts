@@ -8,7 +8,7 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
 
     // 2. تحديد الموديل والتعليمات (هنا تم تبسيط الكود ليتوافق مع الإصدار 0.21.0)
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "models/gemini-3-flash-preview",
       systemInstruction: "أنت خبير تسويق محترف، أجب باللغة العربية البيضاء الواضحة"
     });
 
