@@ -34,6 +34,7 @@ const ContentCreator = () => {
   const [isPlayingAudio, setIsPlayingAudio] = useState<number | null>(null);
   const [isRendering, setIsRendering] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [renderProgress, setRenderProgress] = useState(0);
   const [activeTab, setActiveTab] = useState<'plan' | 'hooks' | 'video' | 'posts' | 'social'>('plan');
   const [selectedVoice, setSelectedVoice] = useState(isRtl ? 'سعودي (نجدي)' : 'Saudi (Najdi)');
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -102,7 +103,9 @@ const ContentCreator = () => {
         sku: `CNT-${Math.floor(Math.random() * 10000)}`,
         image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=60&q=80',
         score: null,
-        type: 'Content'
+        type: 'Content',
+        details: newContent.plan?.strategy,
+        problem: newContent.video?.script // Using problem field for script as a shorthand for report
       });
     } catch (error) {
       console.error("Content Generation Failed:", error);
@@ -126,13 +129,28 @@ const ContentCreator = () => {
   };
 
   const handleSynthesize = (index: number) => {
+    if (!generatedContent?.hooks[index]) return;
+    
     setIsSynthesizing(true);
     setIsPlayingAudio(null);
+    
+    // Stop any current speech
+    window.speechSynthesis.cancel();
+
     setTimeout(() => {
       setIsSynthesizing(false);
       setIsPlayingAudio(index);
-      setTimeout(() => setIsPlayingAudio(null), 5000);
-    }, 1500);
+      
+      const utter = new SpeechSynthesisUtterance(generatedContent.hooks[index].text);
+      utter.lang = isRtl ? 'ar-SA' : 'en-US';
+      utter.rate = 0.9;
+      utter.pitch = 1.0;
+      
+      utter.onend = () => setIsPlayingAudio(null);
+      utter.onerror = () => setIsPlayingAudio(null);
+      
+      window.speechSynthesis.speak(utter);
+    }, 1200);
   };
 
   const handleDownloadAsset = (type: string) => {
@@ -437,17 +455,46 @@ const ContentCreator = () => {
                                  </div>
                               </div>
                               <div className="absolute inset-x-0 bottom-0 p-8 z-20 space-y-4">
-                                 <div>
-                                    <div className="inline-flex px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded uppercase mb-2">9:16 REEL</div>
-                                    <h4 className="text-white text-lg font-black">{t('video_preview')}</h4>
-                                 </div>
-                                 <button 
-                                   onClick={() => handleDownloadAsset('video')}
-                                   className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-amber-400 transition-all shadow-xl"
-                                 >
-                                    <Download className="w-4 h-4" />
-                                    {t('download_video')}
-                                 </button>
+                                 {renderProgress > 0 && renderProgress < 100 ? (
+                                   <div className="w-full space-y-2">
+                                      <div className="flex justify-between text-[9px] font-black text-amber-400 uppercase tracking-widest">
+                                         <span>{isRtl ? 'جاري الرندرة...' : 'Rendering...'}</span>
+                                         <span>{renderProgress}%</span>
+                                      </div>
+                                      <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                         <div className="h-full bg-amber-500 transition-all duration-300" style={{ width: `${renderProgress}%` }} />
+                                      </div>
+                                   </div>
+                                 ) : (
+                                   <>
+                                     <div>
+                                        <div className="inline-flex px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded uppercase mb-2">9:16 REEL</div>
+                                        <h4 className="text-white text-lg font-black">{t('video_preview')}</h4>
+                                     </div>
+                                     <button 
+                                       onClick={() => {
+                                         if (renderProgress === 100) {
+                                            handleDownloadAsset('video');
+                                         } else {
+                                            setRenderProgress(1);
+                                            const interval = setInterval(() => {
+                                               setRenderProgress(prev => {
+                                                  if (prev >= 100) {
+                                                     clearInterval(interval);
+                                                     return 100;
+                                                  }
+                                                  return prev + 5;
+                                               });
+                                            }, 200);
+                                         }
+                                       }}
+                                       className="w-full py-4 bg-white text-slate-950 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-amber-400 transition-all shadow-xl"
+                                     >
+                                        {renderProgress === 100 ? <CheckCircle2 className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+                                        {renderProgress === 100 ? (isRtl ? 'تحميل الفيديو' : 'Download Video') : (isRtl ? 'بدء الرندرة والإنشاء' : 'Start Render & Create')}
+                                     </button>
+                                   </>
+                                 )}
                               </div>
                            </div>
 
