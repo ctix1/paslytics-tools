@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// --- Interfaces ---
 export interface HomepageContent {
   heroTitle1_en: string; heroTitle1_ar: string;
   heroTitle2_en: string; heroTitle2_ar: string;
@@ -37,55 +38,42 @@ export interface AboutContent {
   ctaDesc_en: string; ctaDesc_ar: string;
 }
 
+// --- Default Data (The Source of Truth) ---
 export const defaultHomepage: HomepageContent = {
-  heroTitle1_en: 'Advanced Neural ',  heroTitle1_ar: 'التحليل العصبي ',
-  heroTitle2_en: 'Marketing Intelligence',             heroTitle2_ar: 'الذكي للمنتجات',
-  heroDesc_en: 'Unlock deep consumer insights using the PAS (Problem-Agitation-Solution) framework driven by the advanced neural engine. Transform features into emotional benefits.',
-  heroDesc_ar: 'استكشف رؤى المستهلكين العميقة باستخدام إطار عمل PAS (المشكلة-التهيج-الحل) المحسن والمطور. حوّل ميزات المنتجات إلى فوائد عاطفية.',
-  ctaHeading_en: 'Ready to revolutionize your product marketing?',
-  ctaHeading_ar: 'هل أنت مستعد لإحداث ثورة في تسويق منتجاتك؟',
-  ctaDesc_en: 'Join hundreds of product managers using PASlytics to optimize their workflow and increase conversion rates.',
-  ctaDesc_ar: 'انضم إلى مئات مديري المنتجات الذين يستخدمون PASlytics لتحسين سير عملهم وزيادة معدلات التحويل.',
-  f1Title_en: 'AI Vision Analysis',        f1Title_ar: 'تحليل الرؤية الذكي',
-  f1Desc_en: 'Upload product images and let our AI automatically identify key visual selling points and physical attributes that trigger purchase intent.',
-  f1Desc_ar: 'ارفع صور المنتجات ودع الذكاء الاصطناعي يحدد نقاط البيع البصرية الرئيسية والخصائص الجسدية التي تحفز نية الشراء.',
-  f2Title_en: 'PAS Framework Output',     f2Title_ar: 'موثوق PAS إطار عمل',
-  f2Desc_en: 'Generate high-converting copy structures based on the proven Problem-Agitation-Solution framework used by top direct-response marketers.',
-  f2Desc_ar: 'أنشئ هياكل نصية عالية التحويل بناءً على إطار عمل المشكلة-التهيج-الحل المثبت فعاليته.',
-  f3Title_en: 'Comprehensive Logs',       f3Title_ar: 'تسجيل شامل للتحليلات',
-  f3Desc_en: 'Keep track of every analysis with detailed historical logs and performance metrics. Compare different versions of product copy over time.',
-  f3Desc_ar: 'تتبع كل تحليل مع سجلات تاريخية تفصيلية ومقاييس أداء. قارن بين إصدارات مختلفة من نصوص المنتجات عبر الزمن.',
+  heroTitle1_en: 'Advanced Neural', heroTitle1_ar: 'التحليل العصبي المتقدم',
+  heroTitle2_en: 'Marketing Intelligence', heroTitle2_ar: 'الذكاء التسويقي',
+  heroDesc_en: 'Unlock deep consumer insights...', heroDesc_ar: 'استكشف رؤى المستهلكين العميقة...',
+  ctaHeading_en: 'Ready to revolutionize?', ctaHeading_ar: 'هل أنت مستعد لإحداث ثورة؟',
+  ctaDesc_en: 'Join hundreds of product managers...', ctaDesc_ar: 'انضم إلى مئات مديري المنتجات...',
+  f1Title_en: 'AI Vision Analysis', f1Title_ar: 'تحليل الرؤية الذكي',
+  f1Desc_en: 'Upload product images...', f1Desc_ar: 'ارفع صور المنتجات...',
+  f2Title_en: 'PAS Framework Output', f2Title_ar: 'إخراج إطار عمل PAS',
+  f2Desc_en: 'Generate high-converting copy...', f2Desc_ar: 'أنشئ نصوصاً ترويجية عالية التحويل...',
+  f3Title_en: 'Comprehensive Logs', f3Title_ar: 'سجلات شاملة للتحليلات',
+  f3Desc_en: 'Keep track of every analysis...', f3Desc_ar: 'تتبع كل تحليل مع سجلات مفصلة...',
 };
 
 export const defaultAbout: AboutContent = {
-  badge_en: 'Protocol v2.0',           badge_ar: 'بروتوكول 2.0',
-  heading_en: 'About the Neural Integration',  heading_ar: 'حول التكامل العصبي',
-  subheading_en: 'We are reaching a new era in product analysis, leveraging advanced neural networks to help companies improve their marketing strategies with unprecedented precision.',
-  subheading_ar: 'نحن نصل إلى عصر جديد في تحليل المنتجات بالذكاء الاصطناعي، مستفيدين من الشبكات العصبية المتطورة لمساعدة الشركات في تحسين استراتيجيات تسويقها بدقة غير مسبوقة.',
-  visionTitle_en: 'Our Vision',   visionTitle_ar: 'رؤيتنا',
-  visionText_en: 'To be the first partner for companies in transforming product data into a practical vision that helps them outperform competitors and achieve their commercial goals.',
-  visionText_ar: 'أن نكون الشريك الأول للشركات في تحويل بيانات المنتجات إلى رؤى عملية تساعدها في التفوق على المنافسين وتحقيق أهدافها التجارية.',
+  badge_en: 'Protocol v2.0', badge_ar: 'بروتوكول 2.0',
+  heading_en: 'About the Neural Integration', heading_ar: 'حول التكامل العصبي',
+  subheading_en: 'We are reaching a new era...', subheading_ar: 'نحن نصل إلى عصر جديد...',
+  visionTitle_en: 'Our Vision', visionTitle_ar: 'رؤيتنا',
+  visionText_en: 'To be the first partner...', visionText_ar: 'أن نكون الشريك الأول للشركات...',
   missionTitle_en: 'Our Mission', missionTitle_ar: 'رسالتنا',
-  missionText_en: 'Providing advanced analysis tools that rely on AI to unlock the potential of products, and improve the customer experience by transforming features into attractive emotional benefits.',
-  missionText_ar: 'تقديم أدوات تحليل متقدمة تعتمد على الذكاء الاصطناعي لإطلاق إمكانات المنتجات، وتحسين تجربة العملاء من خلال تحويل الميزات إلى فوائد عاطفية وجذابة.',
-  teamTitle_en: 'Our Team',       teamTitle_ar: 'فريقنا',
-  teamSubtitle_en: 'We are a team of experts in AI, marketing and analytics.',
-  teamSubtitle_ar: 'نحن فريق من الخبراء في الذكاء الاصطناعي والتسويق والتحليل',
-  tm1Name_en: 'Dr. Ali Ahmed',    tm1Name_ar: 'د. محمد علي',
-  tm1Role_en: 'Founder & CEO',    tm1Role_ar: 'مؤسس ورئيس التنفيذ',
-  tm1Bio_en: '10+ years of expertise in AI',
-  tm1Bio_ar: 'سنوات 10 خبير في الذكاء الاصطناعي',
-  tm2Name_en: 'Sara Khalid',      tm2Name_ar: 'سارة خالد',
-  tm2Role_en: 'Marketing Director', tm2Role_ar: 'مدير التسويق',
-  tm2Bio_en: 'Expert in e-commerce product marketing',
-  tm2Bio_ar: 'خبيرة في تسويق المنتجات عبر الإنترنت',
-  tm3Name_en: 'Ali Ahmad',        tm3Name_ar: 'علي أحمد',
+  missionText_en: 'Providing advanced analysis tools...', missionText_ar: 'تقديم أدوات تحليل متقدمة...',
+  teamTitle_en: 'Our Team', teamTitle_ar: 'فريقنا',
+  teamSubtitle_en: 'Experts in AI and Marketing', teamSubtitle_ar: 'خبراء في الذكاء الاصطناعي والتسويق',
+  tm1Name_en: 'Dr. Ali Ahmed', tm1Name_ar: 'د. علي أحمد',
+  tm1Role_en: 'Founder & CEO', tm1Role_ar: 'المؤسس ورئيس التنفيذي',
+  tm1Bio_en: '10+ years of expertise in AI', tm1Bio_ar: 'أكثر من 10 سنوات خبرة في الذكاء الاصطناعي',
+  tm2Name_en: 'Sara Khalid', tm2Name_ar: 'سارة خالد',
+  tm2Role_en: 'Marketing Director', tm2Role_ar: 'مديرة التسويق',
+  tm2Bio_en: 'Expert in e-commerce marketing', tm2Bio_ar: 'خبيرة في تسويق التجارة الإلكترونية',
+  tm3Name_en: 'Ali Ahmad', tm3Name_ar: 'علي أحمد',
   tm3Role_en: 'Technical Dev Director', tm3Role_ar: 'مدير التطوير التقني',
-  tm3Bio_en: 'Specialized in AI analytics applications',
-  tm3Bio_ar: 'متخصص في تطبيقات الذكاء الاصطناعي',
+  tm3Bio_en: 'Specialized in AI analytics', tm3Bio_ar: 'متخصص في تحليلات الذكاء الاصطناعي',
   ctaTitle_en: 'Have Questions?', ctaTitle_ar: 'هل لديك أسئلة؟',
-  ctaDesc_en: 'Contact us today to find out how we can help you improve your product marketing strategies and increase conversion rates.',
-  ctaDesc_ar: 'اتصل بنا اليوم لاستكشاف كيف يمكننا مساعدتك في تحسين استراتيجيات تسويق منتجاتك وزيادة معدلات التحويل.',
+  ctaDesc_en: 'Contact us today...', ctaDesc_ar: 'اتصل بنا اليوم...',
 };
 
 const STORAGE_KEY_HOME = 'paslytics_homepage_content';
@@ -103,21 +91,29 @@ interface ContentContextType {
 const ContentContext = createContext<ContentContextType | null>(null);
 
 export const ContentProvider = ({ children }: { children: React.ReactNode }) => {
-  const [homepage, setHomepageState] = useState<HomepageContent>(() => {
-    if (typeof window === 'undefined') return defaultHomepage;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY_HOME);
-      return stored ? { ...defaultHomepage, ...JSON.parse(stored) } : defaultHomepage;
-    } catch { return defaultHomepage; }
-  });
+  // استخدام الحالة الأولية مباشرة من الكود لضمان السرعة ومنع الـ 404
+  const [homepage, setHomepageState] = useState<HomepageContent>(defaultHomepage);
+  const [about, setAboutState] = useState<AboutContent>(defaultAbout);
 
-  const [about, setAboutState] = useState<AboutContent>(() => {
-    if (typeof window === 'undefined') return defaultAbout;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY_ABOUT);
-      return stored ? { ...defaultAbout, ...JSON.parse(stored) } : defaultAbout;
-    } catch { return defaultAbout; }
-  });
+  // تحديث الحالة من localStorage فقط بعد تحميل الصفحة (للمزامنة وليس للتحكم)
+  useEffect(() => {
+    const storedHome = localStorage.getItem(STORAGE_KEY_HOME);
+    const storedAbout = localStorage.getItem(STORAGE_KEY_ABOUT);
+
+    if (storedHome) {
+      try {
+        const parsed = JSON.parse(storedHome);
+        setHomepageState(prev => ({ ...prev, ...parsed }));
+      } catch (e) { console.error("Error parsing homepage content", e); }
+    }
+
+    if (storedAbout) {
+      try {
+        const parsed = JSON.parse(storedAbout);
+        setAboutState(prev => ({ ...prev, ...parsed }));
+      } catch (e) { console.error("Error parsing about content", e); }
+    }
+  }, []);
 
   const setHomepage = (c: HomepageContent) => {
     setHomepageState(c);
