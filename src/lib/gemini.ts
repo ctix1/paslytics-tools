@@ -1,15 +1,11 @@
-‫‬ // @ts-nocheck
-  import { GoogleGenerativeAI } from "@google/generative-ai";
+// @ts-nocheck
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
   try {
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-    
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash" 
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // إضافة التعليمات لضمان اللغة العربية والاحترافية
     const systemPrompt = "أنت خبير تسويق محترف. حلل التالي باللغة العربية: ";
     const finalPrompt = systemPrompt + prompt;
 
