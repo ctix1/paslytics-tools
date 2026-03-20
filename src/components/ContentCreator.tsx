@@ -57,25 +57,34 @@ const ContentCreator = () => {
     try {
       const dialectPrefix = isRtl ? `[بلهجة ${selectedVoice}] ` : `[In ${selectedVoice} dialect] `;
       const prompt = `
-        نظام: أنت خبير صناعة محتوى. قم بإنشاء محتوى ترويجي للمنتج: "${description}"
+        نظام: أنت خبير صناعة محتوى تسويقي محترف. قم بإنشاء محتوى ترويجي شامل للمنتج: "${description}"
         ${dialectPrefix}
-        المطلوب:
-        1. خطة محتوى (جمهور واستراتيجية)
-        2. 2 هوك (Hook) للفيديوهات.
-        3. سيناريو فيديو قصير (Reel)
-        4. كابشن لمنشورات التواصل الاجتماعي.
+        المطلوب هو توليد خطة متكاملة تشمل:
+        1. خطة محتوى (جمهور مستهدف واستراتيجية).
+        2. 2 هوك (Hook) قوي للفيديوهات.
+        3. سيناريو فيديو قصير (Reel) مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد.
+        4. منشورين اجتماعيين (Instagram و Twitter) مع كابشن جذاب وعلامات هاشتاج.
+        
+        ملاحظة الهام: يجب أن يكون المحتوى باللغة العربية البيضاء المعاصرة والمناسبة للهجة المختارة (${selectedVoice}).
         
         أجب بتنسيق JSON حصراً:
         {
           "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
           "hooks": [
-            { "type": "Catchy", "text": "...", "stats": { "likes": "", "votes": "" } },
-            { "type": "Value", "text": "...", "stats": { "likes": "", "votes": "" } }
+            { "type": "إبداعي", "text": "..." },
+            { "type": "قيمي", "text": "..." }
           ],
-          "video": { "script": "...", "scenes": 5, "stats": { "views": "", "heart": "" } },
+          "video": { 
+            "script": "...", 
+            "scenes": [
+              { "title": "المشهد 1", "action": "..." },
+              { "title": "المشهد 2", "action": "..." },
+              { "title": "المشهد 3", "action": "..." }
+            ]
+          },
           "posts": [
-            { "platform": "Instagram", "caption": "...", "stats": { "likes": "", "comments": "" } },
-            { "platform": "Twitter", "caption": "...", "stats": { "likes": "", "votes": "" } }
+            { "platform": "Instagram", "caption": "..." },
+            { "platform": "Twitter", "caption": "..." }
           ]
         }
       `;
@@ -89,11 +98,11 @@ const ContentCreator = () => {
       setHasGenerated(true);
       
       addLog({
-        name: isRtl ? `وكالة: ${description.substring(0, 20)}...` : `Agency: ${description.substring(0, 20)}...`,
+        name: description.substring(0, 30) + '...',
         sku: `CNT-${Math.floor(Math.random() * 10000)}`,
         image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=60&q=80',
         score: null,
-        type: 'Marketing'
+        type: 'Content'
       });
     } catch (error) {
       console.error("Content Generation Failed:", error);
@@ -197,7 +206,6 @@ const ContentCreator = () => {
              </div>
              <div>
                 <h2 className="text-2xl font-black text-white">{t('content_builder')}</h2>
-                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">{isRtl ? 'محرك ذكي مدعوم بـ Gemini API' : 'Smart Engine powered by Gemini API'}</p>
              </div>
           </div>
           {hasGenerated && (
@@ -211,6 +219,47 @@ const ContentCreator = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Controls */}
           <div className="lg:col-span-4 space-y-8">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block ml-1">
+                {isRtl ? 'إدخال بصري (اختياري)' : 'Visual Input (Optional)'}
+              </label>
+              <div 
+                onClick={() => document.getElementById('content-img-upload')?.click()}
+                className="w-full h-32 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-amber-500/50 transition-all bg-white/5 group"
+              >
+                <input 
+                  type="file" 
+                  id="content-img-upload" 
+                  className="hidden" 
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setIsGenerating(true);
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = async () => {
+                      try {
+                        const base64 = reader.result as string;
+                        const prompt = "حلل هذا المنتج واستخرج وصفاً تسويقياً دقيقاً له باللغة العربية البيضاء.";
+                        const { analyzeMarketing } = await import('../lib/google-ai-service');
+                        const desc = await analyzeMarketing(prompt, base64);
+                        setDescription(desc.trim());
+                      } catch (err) {
+                        console.error("Image analysis failed:", err);
+                      } finally {
+                        setIsGenerating(false);
+                      }
+                    };
+                  }}
+                />
+                <Plus className="w-6 h-6 text-slate-500 group-hover:text-amber-400 mb-2" />
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-white">
+                  {isRtl ? 'رفع صورة المنتج' : 'Upload Product Image'}
+                </span>
+              </div>
+            </div>
+
             <div className="space-y-4">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block ml-1">
                 {isRtl ? 'وصف المنتج (التحليل الذكي)' : 'Product Analysis Target'}
@@ -340,9 +389,6 @@ const ContentCreator = () => {
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-4">
                                       <div className="px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded uppercase tracking-widest">{h.type} HOOK</div>
-                                      <div className="flex items-center gap-2 text-slate-500 text-[9px] font-black uppercase">
-                                         {/* Stats Removed */}
-                                      </div>
                                    </div>
                                    <div className="flex gap-2">
                                       <button className="p-2.5 bg-white/5 text-slate-500 hover:text-white rounded-xl" onClick={() => navigator.clipboard.writeText(h.text)}><ClipboardList className="w-4 h-4" /></button>
@@ -356,7 +402,6 @@ const ContentCreator = () => {
                                 </div>
                                 <p className="text-white text-xl font-bold italic mb-6">"{h.text}"</p>
                                 
-                                {/* Professional Audio Player */}
                                 <div className="p-4 bg-slate-900 border border-white/10 rounded-2xl flex items-center gap-6">
                                    <button 
                                      onClick={() => handleSynthesize(i)}
@@ -366,11 +411,11 @@ const ContentCreator = () => {
                                    </button>
                                    <div className="flex-1 space-y-2">
                                       <div className="flex items-center justify-between text-[10px] font-black text-slate-500 tracking-[0.2em]">
-                                         <span>SMART SYNTHESIS ACTIVATED</span>
+                                         <span>SMART SYNTHESIS</span>
                                          <span>0:00 / 0:15</span>
                                       </div>
                                       <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                         <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                                         <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500" />
                                       </div>
                                    </div>
                                 </div>
@@ -379,50 +424,53 @@ const ContentCreator = () => {
                        </motion.div>
                      )}
 
-                     {activeTab === 'video' && (
-                       <motion.div key="video" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-10">
-                          {/* STRICTURE PORTRAIT 9:16 PREVIEW */}
-                          <div className="relative aspect-[9/16] w-full max-w-[320px] rounded-[3rem] border-[8px] border-slate-950 bg-slate-900 overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group/screen">
-                             <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-black/90" />
-                             
-                             {/* Stats Overlay on Video */}
-                             {/* Stats Removed */}
-
-                             {/* Video Visual Core */}
-                             <div className="absolute inset-0">
-                                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&fit=crop" className="w-full h-full object-cover opacity-60 group-hover/screen:scale-110 transition-transform duration-[5000ms]" alt="Portrait Reel" />
-                                <div className="absolute inset-0 flex items-center justify-center z-20">
-                                  {isRendering ? (
-                                    <div className="flex flex-col items-center gap-4 text-amber-400">
-                                      <Loader2 className="w-12 h-12 animate-spin" />
-                                      <span className="text-[10px] font-black tracking-widest">{t('media_rendering')}</span>
-                                    </div>
-                                  ) : (
-                                    <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-24 h-24 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
-                                      <Play className="w-10 h-10 text-white ml-1.5" />
+                      {activeTab === 'video' && (
+                        <motion.div key="video" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                           <div className="relative aspect-[9/16] w-full max-w-[300px] mx-auto rounded-[3rem] border-[8px] border-slate-950 bg-slate-900 overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group/screen">
+                              <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-black/90" />
+                              <div className="absolute inset-0">
+                                 <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&fit=crop" className="w-full h-full object-cover opacity-60" alt="Portrait Reel" />
+                                 <div className="absolute inset-0 flex items-center justify-center z-20">
+                                    <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
+                                      {isRendering ? <Loader2 className="w-8 h-8 animate-spin text-white" /> : <Play className="w-8 h-8 text-white ml-1.5" />}
                                     </button>
-                                  )}
-                                </div>
-                             </div>
+                                 </div>
+                              </div>
+                              <div className="absolute inset-x-0 bottom-0 p-8 z-20 space-y-4">
+                                 <div>
+                                    <div className="inline-flex px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded uppercase mb-2">9:16 REEL</div>
+                                    <h4 className="text-white text-lg font-black">{t('video_preview')}</h4>
+                                 </div>
+                                 <button 
+                                   onClick={() => handleDownloadAsset('video')}
+                                   className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-amber-400 transition-all shadow-xl"
+                                 >
+                                    <Download className="w-4 h-4" />
+                                    {t('download_video')}
+                                 </button>
+                              </div>
+                           </div>
 
-                             {/* Vertical Overlay Logic */}
-                             <div className="absolute inset-x-0 bottom-0 p-10 z-20 space-y-6">
-                                <div>
-                                   <div className="inline-flex px-3 py-1 bg-amber-500 text-black text-[9px] font-black rounded uppercase mb-4">9:16 AGENCY REEL</div>
-                                   <h4 className="text-white text-2xl font-black">{t('video_preview')}</h4>
-                                   <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Dialect: {selectedVoice}</p>
-                                </div>
-                                <button 
-                                  onClick={() => handleDownloadAsset('video')}
-                                  className="w-full py-5 bg-white text-black rounded-3xl font-black text-xs flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl"
-                                >
-                                   <Download className="w-5 h-5" />
-                                   {t('download_video')}
-                                </button>
-                             </div>
-                          </div>
-                       </motion.div>
-                     )}
+                           <div className="space-y-6 overflow-y-auto max-h-[600px] custom-scrollbar pr-4 m-0">
+                              <div className="p-6 bg-white/5 border border-white/10 rounded-3xl">
+                                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 mb-4">{isRtl ? 'السيناريو المقترح' : 'PROPOSED SCRIPT'}</h4>
+                                 <p className="text-white text-sm leading-relaxed italic m-0">"{generatedContent?.video?.script}"</p>
+                              </div>
+                              <div className="space-y-4">
+                                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{isRtl ? 'تسلسل المشاهد' : 'SCENE SEQUENCE'}</h4>
+                                 {generatedContent?.video?.scenes.map((scene: any, idx: number) => (
+                                    <div key={idx} className="p-4 bg-slate-950/40 border border-white/5 rounded-2xl flex gap-4">
+                                       <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-xs shrink-0">{idx + 1}</div>
+                                       <div>
+                                          <div className="text-[10px] font-black text-white uppercase mb-1">{scene.title}</div>
+                                          <div className="text-xs text-slate-400 leading-relaxed">{scene.action}</div>
+                                       </div>
+                                    </div>
+                                 ))}
+                              </div>
+                           </div>
+                        </motion.div>
+                      )}
 
                      {activeTab === 'posts' && (
                        <motion.div key="posts" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -431,20 +479,17 @@ const ContentCreator = () => {
                                 <div className="flex items-center justify-between">
                                    <div className="flex items-center gap-3">
                                       <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center"><Instagram className="text-purple-400 w-5 h-5" /></div>
-                                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.platform} Agency Tool</span>
+                                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.platform}</span>
                                    </div>
-                                   <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase">
-                                       {/* Stats Removed */}
-                                    </div>
                                 </div>
                                 <div className="aspect-square bg-slate-900 rounded-[2rem] overflow-hidden relative shadow-inner">
                                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&fit=crop" className="w-full h-full object-cover opacity-50 grayscale group-hover/post:grayscale-0 group-hover/post:opacity-100 transition-all duration-700" alt="Post Design" />
                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex items-end">
-                                      <p className="text-white text-sm font-bold italic leading-relaxed text-shadow-xl">{p.caption}</p>
+                                      <p className="text-white text-sm font-bold italic leading-relaxed">{p.caption}</p>
                                    </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                   <button className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'نسخ النص' : 'Copy Text'}</button>
+                                   <button onClick={() => navigator.clipboard.writeText(p.caption)} className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'نسخ النص' : 'Copy Text'}</button>
                                    <button onClick={() => handleDownloadAsset('static')} className="py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-all">{isRtl ? 'تحميل الصورة' : 'Download Img'}</button>
                                 </div>
                              </div>
