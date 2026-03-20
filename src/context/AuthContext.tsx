@@ -1,4 +1,4 @@
-‬ import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 interface UserProfile {
@@ -25,12 +25,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. فحص الجلسة عند البداية
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session);
     });
 
-    // 2. الاستماع لتغييرات الحالة (دخول/خروج)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       handleSession(session);
     });
@@ -39,19 +37,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const handleSession = async (session: any) => {
-    // تفعيل التحميل لمنع الـ Router من إظهار 404 أثناء فحص البيانات
     setLoading(true);
 
     if (session) {
       const currentUser = session.user;
       const email = (currentUser.email || currentUser.user_metadata?.email || '').trim().toLowerCase();
-
-      // منطق تحديد الأدمن (الحساب الثابت)
+      
       const isHardcodedAdmin = email === 'koo111333@gmail.com';
       const meta = currentUser.user_metadata || {};
       const appMeta = currentUser.app_metadata || {};
       const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
-
+      
       const isAdmin = isHardcodedAdmin || isMetaAdmin;
 
       const name = meta.full_name || meta.name || meta.display_name || email.split('@')[0] || 'User';
@@ -68,13 +64,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setProfile(newProfile);
       localStorage.setItem('user_profile', JSON.stringify(newProfile));
     } else {
-      // تنظيف البيانات عند الخروج
       setUser(null);
       setProfile(null);
       localStorage.removeItem('user_profile');
     }
 
-    // إغلاق التحميل بعد التأكد من تحديث كل الـ States
     setLoading(false);
   };
 
