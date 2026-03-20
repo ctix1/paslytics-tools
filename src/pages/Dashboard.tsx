@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { useAuth } from '../context/AuthContext';
+import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, 
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const isRtl = language === 'ar';
   const { hasActivePlan, subscription, getTimeRemaining } = useSubscription();
   const { profile } = useAuth();
+  const { addLog } = useLogs();
 
   const isAdmin = profile?.role === 'admin';
   const hasAccess = isAdmin || hasActivePlan;
@@ -91,6 +93,15 @@ const Dashboard = () => {
           solution: data.solution || '',
           ai_quick_take: data.ai_quick_take || '',
           emotional_score: data.emotional_score || 88
+        });
+
+        // Add to logs
+        addLog({
+          name: data.problem ? data.problem.substring(0, 30) + '...' : (isRtl ? 'تحليل جديد' : 'New Analysis'),
+          sku: `PAS-${Math.floor(Math.random() * 10000)}`,
+          image: base64Image,
+          score: data.emotional_score || 88,
+          type: 'PAS'
         });
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);
