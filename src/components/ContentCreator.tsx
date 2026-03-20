@@ -80,7 +80,7 @@ const ContentCreator = () => {
         }
       `;
 
-      const { analyzeMarketing } = await import('../lib/gemini');
+      const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
       const cleanedJson = responseText.replace(/```json/i, '').replace(/```/i, '').trim();
       const newContent = JSON.parse(cleanedJson);
