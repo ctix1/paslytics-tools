@@ -1,45 +1,37 @@
+// @ts-ignore
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// إعداد الذكاء الاصطناعي خارج الدالة ليكون أسرع وأكثر استقراراً
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-
-// اختيار الموديل الصحيح - اترك المكتبة تختار المسار v1 تلقائياً
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
-  console.log("--- VERSION 2.0 ACTIVATED ---");
-
   try {
-    const systemPrompt = "أنت خبير تسويق محترف. حلل التالي باللغة العربية: ";
-    const finalPrompt = systemPrompt + prompt;
+    // 1. إعداد المكتبة باستخدام مفتاح API الخاص بك من متغيرات البيئة
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-    let result;
+    // 2. تحديد الموديل والتعليمات (هنا تم تبسيط الكود ليتوافق مع الإصدار 0.21.0)
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: "أنت خبير تسويق محترف، أجب باللغة العربية البيضاء الواضحة"
+    });
+
+    // إعداد أجزاء الطلب (النص والصورة إن وجدت)
+    let parts: any[] = [{ text: prompt }];
 
     if (imageBase64) {
-      // معالجة الصورة إذا وجدت
       const base64Data = imageBase64.split(',')[1] || imageBase64;
-      const imagePart = {
+      parts.push({
         inlineData: {
           data: base64Data,
           mimeType: "image/jpeg"
         }
-      };
-      
-      result = await model.generateContent([finalPrompt, imagePart]);
-    } else {
-      // طلب نصي فقط
-      result = await model.generateContent(finalPrompt);
+      });
     }
 
+    // 3. إرسال الطلب والحصول على النتيجة
+    const result = await model.generateContent({ contents: [{ role: "user", parts }] });
     const response = await result.response;
-    const text = response.text();
-    
-    return text.trim();
+    return response.text();
 
   } catch (error) {
     console.error("Gemini API Error:", error);
     throw error;
   }
 };
-
-export default analyzeMarketing;
