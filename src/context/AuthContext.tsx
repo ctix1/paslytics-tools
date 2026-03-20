@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+‬ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 interface UserProfile {
@@ -25,58 +25,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check initial session
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
+    // 1. فحص الجلسة عند البداية
+    supabase.auth.getSession().then(({ data: { session } }) => {
       handleSession(session);
     });
 
-    // 2. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+    // 2. الاستماع لتغييرات الحالة (دخول/خروج)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       handleSession(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  
-  // 1. أهم خطوة: فعّل الـ Loading فوراً لمنع الـ Router من إظهار 404
-  setLoading(true); 
+  const handleSession = async (session: any) => {
+    // تفعيل التحميل لمنع الـ Router من إظهار 404 أثناء فحص البيانات
+    setLoading(true);
 
-  if (session) {
-    const user = session.user;
-    const email = (user.email || user.user_metadata?.email || '').trim().toLowerCase();
+    if (session) {
+      const currentUser = session.user;
+      const email = (currentUser.email || currentUser.user_metadata?.email || '').trim().toLowerCase();
 
-    // منطق التحقق من الأدمن (تأكد من وجود هذه الأسطر)
-    const isHardcodedAdmin = email === 'koo111333@gmail.com';
-    const meta = user.user_metadata || {};
-    const appMeta = user.app_metadata || {};
-    const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
-    const isAdmin = isHardcodedAdmin || isMetaAdmin;
+      // منطق تحديد الأدمن (الحساب الثابت)
+      const isHardcodedAdmin = email === 'koo111333@gmail.com';
+      const meta = currentUser.user_metadata || {};
+      const appMeta = currentUser.app_metadata || {};
+      const isMetaAdmin = meta.is_admin === true || meta.role === 'admin' || appMeta.role === 'admin';
 
-    const name = meta.full_name || meta.name || meta.display_name || email.split('@')[0] || 'User';
-    const avatar = meta.avatar_url || meta.picture || '';
+      const isAdmin = isHardcodedAdmin || isMetaAdmin;
 
-    const newProfile: UserProfile = {
-      email,
-      name: name.trim(),
-      role: isAdmin ? 'admin' : 'user',
-      avatar_url: avatar
-    };
+      const name = meta.full_name || meta.name || meta.display_name || email.split('@')[0] || 'User';
+      const avatar = meta.avatar_url || meta.picture || '';
 
-    // 2. تحديث الحالة
-    setUser(user);
-    setProfile(newProfile);
-    localStorage.setItem('user_profile', JSON.stringify(newProfile));
-  } else {
-    // 3. تنظيف البيانات القديمة عند تسجيل الخروج
-    setUser(null);
-    setProfile(null);
-    localStorage.removeItem('user_profile');
-  }
+      const newProfile: UserProfile = {
+        email,
+        name: name.trim(),
+        role: isAdmin ? 'admin' : 'user',
+        avatar_url: avatar
+      };
 
-  // 4. أخيراً: أغلق الـ Loading بعد التأكد من أن كل البيانات أصبحت جاهزة
-  setLoading(false); 
-};
+      setUser(currentUser);
+      setProfile(newProfile);
+      localStorage.setItem('user_profile', JSON.stringify(newProfile));
+    } else {
+      // تنظيف البيانات عند الخروج
+      setUser(null);
+      setProfile(null);
+      localStorage.removeItem('user_profile');
+    }
+
+    // إغلاق التحميل بعد التأكد من تحديث كل الـ States
+    setLoading(false);
+  };
 
   const signIn = async (email: string, password: string) => {
     return await supabase.auth.signInWithPassword({ email, password });
@@ -86,11 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: name,
-        },
-      },
+      options: { data: { full_name: name } },
     });
   };
 
