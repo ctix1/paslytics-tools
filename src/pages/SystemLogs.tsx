@@ -10,9 +10,7 @@ import {
   Trash2, 
   Calendar,
   Layers,
-  FileText,
-  CheckCircle2,
-  ExternalLink
+  FileText
 } from 'lucide-react';
 
 const SystemLogs = () => {
@@ -218,7 +216,7 @@ const SystemLogs = () => {
                          </div>
                          <div className="bg-orange-500/5 p-4 rounded-xl border border-orange-500/10">
                             <h5 className="text-[9px] font-black text-orange-400 uppercase mb-2">{t('agitation')}</h5>
-                            <p className="text-white text-sm italic">{selectedLog.agitation || (isRtl ? 'المنتج يحتاج لتحليل إضافي.' : 'Product needs more analysis.')}</p>
+                            <p className="text-white text-sm italic">{selectedLog.agitation || selectedLog.impact || (isRtl ? 'المنتج يحتاج لتحليل إضافي.' : 'Product needs more analysis.')}</p>
                          </div>
                          <div className="bg-green-500/5 p-4 rounded-xl border border-green-500/10">
                             <h5 className="text-[9px] font-black text-green-400 uppercase mb-2">{t('solution')}</h5>
