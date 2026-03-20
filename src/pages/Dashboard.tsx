@@ -101,7 +101,10 @@ const Dashboard = () => {
           sku: `PAS-${Math.floor(Math.random() * 10000)}`,
           image: base64Image,
           score: data.emotional_score || 88,
-          type: 'PAS'
+          type: 'PAS',
+          problem: data.problem,
+          agitation: data.agitation,
+          solution: data.solution
         });
       } catch (err: any) {
         console.error("AI Analysis Failed:", err);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { jsPDF } from 'jspdf';
 import { 
   Search, 
   Filter, 
@@ -22,20 +23,68 @@ const SystemLogs = () => {
   const [selectedLog, setSelectedLog] = useState<any>(null);
 
   const handleDownload = (log: any) => {
-    // Premium UI Feedback
     const toast = document.createElement('div');
     toast.className = `fixed bottom-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-6 py-4 border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-black uppercase tracking-widest text-xs z-50 animate-bounce flex items-center gap-3`;
-    toast.innerHTML = `<CheckCircle2 class="w-4 h-4" /> ${isRtl ? 'جاري تحضير ملف PDF...' : 'Preparing PDF Report...'}`;
+    toast.innerHTML = `<Loader2 class="w-4 h-4 animate-spin" /> ${isRtl ? 'جاري إنشاء باقة PDF احترافية...' : 'Generating Pro PDF Report...'}`;
     document.body.appendChild(toast);
     
-    // Functional Download Simulation (Creating a real blob)
-    const content = `PASLYTICS AI REPORT\n\nProduct: ${log.name}\nDate: ${log.date}\nType: ${log.type}\nScore: ${log.score}%\n\n--- AI DATA ---\n${isRtl ? 'تم استخراج البيانات بنجاح.' : 'Data extracted successfully.'}`;
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Report_${log.id}.txt`;
-    link.click();
+    try {
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Simple professional layout
+      doc.setFillColor(15, 23, 42); // slate-900 background for header
+      doc.rect(0, 0, 210, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.text('PASLYTICS AI REPORT', 10, 25);
+      
+      doc.setFontSize(10);
+      doc.text(`DATE: ${log.date}`, 10, 35);
+
+      // Product Image
+      if (log.image) {
+        try {
+          doc.addImage(log.image, 'JPEG', 10, 50, 40, 40);
+        } catch (e) {
+          console.error("PDF Image add failed", e);
+        }
+      }
+
+      doc.setTextColor(15, 23, 42); 
+      doc.setFontSize(16);
+      doc.text(`PRODUCT: ${log.name}`, 60, 60);
+      
+      doc.setFontSize(12);
+      doc.text(`TYPE: ${log.type}`, 60, 70);
+      doc.text(`SCORE: ${log.score || 'N/A'}%`, 60, 80);
+
+      doc.setDrawColor(200, 200, 200);
+      doc.line(10, 100, 200, 100);
+
+      doc.setFontSize(14);
+      doc.text('AI ANALYSIS DATA', 10, 115);
+      
+      doc.setFontSize(10);
+      const splitText = doc.splitTextToSize(
+        log.type === 'PAS' 
+          ? `PROBLEM:\n${log.problem || '-'}\n\nAGITATION:\n${log.agitation || '-'}\n\nSOLUTION:\n${log.solution || '-'}`
+          : `Analysis content for ${log.name} has been securely processed by Paslytics AI.`, 
+        180
+      );
+      doc.text(splitText, 10, 130);
+
+      doc.save(`PASLYTICS_Report_${log.id}.pdf`);
+      
+      toast.innerHTML = `<CheckCircle2 class="w-4 h-4 text-emerald-500" /> ${isRtl ? 'تم التحميل بنجاح!' : 'Download Complete!'}`;
+    } catch (err) {
+      console.error("PDF Generation Error", err);
+      toast.innerHTML = `<X class="w-4 h-4 text-red-500" /> ${isRtl ? 'فشل التحميل' : 'Download Failed'}`;
+    }
     
     setTimeout(() => toast.remove(), 3000);
   };
