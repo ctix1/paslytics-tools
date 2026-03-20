@@ -103,11 +103,11 @@ const ContentCreator = () => {
         ${dialectPrefix}
         المطلوب هو توليد خطة متكاملة تشمل:
         1. خطة محتوى (جمهور مستهدف واستراتيجية).
-        2. 2 هوك (Hook) قوي للفيديوهات.
-        3. سيناريو فيديو قصير (Reel) مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد.
+        2. 2 هوك (Hook) قوي للفيديوهات. (ملاحظة: ضمن النص، أضف واصفات المشاعر والتنغيم الصوتي مثل [Excited], [Steady], [Breath], [Pause] لتوجيه محركات توليد الصوت المتقدمة).
+        3. سيناريو فيديو قصير (Reel) مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد. (أضف أيضاً واصفات المشاعر في الحوار/النص).
         4. منشورين اجتماعيين احترافيين (Instagram و Twitter) مع كابشن جذاب، علامات هاشتاج، ووصف للصورة (Image Prompt).
         
-        ملاحظة الهامة: يجب أن يكون المحتوى باللغة العربية البيضاء المعاصرة والمناسبة للصوت المختار (${voiceName}).
+        ملاحظة الهامة: يجب أن يكون المحتوى باللغة العربية البيضاء المعاصرة والمناسبة للصوت المختار (${voiceName}). استخدم علامات الوقف الدقيقة (، . ...) لضمان إيقاع طبيعي.
         
         أجب بتنسيق JSON حصراً:
         {
@@ -183,7 +183,9 @@ const ContentCreator = () => {
       setIsPlayingAudio(index);
       
       const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
-      const utter = new SpeechSynthesisUtterance(generatedContent.hooks[index].text);
+      const rawText = generatedContent.hooks[index].text;
+      const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
+      const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = isRtl ? 'ar-SA' : 'en-US';
       utter.rate = style.rate * voiceSpeed;
       utter.pitch = style.pitch * voicePitch;
@@ -201,7 +203,7 @@ const ContentCreator = () => {
     
     try {
       const hookText = generatedContent.hooks[hookIndex].text;
-      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". أجب بتنسيق JSON: { "platform": "Social", "caption": "...", "image_prompt": "..." }`;
+      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Social", "caption": "...", "image_prompt": "..." }`;
       
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
@@ -459,9 +461,6 @@ const ContentCreator = () => {
                     <tab.icon className="w-4 h-4" />
                     <div className="flex flex-col items-start gap-1">
                       {tab.label}
-                      {tab.ai && (
-                        <span className="text-[6px] px-1 bg-amber-500/10 text-amber-500/80 rounded border border-amber-500/20 leading-none py-0.5">AI ENGINE</span>
-                      )}
                     </div>
                   </button>
                 ))}
@@ -472,7 +471,7 @@ const ContentCreator = () => {
                   <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
                      <Rocket className="w-20 h-20 text-slate-800 mb-6 animate-pulse" />
                      <p className="text-slate-600 font-bold uppercase text-[11px] tracking-[0.3em]">
-                        {isRtl ? 'المحرك الذكي بانتظار إشارتك...' : 'Smart Engine awaiting signal...'}
+                        {isRtl ? 'النظام بانتظار إشارتك...' : 'System awaiting signal...'}
                      </p>
                   </div>
                 ) : isGenerating ? (
@@ -552,7 +551,6 @@ const ContentCreator = () => {
                                        <div className="flex-1 space-y-2">
                                           <div className="flex items-center justify-between text-[10px] font-black text-slate-500 tracking-[0.2em]">
                                              <span>SMART SYNTHESIS</span>
-                                             <span className="text-amber-500/40">AI POWERED</span>
                                           </div>
                                           <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                                              <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500" />
@@ -600,7 +598,7 @@ const ContentCreator = () => {
                                  </div>
                                  
                                  <div className="absolute inset-x-0 bottom-32 px-6 z-20 space-y-2">
-                                    <div className="px-3 py-1 bg-amber-500 text-black text-[7px] font-black rounded w-fit uppercase tracking-widest leading-none">AI SCRIPT OVERLAY</div>
+                                     <div className="px-3 py-1 bg-amber-500 text-black text-[7px] font-black rounded w-fit uppercase tracking-widest leading-none">{isRtl ? 'وصف المشهد' : 'SCENE OVERLAY'}</div>
                                     <motion.div 
                                       key={activeScene}
                                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
