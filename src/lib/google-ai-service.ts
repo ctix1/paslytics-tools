@@ -31,7 +31,7 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
     return response.text();
 
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    console.error("AI Service Error:", error);
     throw error;
   }
 };
