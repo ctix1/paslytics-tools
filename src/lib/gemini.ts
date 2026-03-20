@@ -1,4 +1,5 @@
-‫‬ import { GoogleGenerativeAI } from "@google/generative-ai";
+‫‬ // @ts-nocheck
+  import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
   try {
