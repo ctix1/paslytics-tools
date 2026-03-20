@@ -36,7 +36,7 @@ const VOICES = [
   { id: 'munaib', name: 'منيب', gender: 'male', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
   { id: 'ahmed', name: 'أحمد', gender: 'male', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop' },
   { id: 'hany', name: 'هاني', gender: 'male', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' },
-  { id: 'reem', name: 'ريم', gender: 'female', avatar: 'https://images.unsplash.com/photo-1594744186419-4402636780c1?w=100&h=100&fit=crop' },
+  { id: 'reem', name: 'ريم', gender: 'female', avatar: 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop' },
   { id: 'sara', name: 'سارة', gender: 'female', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
   { id: 'hadeel', name: 'هديل', gender: 'female', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
   { id: 'faris', name: 'فارس', gender: 'male', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop' },
@@ -45,7 +45,7 @@ const VOICES = [
   // Additional choices
   { id: 'majed', name: 'ماجد', gender: 'male', avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop' },
   { id: 'laila', name: 'ليلى', gender: 'female', avatar: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?w=100&h=100&fit=crop' },
-  { id: 'sultan', name: 'سلطان', gender: 'male', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop' },
+  { id: 'sultan', name: 'سلطان', gender: 'male', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop' },
   { id: 'amal', name: 'أمال', gender: 'female', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop' },
   { id: 'bassem_2', name: 'باسم', gender: 'male', avatar: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=100&h=100&fit=crop' }
 ];
@@ -65,6 +65,8 @@ const ContentCreator = () => {
   const [activeTab, setActiveTab] = useState<'plan' | 'hooks' | 'video' | 'posts' | 'social'>('plan');
   const [selectedVoice, setSelectedVoice] = useState(VOICES[0].id);
   const [selectedStyle, setSelectedStyle] = useState(STYLES[0].id);
+  const [voiceSpeed, setVoiceSpeed] = useState(1.0);
+  const [voicePitch, setVoicePitch] = useState(1.0);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false });
 
   const [generatedContent, setGeneratedContent] = useState<any>(() => {
@@ -183,8 +185,8 @@ const ContentCreator = () => {
       const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
       const utter = new SpeechSynthesisUtterance(generatedContent.hooks[index].text);
       utter.lang = isRtl ? 'ar-SA' : 'en-US';
-      utter.rate = style.rate;
-      utter.pitch = style.pitch;
+      utter.rate = style.rate * voiceSpeed;
+      utter.pitch = style.pitch * voicePitch;
       
       utter.onend = () => setIsPlayingAudio(null);
       utter.onerror = () => setIsPlayingAudio(null);
@@ -439,10 +441,10 @@ const ContentCreator = () => {
           <div className="lg:col-span-8 flex flex-col min-h-[600px] border border-white/10 rounded-[2.5rem] bg-slate-900/40 relative overflow-hidden">
              <div className="flex border-b border-white/5 bg-slate-950/20">
                 {[
-                  { id: 'plan', label: isRtl ? 'تحليل الباقة' : 'Package Analysis', icon: ClipboardList },
-                  { id: 'hooks', label: isRtl ? 'هوك ذكي (صوت)' : 'Smart Audio', icon: Mic },
-                  { id: 'video', label: isRtl ? 'فيديو عمودي (9:16)' : 'Portrait Video', icon: Smartphone },
-                  { id: 'posts', label: t('promotional_post'), icon: PenTool }
+                  { id: 'plan', label: isRtl ? 'تحليل الباقة' : 'Package Analysis', icon: ClipboardList, ai: true },
+                  { id: 'hooks', label: isRtl ? 'هوك ذكي (صوت)' : 'Smart Audio', icon: Mic, ai: true },
+                  { id: 'video', label: isRtl ? 'فيديو عمودي (9:16)' : 'Portrait Video', icon: Smartphone, ai: true },
+                  { id: 'posts', label: t('promotional_post'), icon: PenTool, ai: true }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -455,7 +457,12 @@ const ContentCreator = () => {
                     `}
                   >
                     <tab.icon className="w-4 h-4" />
-                    {tab.label}
+                    <div className="flex flex-col items-start gap-1">
+                      {tab.label}
+                      {tab.ai && (
+                        <span className="text-[6px] px-1 bg-amber-500/10 text-amber-500/80 rounded border border-amber-500/20 leading-none py-0.5">AI ENGINE</span>
+                      )}
+                    </div>
                   </button>
                 ))}
              </div>
@@ -534,23 +541,42 @@ const ContentCreator = () => {
                                 </div>
                                 <p className="text-white text-xl font-bold italic mb-6">"{h.text}"</p>
                                 
-                                <div className="p-4 bg-slate-900 border border-white/10 rounded-2xl flex items-center gap-6">
-                                   <button 
-                                     onClick={() => handleSynthesize(i)}
-                                     className="w-14 h-14 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shadow-xl hover:bg-amber-500/30 transition-all"
-                                   >
-                                      {isSynthesizing ? <Loader2 className="w-6 h-6 animate-spin" /> : isPlayingAudio === i ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-                                   </button>
-                                   <div className="flex-1 space-y-2">
-                                      <div className="flex items-center justify-between text-[10px] font-black text-slate-500 tracking-[0.2em]">
-                                         <span>SMART SYNTHESIS</span>
-                                         <span>0:00 / 0:15</span>
-                                      </div>
-                                      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                         <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500" />
-                                      </div>
-                                   </div>
-                                </div>
+                                <div className="p-4 bg-slate-900 border border-white/10 rounded-2xl flex flex-col gap-4">
+                                    <div className="flex items-center gap-6">
+                                       <button 
+                                         onClick={() => handleSynthesize(i)}
+                                         className="w-14 h-14 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shadow-xl hover:bg-amber-500/30 transition-all"
+                                       >
+                                          {isSynthesizing ? <Loader2 className="w-6 h-6 animate-spin" /> : isPlayingAudio === i ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+                                       </button>
+                                       <div className="flex-1 space-y-2">
+                                          <div className="flex items-center justify-between text-[10px] font-black text-slate-500 tracking-[0.2em]">
+                                             <span>SMART SYNTHESIS</span>
+                                             <span className="text-amber-500/40">AI POWERED</span>
+                                          </div>
+                                          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                             <motion.div initial={{ width: 0 }} animate={{ width: isPlayingAudio === i ? '100%' : 0 }} transition={{ duration: 5 }} className="h-full bg-gradient-to-r from-amber-500 to-orange-500" />
+                                          </div>
+                                       </div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-6 pt-2 border-t border-white/5">
+                                       <div className="space-y-2">
+                                          <div className="flex justify-between text-[8px] font-black text-slate-500 uppercase">
+                                             <span>{isRtl ? 'السرعة' : 'Speed'}</span>
+                                             <span>{voiceSpeed}x</span>
+                                          </div>
+                                          <input type="range" min="0.5" max="2" step="0.1" value={voiceSpeed} onChange={(e) => setVoiceSpeed(parseFloat(e.target.value))} className="w-full accent-amber-500 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer" />
+                                       </div>
+                                       <div className="space-y-2">
+                                          <div className="flex justify-between text-[8px] font-black text-slate-500 uppercase">
+                                             <span>{isRtl ? 'النبرة' : 'Pitch'}</span>
+                                             <span>{voicePitch}x</span>
+                                          </div>
+                                          <input type="range" min="0.5" max="2" step="0.1" value={voicePitch} onChange={(e) => setVoicePitch(parseFloat(e.target.value))} className="w-full accent-amber-500 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer" />
+                                       </div>
+                                    </div>
+                                 </div>
                              </div>
                           ))}
                        </motion.div>
@@ -566,10 +592,25 @@ const ContentCreator = () => {
                                    className="w-full h-full object-cover opacity-60 transition-all duration-700" 
                                    alt="Portrait Reel" 
                                  />
+                                 
                                  <div className="absolute inset-0 flex items-center justify-center z-20">
                                     <button onClick={() => { setIsRendering(true); setTimeout(() => setIsRendering(false), 3000); }} className="w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
                                       {isRendering ? <Loader2 className="w-8 h-8 animate-spin text-white" /> : <Play className="w-8 h-8 text-white ml-1.5" />}
                                     </button>
+                                 </div>
+                                 
+                                 <div className="absolute inset-x-0 bottom-32 px-6 z-20 space-y-2">
+                                    <div className="px-3 py-1 bg-amber-500 text-black text-[7px] font-black rounded w-fit uppercase tracking-widest leading-none">AI SCRIPT OVERLAY</div>
+                                    <motion.div 
+                                      key={activeScene}
+                                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                                      className="bg-black/80 backdrop-blur-sm p-4 rounded-2xl border border-white/10 shadow-2xl"
+                                    >
+                                       <p className="text-white text-[11px] font-bold leading-relaxed text-center italic">
+                                         "{generatedContent?.video?.scenes[activeScene]?.action}"
+                                       </p>
+                                    </motion.div>
                                  </div>
                               </div>
                               <div className="absolute inset-x-0 bottom-0 p-8 z-20 space-y-4">
@@ -619,7 +660,6 @@ const ContentCreator = () => {
                                  )}
                               </div>
                            </div>
-
                            <div className="space-y-6 overflow-y-auto max-h-[600px] custom-scrollbar pr-4 m-0">
                               <div className="p-6 bg-white/5 border border-white/10 rounded-3xl">
                                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 mb-4">{isRtl ? 'السيناريو المقترح' : 'PROPOSED SCRIPT'}</h4>
