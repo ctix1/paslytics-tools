@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,8 +35,8 @@ const VOICES = [
   { id: 'khalid', name: 'خالد', gender: 'male', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
   { id: 'munaib', name: 'منيب', gender: 'male', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
   { id: 'ahmed', name: 'أحمد', gender: 'male', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop' },
-  { id: 'hany', name: 'هاني', gender: 'male', avatar: 'https://images.unsplash.com/photo-1542178243-ed2003956aa1?w=100&h=100&fit=crop' },
-  { id: 'reem', name: 'ريم', gender: 'female', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' },
+  { id: 'hany', name: 'هاني', gender: 'male', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' },
+  { id: 'reem', name: 'ريم', gender: 'female', avatar: 'https://images.unsplash.com/photo-1594744186419-4402636780c1?w=100&h=100&fit=crop' },
   { id: 'sara', name: 'سارة', gender: 'female', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
   { id: 'hadeel', name: 'هديل', gender: 'female', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
   { id: 'faris', name: 'فارس', gender: 'male', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop' },
@@ -55,7 +55,6 @@ const ContentCreator = () => {
   const isRtl = language === 'ar';
   const { addLog } = useLogs();
 
-  const [description, setDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState<number | null>(null);
@@ -66,16 +65,32 @@ const ContentCreator = () => {
   const [activeTab, setActiveTab] = useState<'plan' | 'hooks' | 'video' | 'posts' | 'social'>('plan');
   const [selectedVoice, setSelectedVoice] = useState(VOICES[0].id);
   const [selectedStyle, setSelectedStyle] = useState(STYLES[0].id);
-  const [hasGenerated, setHasGenerated] = useState(false);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false });
 
-  // Generated Content State
-  const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [generatedContent, setGeneratedContent] = useState<any>(() => {
+    const saved = sessionStorage.getItem('paslytics_generator_content');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [description, setDescription] = useState(() => {
+    return sessionStorage.getItem('paslytics_generator_desc') || '';
+  });
+
+  const [hasGenerated, setHasGenerated] = useState(!!generatedContent);
+
+  useEffect(() => {
+    sessionStorage.setItem('paslytics_generator_content', JSON.stringify(generatedContent));
+    sessionStorage.setItem('paslytics_generator_desc', description);
+  }, [generatedContent, description]);
+
+  const [isPostLoading, setIsPostLoading] = useState<number | null>(null);
 
   const handleGenerate = async () => {
     if (!description) return;
     setIsGenerating(true);
     setHasGenerated(false);
+    setGeneratedContent(null);
+    sessionStorage.removeItem('paslytics_generator_content');
     
     try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
@@ -176,6 +191,31 @@ const ContentCreator = () => {
       
       window.speechSynthesis.speak(utter);
     }, 1200);
+  };
+
+  const handleGeneratePostFromHook = async (hookIndex: number) => {
+    if (!generatedContent?.hooks[hookIndex]) return;
+    setIsPostLoading(hookIndex);
+    
+    try {
+      const hookText = generatedContent.hooks[hookIndex].text;
+      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". أجب بتنسيق JSON: { "platform": "Social", "caption": "...", "image_prompt": "..." }`;
+      
+      const { analyzeMarketing } = await import('../lib/google-ai-service');
+      const responseText = await analyzeMarketing(prompt);
+      const cleanedJson = responseText.replace(/```json/i, '').replace(/```/i, '').trim();
+      const newPost = JSON.parse(cleanedJson);
+      
+      setGeneratedContent((prev: any) => ({
+        ...prev,
+        posts: [...(prev.posts || []), newPost]
+      }));
+      setActiveTab('posts');
+    } catch (err) {
+      console.error("Hook-to-Post failed:", err);
+    } finally {
+      setIsPostLoading(null);
+    }
   };
 
   const handleDownloadAsset = (type: string) => {
@@ -476,6 +516,14 @@ const ContentCreator = () => {
                                    </div>
                                    <div className="flex gap-2">
                                       <button className="p-2.5 bg-white/5 text-slate-500 hover:text-white rounded-xl" onClick={() => navigator.clipboard.writeText(h.text)}><ClipboardList className="w-4 h-4" /></button>
+                                      <button 
+                                        onClick={() => handleGeneratePostFromHook(i)}
+                                        disabled={isPostLoading === i}
+                                        className="p-2.5 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 rounded-xl flex items-center gap-2"
+                                      >
+                                        {isPostLoading === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <PenTool className="w-3.5 h-3.5" />}
+                                        <span className="text-[8px] font-black uppercase tracking-widest">{isRtl ? 'تحويل لبوست' : 'Post it'}</span>
+                                      </button>
                                       <button 
                                         onClick={() => handleDownloadAsset('audio')}
                                         className="p-2.5 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-xl"
