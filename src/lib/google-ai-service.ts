@@ -1,7 +1,7 @@
 // @ts-ignore
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// 1. إعداد محرك Gemini الذكي
+// 1. إعداد محرك Gemini الذكي لإنشاء النصوص والصور
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
@@ -32,42 +32,49 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
   }
 };
 
-// 2. دالة إنتاج الصوت باستخدام WaveNet (الأداء العالي والتكلفة الصفرية لأول مليون حرف)
+// 2. دالة إنتاج الصوت باستخدام WaveNet (أداء عالي وتكلفة مجانية لأول مليون حرف)
 export const generateAudio = async (text: string) => {
   try {
     const apiKey = import.meta.env.VITE_GOOGLE_TTS_API_KEY;
 
-    // التحقق من وجود المفتاح لتجنب أخطاء 400 العشوائية
+    // التحقق من وجود المفتاح في Vercel قبل بدء الطلب
     if (!apiKey) {
-      console.error("Error: VITE_GOOGLE_TTS_API_KEY is missing!");
+      console.error("Missing API Key: VITE_GOOGLE_TTS_API_KEY is not defined.");
       return null;
     }
 
+    // تجهيز البيانات بشكل متوافق تماماً مع Google Cloud API
+    const requestBody = {
+      input: { text: text },
+      voice: {
+        languageCode: "ar-XA",
+        name: "ar-XA-Wavenet-A"
+      },
+      audioConfig: {
+        audioEncoding: "MP3"
+      }
+    };
+
     const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: { text: text },
-        voice: {
-          languageCode: "ar-XA",
-          name: "ar-XA-Wavenet-A" // خيار احترافي ومجاني ضمن الحدود
-        },
-        audioConfig: {
-          audioEncoding: "MP3"
-        }
-      })
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(requestBody)
     });
 
     const data = await response.json();
 
-    if (data.audioContent) {
-      return data.audioContent; // يعيد الصوت بتنسيق Base64
+    if (response.ok && data.audioContent) {
+      return data.audioContent; // يعيد الصوت بتنسيق Base64 القابل للتشغيل
     } else {
-      console.error("GCP TTS Error Response:", data);
-      throw new Error("Failed to generate audio content from Google Cloud");
+      // طباعة تفاصيل الخطأ في الـ Console للمساعدة في التشخيص
+      console.error("Google Cloud TTS Error Details:", data);
+      return null;
     }
   } catch (error) {
-    console.error("Audio Service Error (TTS):", error);
+    console.error("Network/Audio Fetch Error:", error);
     return null;
   }
 };
