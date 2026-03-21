@@ -1,18 +1,15 @@
-// @ts-ignore
-import { GoogleGenerativeAI } from "@google/generative-ai";
+‫ import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// 1. إعداد ذكاء Gemini (للنصوص والصور)
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export const analyzeMarketing = async (prompt: string, imageBase64?: string) => {
   try {
-    // 1. إعداد المكتبة باستخدام مفتاح API الخاص بك من متغيرات البيئة
-    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-
-    // 2. تحديد الموديل والتعليمات (هنا تم تبسيط الكود ليتوافق مع الإصدار 0.21.0)
     const model = genAI.getGenerativeModel({
-      model: "models/gemini-3-flash-preview",
-      systemInstruction: "أنت خبير تسويق محترف، أجب باللغة العربية البيضاء الواضحة"
+      model: "gemini-3-flash-preview", // تأكد من دعم هذا الإصدار في منطقتك أو استخدم gemini-1.5-flash
+      systemInstruction: "أنت خبير تسويق محترف، أجب باللغة العربية البيضاء الواضحة."
     });
 
-    // إعداد أجزاء الطلب (النص والصورة إن وجدت)
     let parts: any[] = [{ text: prompt }];
 
     if (imageBase64) {
@@ -25,13 +22,37 @@ export const analyzeMarketing = async (prompt: string, imageBase64?: string) => 
       });
     }
 
-    // 3. إرسال الطلب والحصول على النتيجة
     const result = await model.generateContent({ contents: [{ role: "user", parts }] });
-    const response = await result.response;
-    return response.text();
+    const responseText = await result.response.text();
 
+    return responseText;
   } catch (error) {
     console.error("AI Service Error:", error);
     throw error;
+  }
+};
+
+// 2. إضافة وظيفة الصوت (WaveNet) بأقل تكلفة (مجانية لأول مليون حرف)
+export const generateAudio = async (text: string) => {
+  try {
+    const apiKey = import.meta.env.VITE_GOOGLE_TTS_API_KEY;
+    const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: { text },
+        voice: { languageCode: "ar-XA", name: "ar-XA-Wavenet-A" }, // صوت وافنبت احترافي وموفر
+        audioConfig: { audioEncoding: "MP3" }
+      })
+    });
+
+    const data = await response.json();
+    if (data.audioContent) {
+      return data.audioContent; // يعيد الصوت بصيغة Base64 لتشغيله في الموقع
+    }
+    throw new Error("Failed to generate audio content");
+  } catch (error) {
+    console.error("Audio Service Error:", error);
+    return null;
   }
 };
