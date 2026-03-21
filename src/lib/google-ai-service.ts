@@ -1,6 +1,6 @@
 // @ts-ignore
 
-‫ import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // 1. إعداد ذكاء Gemini (للنصوص والصور)
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -47,3 +47,14 @@ export const generateAudio = async (text: string) => {
         audioConfig: { audioEncoding: "MP3" }
       })
     });
+
+    const data = await response.json();
+    if (data.audioContent) {
+      return data.audioContent; // يعيد الصوت بصيغة Base64 لتشغيله في الموقع
+    }
+    throw new Error("Failed to generate audio content");
+  } catch (error) {
+    console.error("Audio Service Error:", error);
+    return null;
+  }
+};
