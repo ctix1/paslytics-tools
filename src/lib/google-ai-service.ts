@@ -1,3 +1,5 @@
+// @ts-ignore
+
 ‫ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // 1. إعداد ذكاء Gemini (للنصوص والصور)
@@ -45,14 +47,3 @@ export const generateAudio = async (text: string) => {
         audioConfig: { audioEncoding: "MP3" }
       })
     });
-
-    const data = await response.json();
-    if (data.audioContent) {
-      return data.audioContent; // يعيد الصوت بصيغة Base64 لتشغيله في الموقع
-    }
-    throw new Error("Failed to generate audio content");
-  } catch (error) {
-    console.error("Audio Service Error:", error);
-    return null;
-  }
-};
