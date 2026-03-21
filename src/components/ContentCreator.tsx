@@ -20,7 +20,8 @@ import {
   Smartphone,
   Layers,
   Zap,
-  Package
+  Package,
+  Twitter
 } from 'lucide-react';
 
 const STYLES = [
@@ -51,11 +52,18 @@ const VOICES = [
 ];
 
 export const prepareSSML = (text: string) => {
-  return text
-    .replace(/\[Pause\]/g, '<break time="1s"/>')
-    .replace(/\[Steady\]/g, '<prosody rate="medium">')
-    .replace(/\[Excited\]/g, '<prosody pitch="+2st" rate="fast">')
-    + '</prosody>'; // إغلاق الوسوم
+  let processed = text
+    .replace(/\[Pause\]/gi, '<break time="1s"/>')
+    .replace(/\[Steady\]/gi, '<prosody rate="medium">')
+    .replace(/\[Excited\]/gi, '<prosody pitch="+2st" rate="fast">')
+    .replace(/\[Breath\]/gi, '<break time="0.5s"/>')
+    .replace(/\[.*?\]/g, ''); // strip any other unrecognized brackets
+    
+  const openCount = (processed.match(/<prosody/g) || []).length;
+  for (let i = 0; i < openCount; i++) {
+    processed += '</prosody>';
+  }
+  return `<speak>${processed}</speak>`;
 };
 
 const ContentCreator = () => {
@@ -746,7 +754,11 @@ const ContentCreator = () => {
                               <div key={i} className="p-8 bg-slate-950 border border-white/5 rounded-[2.5rem] space-y-8 group/post transition-all hover:border-purple-500/50">
                                  <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                       <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center"><Instagram className="text-purple-400 w-5 h-5" /></div>
+                                       <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                                         {String(p.platform).toLowerCase().includes('twitter') || String(p.platform).toLowerCase().includes('x') 
+                                           ? <Twitter className="text-purple-400 w-5 h-5" /> 
+                                           : <Instagram className="text-purple-400 w-5 h-5" />}
+                                       </div>
                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.platform}</span>
                                     </div>
                                  </div>
@@ -785,4 +797,3 @@ const ContentCreator = () => {
 };
 
 export default ContentCreator;
-
