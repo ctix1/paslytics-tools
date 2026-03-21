@@ -183,32 +183,70 @@ const ContentCreator = () => {
     }, 4500);
   };
 
-  const handleSynthesize = (index: number) => {
+  const handleSynthesize = async (index: number) => {
     if (!generatedContent?.hooks[index]) return;
     
     setIsSynthesizing(true);
     setIsPlayingAudio(null);
-    
-    // Stop any current speech
     window.speechSynthesis.cancel();
 
-    setTimeout(() => {
+    try {
+      const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
+      const voice = VOICES.find(v => v.id === selectedVoice) || VOICES[0];
+      const apiKey = (import.meta as any).env.VITE_GOOGLE_TTS_API_KEY || (import.meta as any).env.VITE_GEMINI_API_KEY;
+      
+      const ssml = prepareSSML(generatedContent.hooks[index].text);
+      
+      // Calculate GCP Pitch (-20 to 20 range, where 0 is default 1.0)
+      const combinedPitch = style.pitch * voicePitch; // e.g. 1.0 * 1.0 = 1.0, 1.1 * 1.5 = 1.65
+      const gcpPitch = (combinedPitch - 1.0) * 20; 
+
+      const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: { ssml: ssml },
+          voice: { languageCode: 'ar-XA', name: voice.gcpName || 'ar-XA-Wavenet-B' },
+          audioConfig: { 
+            audioEncoding: 'MP3',
+            speakingRate: style.rate * voiceSpeed,
+            pitch: Math.max(-20, Math.min(20, gcpPitch)) // Clamp between -20 and 20
+          }
+        })
+      });
+
+      if (!response.ok) throw new Error('GCP TTS failed. Falling back to local...');
+
+      const data = await response.json();
+      const audio = new Audio("data:audio/mp3;base64," + data.audioContent);
       setIsSynthesizing(false);
       setIsPlayingAudio(index);
       
-      const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
-      const rawText = generatedContent.hooks[index].text;
-      const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
-      const utter = new SpeechSynthesisUtterance(cleanText);
-      utter.lang = isRtl ? 'ar-SA' : 'en-US';
-      utter.rate = style.rate * voiceSpeed;
-      utter.pitch = style.pitch * voicePitch;
-      
-      utter.onend = () => setIsPlayingAudio(null);
-      utter.onerror = () => setIsPlayingAudio(null);
-      
-      window.speechSynthesis.speak(utter);
-    }, 1200);
+      audio.onended = () => setIsPlayingAudio(null);
+      audio.onerror = () => setIsPlayingAudio(null);
+      audio.play();
+
+    } catch (error) {
+      console.warn('Real TTS Failed:', error);
+      // Fallback
+      setTimeout(() => {
+        setIsSynthesizing(false);
+        setIsPlayingAudio(index);
+        
+        const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
+        const rawText = generatedContent.hooks[index].text;
+        const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = isRtl ? 'ar-SA' : 'en-US';
+        utter.rate = style.rate * voiceSpeed;
+        utter.pitch = style.pitch * voicePitch;
+        
+        utter.onend = () => setIsPlayingAudio(null);
+        utter.onerror = () => setIsPlayingAudio(null);
+        
+        window.speechSynthesis.speak(utter);
+      }, 500);
+    }
   };
 
   const handleGeneratePostFromHook = async (hookIndex: number) => {
@@ -217,18 +255,21 @@ const ContentCreator = () => {
     
     try {
       const hookText = generatedContent.hooks[hookIndex].text;
-      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Social", "caption": "...", "image_prompt": "..." }`;
+      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Instagram", "caption": "...", "image_prompt": "..." }`;
       
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
       
       const jsonMatch = responseText.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
       const cleanedJson = jsonMatch ? jsonMatch[0] : responseText.replace(/```json/i, '').replace(/```/i, '').trim();
-      const newPost = JSON.parse(cleanedJson);
+      const parsedData = JSON.parse(cleanedJson);
+      
+      // Ensure we always push an array of posts or single post properly
+      const newPosts = Array.isArray(parsedData) ? parsedData : [parsedData];
       
       setGeneratedContent((prev: any) => ({
         ...prev,
-        posts: [...(prev.posts || []), newPost]
+        posts: [...(prev.posts || []), ...newPosts]
       }));
       setActiveTab('posts');
     } catch (err) {
@@ -684,7 +725,8 @@ const ContentCreator = () => {
                                  {generatedContent?.video?.scenes.map((scene: any, idx: number) => (
                                     <div 
                                       key={idx} 
-                                      className={`p-4 border rounded-2xl flex gap-4 transition-all duration-500 ${activeScene === idx ? 'bg-amber-500/20 border-amber-500/50 scale-[1.02] shadow-lg' : 'bg-slate-950/40 border-white/5'}`}
+                                      onClick={() => setActiveScene(idx)}
+                                      className={`p-4 border rounded-2xl flex gap-4 transition-all duration-500 cursor-pointer hover:border-amber-500/40 ${activeScene === idx ? 'bg-amber-500/20 border-amber-500/50 scale-[1.02] shadow-lg' : 'bg-slate-950/40 border-white/5'}`}
                                     >
                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${activeScene === idx ? 'bg-amber-500 text-black' : 'bg-amber-500/20 text-amber-400'}`}>{idx + 1}</div>
                                        <div>
@@ -743,3 +785,4 @@ const ContentCreator = () => {
 };
 
 export default ContentCreator;
+
