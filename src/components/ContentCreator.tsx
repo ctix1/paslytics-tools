@@ -32,16 +32,16 @@ const STYLES = [
 ];
 
 const VOICES = [
-  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
-  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
-  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
-  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
-  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
+  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
+  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
+  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
+  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
+  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
+  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
+  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
+  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
+  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
+  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
   // ... وهكذا لبقية الأسماء
 ];
 
