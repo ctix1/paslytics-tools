@@ -44,6 +44,7 @@ export const generateAudio = async (text: string) => {
     }
 
     // تجهيز البيانات بشكل متوافق تماماً مع Google Cloud API
+    // تجهيز البيانات بشكل متوافق تماماً مع Google Cloud API
     const requestBody = {
       input: { text: text },
       voice: {
@@ -54,15 +55,6 @@ export const generateAudio = async (text: string) => {
         audioEncoding: "MP3"
       }
     };
-
-    const requestBody = {
-  input: { text: text },
-  voice: {
-    languageCode: "ar-XA",
-    name: "ar-XA-Wavenet-A"
-  },
-  audioConfig: { audioEncoding: "MP3" }
-};
 
 // تأكد أن الرابط بهذا الشكل تماماً وبدون أي حروف زائدة
 const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
