@@ -1,4 +1,4 @@
-// @ts-ignore
+ // @ts-ignore
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // 1. إعداد محرك Gemini الذكي لإنشاء النصوص والصور
