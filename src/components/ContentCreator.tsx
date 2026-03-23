@@ -32,18 +32,19 @@ const STYLES = [
 ];
 
 const VOICES = [
-  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
-  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
-  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
-  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
-  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
-  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
-  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
-  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Neural2-B', avatar: '...' },
-  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
-  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Neural2-A', avatar: '...' },
+  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
+  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
+  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
+  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
+  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
+  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
   // ... وهكذا لبقية الأسماء
 ];
+
 
 
 export const prepareSSML = (text: string) => {
@@ -223,7 +224,7 @@ const ContentCreator = () => {
     input: { ssml: ssml },
     voice: { 
       languageCode: 'ar-XA', 
-      name: voice.gcpName || 'ar-XA-Neural2-B' 
+      name: voice.gcpName || 'ar-XA-Wavenet-B' 
     },
     audioConfig: {
       audioEncoding: 'MP3',
@@ -255,22 +256,29 @@ const ContentCreator = () => {
       setTimeout(() => toast.remove(), 7000);
       
       // Fallback
-      setTimeout(() => {
+      setTimeout(async() => {
         setIsSynthesizing(false);
         setIsPlayingAudio(index);
         
         const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
         const rawText = generatedContent.hooks[index].text;
         const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
-        const utter = new SpeechSynthesisUtterance(cleanText);
-        utter.lang = isRtl ? 'ar-SA' : 'en-US';
-        utter.rate = style.rate * voiceSpeed;
-        utter.pitch = style.pitch * voicePitch;
+ // 1. بدلاً من تعريف utter (الروبوت الداخلي)
+// 2. سنقوم بطلب الصوت من جوجل مباشرة
+try {
+    const audioData = await generateAudio(cleanText); // استدعاء دالة جوجل التي أصلحناها
+    if (audioData) {
+        const audio = new Audio(`data:audio/mp3;base64,${audioData}`);
+        audio.play();
         
-        utter.onend = () => setIsPlayingAudio(null);
-        utter.onerror = () => setIsPlayingAudio(null);
-        
-        window.speechSynthesis.speak(utter);
+        audio.onended = () => setIsPlayingAudio(null);
+        audio.onerror = () => setIsPlayingAudio(null);
+    }
+} catch (err) {
+    console.error("حتى الخطة البديلة فشلت:", err);
+    setIsPlayingAudio(null);
+}
+
       }, 500);
     }
   };
