@@ -216,19 +216,23 @@ const ContentCreator = () => {
       const combinedPitch = style.pitch * voicePitch; // e.g. 1.0 * 1.0 = 1.0, 1.1 * 1.5 = 1.65
       const gcpPitch = (combinedPitch - 1.0) * 20; 
 
-      const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          input: { ssml: ssml },
-          voice: { languageCode: 'ar-XA', name: voice.gcpName || 'ar-SA-Wavenet-B' },
-          audioConfig: { 
-            audioEncoding: 'MP3',
-            speakingRate: style.rate * voiceSpeed,
-            pitch: Math.max(-20, Math.min(20, gcpPitch)) // Clamp between -20 and 20
-          }
-        })
-      });
+ const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    input: { ssml: ssml },
+    voice: { 
+      languageCode: 'ar-XA', 
+      name: voice.gcpName || 'ar-XA-Neural2-B' 
+    },
+    audioConfig: {
+      audioEncoding: 'MP3',
+      speakingRate: style.rate * voiceSpeed,
+      pitch: Math.max(-20, Math.min(20, gcpPitch))
+    }
+  })
+});
+
 
       if (!response.ok) throw new Error('GCP TTS failed. Falling back to local...');
 
