@@ -125,39 +125,28 @@ const ContentCreator = () => {
       try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
-      const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" 
-      const prompt = `نظام: أنت خبير صناعة محتوى تسويقي محترف ومختص في السوق الخليجي. قم بإنشاء محتوى ترويجي للمنتج ${description}
-    ${dialectPrefix}
+      const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : "";
+      const prompt = `System: Marketing expert for Gulf market. 
+Product: ${description}
+Context: ${dialectPrefix}
 
-    المطلوب هو توليد خطة متكاملة (JSON) مع مراعاة أن يكون السيناريو (Script) والحوار باللهجة الخليجية المحكية.
-    المتطلبات تشمل:
-    1. خطة محتوى (جمهور مستهدف واستراتيجية).
-    2. هوك (Hook) قوي باللهجة الخليجية (مثل: يا هلا، تخيل معي، شي خيالي).
-    3. سيناريو فيديو قصير (Reel) مقسم لـ 3 مشاهد مع وصف للمشاعر [Steady], [Excited].
-    4. منشورين اجتماعيين (Instagram و Twitter).
+Task: Generate a marketing plan in JSON. 
+Important: Script and captions must be in Gulf dialect.
 
-    استخدم علامات الوقف لضمان إيقاع طبيعي للصوت المختار (${voiceName}),
+Required:
+1. Content plan.
+2. Hook in Gulf dialect.
+3. Reel script (3 scenes).
+4. Social media posts.
 
-    أجب بتنسيق JSON حصراً:
-    {
-      "plan": { "audience": ["...", "..."], "strategy": "..." },
-      "hooks": [
-        { "type": "إبداعي", "text": "..." },
-        { "type": "قيمي", "text": "..." },
-      ],
-      "video": {
-        "script": "...",
-        "scenes": [
-          { "title": "المشهد 1", "action": "..." },
-          { "title": "المشهد 2", "action": "..." },
-          { "title": "المشهد 3", "action": "..." },
-        ]
-      },
-      "posts": [
-        { "platform": "Instagram", "caption": "...", "image_prompt": "..." },
-        { "platform": "Twitter", "caption": "...", "image_prompt": "..." },
-      ]
-    }`;
+Format strictly as JSON:
+{
+  "plan": { "audience": ["..."], "strategy": "..." },
+  "hooks": [{ "type": "Creative", "text": "..." }],
+  "video": { "script": "...", "scenes": [{ "title": "Scene 1", "action": "..." }] },
+  "posts": [{ "platform": "Instagram", "caption": "..." }]
+}`;
+
 
         
       const { analyzeMarketing } = await import('../lib/google-ai-service');
