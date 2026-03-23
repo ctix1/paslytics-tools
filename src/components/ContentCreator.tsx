@@ -122,47 +122,32 @@ const ContentCreator = () => {
     setGeneratedContent(null);
     sessionStorage.removeItem('paslytics_generator_content');
     
-    try {
+      try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
-      const dialectPrefix = isRtl ? `[نظام: استخدم اللهجة الخليجية البيضاء، مفردات تسويقية دارجة، أسلوب عفوي ومباشر]` : "";
-      const prompt = `
-  "نظام: أنت خبير صناعة محتوى تسويقي محترف ومختص في السوق الخليجي. قم بإنشاء محتوى ترويجي للمنتج: ${description}"
-  ${dialectPrefix}
+    const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : 
+    const prompt = `
+      Instructions: You are a marketing expert in the Gulf market.
+      Product: ${description}
+      Context: ${dialectPrefix}
+      
+      Required Output (JSON):
+      1. Content plan and strategy.
+      2. Strong Hook in Gulf Dialect (محكي خليجي).
+      3. Reel script (3 scenes).
+      4. Instagram and Twitter captions in Gulf Dialect.
 
-  المطلوب: توليد خطة تسويقية كاملة (JSON)، مع مراعاة أن يكون السيناريو (Script) باللهجة الخليجية...
-  ...
-`;
-        المطلوب هو توليد خطة متكاملة تشمل:
-        1. خطة محتوى (جمهور مستهدف واستراتيجية).
-        2. 2 هوك (Hook) قوي للفيديوهات. (ملاحظة: ضمن النص، أضف واصفات المشاعر والتنغيم الصوتي مثل [Excited], [Steady], [Breath], [Pause] لتوجيه محركات توليد الصوت المتقدمة).
-        3. سيناريو فيديو قصير (Reel) مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد. (أضف أيضاً واصفات المشاعر في الحوار/النص).
-        4. منشورين اجتماعيين احترافيين (Instagram و Twitter) مع كابشن جذاب، علامات هاشتاج، ووصف للصورة (Image Prompt).
-        
-        ملاحظة الهامة: يجب أن يكون المحتوى باللغة العربية البيضاء المعاصرة والمناسبة للصوت المختار (${voiceName}). استخدم علامات الوقف الدقيقة (، . ...) لضمان إيقاع طبيعي.
-        
-        أجب بتنسيق JSON حصراً:
-        {
-          "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
-          "hooks": [
-            { "type": "إبداعي", "text": "..." },
-            { "type": "قيمي", "text": "..." }
-          ],
-          "video": { 
-            "script": "...", 
-            "scenes": [
-              { "title": "المشهد 1", "action": "..." },
-              { "title": "المشهد 2", "action": "..." },
-              { "title": "المشهد 3", "action": "..." }
-            ]
-          },
-          "posts": [
-            { "platform": "Instagram", "caption": "...", "image_prompt": "..." },
-            { "platform": "Twitter", "caption": "...", "image_prompt": "..." }
-          ]
-        }
-      `;
+      Important Note: All scripts, hooks, and captions MUST be written in 100% spoken Gulf Arabic (مثال: يا هلا، وش رايكم، لا يطوفكم، خيالي).
 
+      Format strictly as JSON:
+      {
+        "plan": { "audience": ["..."], "strategy": "..." },
+        "hooks": [{ "type": "Creative", "text": "..." }],
+        "video": { "script": "...", "scenes": [{ "title": "Scene 1", "action": "..." }] },
+        "posts": [{ "platform": "Instagram", "caption": "..." }]
+      }`;
+
+        
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
       
