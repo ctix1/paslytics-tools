@@ -125,8 +125,8 @@ const ContentCreator = () => {
       try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
-    const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : 
-    const prompt = `
+      const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : 
+      const prompt = `
       Instructions: You are a marketing expert in the Gulf market.
       Product: ${description}
       Context: ${dialectPrefix}
