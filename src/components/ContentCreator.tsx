@@ -133,13 +133,15 @@ Context: ${dialectPrefix}
 Task: Generate a marketing plan in JSON. 
 Important: Script and captions must be in Gulf dialect.
 
-Required:
-1. Content plan.
-2. Hook in Gulf dialect.
-3. Reel script (3 scenes).
-4. Social media posts.
+     Required Output (JSON):
+      1. Content plan and strategy.
+      2. Strong Hook in Gulf Dialect (محكي خليجي).
+      3. Reel script (3 scenes).
+      4. Instagram and Twitter captions in Gulf Dialect.
 
-Format strictly as JSON:
+      Important Note: All scripts, hooks, and captions MUST be written in 100% spoken Gulf Arabic (مثال: يا هلا، وش رايكم، لا يطوفكم، خيالي).
+
+      Format strictly as JSON:
 {
   "plan": { "audience": ["..."], "strategy": "..." },
   "hooks": [{ "type": "Creative", "text": "..." }],
