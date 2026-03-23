@@ -125,7 +125,7 @@ const ContentCreator = () => {
     try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
-      const dialectPrefix = isRtl ? `[بلهجة وصوت ${voiceName} بأسلوب ${styleName}] ` : `[In ${voiceName} voice/dialect with ${styleName} style] `;
+      const dialectPrefix = isRtl ? `[نظام: اكتب المحتوى بلهجة خليجية بيضاء رزينة، واستخدم مفردات خليجية شائعة، وتجنب الكلمات المعقدة، واجعل أسلوب النطق مناسباً لصوت ${voiceName}]` : `[...]`;
       const prompt = `
         نظام: أنت خبير صناعة محتوى تسويقي محترف. قم بإنشاء محتوى ترويجي شامل للمنتج: "${description}"
         ${dialectPrefix}
@@ -256,13 +256,14 @@ const ContentCreator = () => {
       setTimeout(() => toast.remove(), 7000);
       
       // Fallback
-      setTimeout(async() => {
-        setIsSynthesizing(false);
-        setIsPlayingAudio(index);
-        
-        const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
-        const rawText = generatedContent.hooks[index].text;
-        const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
+      setTimeout(async () => {
+    setIsSynthesizing(false);
+    setIsPlayingAudio(index);
+
+    const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
+    const rawText = generatedContent.hooks[index].text;
+    const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
+
  // 1. بدلاً من تعريف utter (الروبوت الداخلي)
 // 2. سنقوم بطلب الصوت من جوجل مباشرة
 try {
