@@ -49,7 +49,7 @@ export const generateAudio = async (text: string) => {
       input: { text: text },
       voice: {
         languageCode: "ar-XA",
-        name: "ar-XA-Wavenet-A"
+        name: "ar-XA-Neural2-A"
       },
       audioConfig: {
         audioEncoding: "MP3"
