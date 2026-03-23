@@ -126,7 +126,7 @@ const ContentCreator = () => {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
       const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : 
-         const prompt = `نظام: أنت خبير صناعة محتوى تسويقي محترف ومختص في السوق الخليجي. قم بإنشاء محتوى ترويجي للمنتج: ${description}
+      const prompt = `نظام: أنت خبير صناعة محتوى تسويقي محترف ومختص في السوق الخليجي. قم بإنشاء محتوى ترويجي للمنتج ${description}
     ${dialectPrefix}
 
     المطلوب هو توليد خطة متكاملة (JSON) مع مراعاة أن يكون السيناريو (Script) والحوار باللهجة الخليجية المحكية.
