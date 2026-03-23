@@ -25,21 +25,21 @@ import {
 } from 'lucide-react';
 
 const STYLES = [
-  { id: 'formal', name: 'الرسمي', label: 'Formal', rate: 1.0, pitch: 1.0 },
-  { id: 'energetic', name: 'الحماسي', label: 'Energetic', rate: 1.2, pitch: 1.1 },
-  { id: 'friendly', name: 'الودي', label: 'Friendly', rate: 1.0, pitch: 1.05 },
-  { id: 'calm', name: 'الهادئ', label: 'Calm', rate: 0.85, pitch: 0.95 }
+  { id: 'formal', name: 'الرسمي', label: 'Formal', rate: 0.1, pitch: 0.2 },
+  { id: 'energetic', name: 'الحماسي', label: 'Energetic', rate: 0.2, pitch: 0.1 },
+  { id: 'friendly', name: 'الودي', label: 'Friendly', rate: 0.80, pitch: 1.05 },
+  { id: 'calm', name: 'الهادئ', label: 'Calm', rate: 0.55, pitch: 0.95 }
 ];
 
 const VOICES = [
-  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
-  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
+  { id: 'munaib', name: 'فهد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
+  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
   { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
   { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
   { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: '...' },
+  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
   { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
   { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
   // ... وهكذا لبقية الأسماء
