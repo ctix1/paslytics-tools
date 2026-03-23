@@ -136,7 +136,7 @@ const ContentCreator = () => {
     3. سيناريو فيديو قصير (Reel) مقسم لـ 3 مشاهد مع وصف للمشاعر [Steady], [Excited].
     4. منشورين اجتماعيين (Instagram و Twitter).
 
-    استخدم علامات الوقف لضمان إيقاع طبيعي للصوت المختار (${voiceName}).
+    استخدم علامات الوقف لضمان إيقاع طبيعي للصوت المختار (${voiceName}),
 
     أجب بتنسيق JSON حصراً:
     {
@@ -150,12 +150,12 @@ const ContentCreator = () => {
         "scenes": [
           { "title": "المشهد 1", "action": "..." },
           { "title": "المشهد 2", "action": "..." },
-          { "title": "المشهد 3", "action": "..." }
+          { "title": "المشهد 3", "action": "..." },
         ]
       },
       "posts": [
         { "platform": "Instagram", "caption": "...", "image_prompt": "..." },
-        { "platform": "Twitter", "caption": "...", "image_prompt": "..." }
+        { "platform": "Twitter", "caption": "...", "image_prompt": "..." },
       ]
     }`;
 
