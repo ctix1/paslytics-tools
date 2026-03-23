@@ -55,14 +55,25 @@ export const generateAudio = async (text: string) => {
       }
     };
 
-    const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    });
+    const requestBody = {
+  input: { text: text },
+  voice: {
+    languageCode: "ar-XA",
+    name: "ar-XA-Wavenet-A"
+  },
+  audioConfig: { audioEncoding: "MP3" }
+};
+
+// تأكد أن الرابط بهذا الشكل تماماً وبدون أي حروف زائدة
+const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(requestBody)
+});
 
     const data = await response.json();
 
