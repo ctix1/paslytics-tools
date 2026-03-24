@@ -74,15 +74,9 @@ const SocialDashboard = () => {
     setAuthModal(null);
     setPlatforms(platforms.map(p => p.id === id ? { ...p, loading: true } : p));
     
-    // Simulate the time it takes for the user to login and approve the app
-    setTimeout(() => {
-      // Close the popup window automatically after login simulation
-      if (popup && (!popup.closed)) {
-        popup.close();
-      }
-      
-      // Update the UI to reflect successful connection and data fetch
-      setPlatforms(platforms.map(p => p.id === id ? { 
+    // Function to handle the simulated connection success
+    const completeConnection = () => {
+      setPlatforms(prevList => prevList.map(p => p.id === id ? { 
         ...p, 
         connected: true, 
         loading: false,
@@ -91,20 +85,41 @@ const SocialDashboard = () => {
       } : p));
       
       // Add a simulated post showing it merged into our app
-      setPosts(prev => [
-        {
-          id: Date.now() + Math.random(),
-          type: id === 'tiktok' || id === 'snapchat' ? 'video' : 'post',
-          platform: name,
-          status: 'published',
-          date: new Date().toISOString().split('T')[0],
-          content: (isRtl ? 'تم الربط وجلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + name + ' بنجاح! 🚀',
-          views: (Math.random() * 100).toFixed(1) + 'K',
-          likes: (Math.random() * 10).toFixed(1) + 'K'
-        },
-        ...prev
-      ]);
-    }, 4000);
+      setPosts(prev => {
+        // Check if we already added it to prevent double adding
+        if (prev.some(post => post.platform === name && post.content.includes('🚀'))) return prev;
+        return [
+          {
+            id: Date.now() + Math.random(),
+            type: id === 'tiktok' || id === 'snapchat' ? 'video' : 'post',
+            platform: name,
+            status: 'published',
+            date: new Date().toISOString().split('T')[0],
+            content: (isRtl ? 'تم الربط وجلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + name + ' بنجاح! 🚀',
+            views: (Math.random() * 100).toFixed(1) + 'K',
+            likes: (Math.random() * 10).toFixed(1) + 'K'
+          },
+          ...prev
+        ];
+      });
+    };
+
+    // Periodically check if the user manually closed the popup (Simulating successful oauth callback)
+    const checkClosed = setInterval(() => {
+      if (!popup || popup.closed) {
+        clearInterval(checkClosed);
+        completeConnection();
+      }
+    }, 1000);
+
+    // Fallback timeout to close the popup automatically after giving the user enough time (60 seconds)
+    setTimeout(() => {
+      if (popup && (!popup.closed)) {
+        popup.close();
+      }
+      clearInterval(checkClosed);
+      completeConnection();
+    }, 60000);
   };
 
   return (
