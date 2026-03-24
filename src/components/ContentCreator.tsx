@@ -32,26 +32,6 @@ const STYLES = [
   { id: 'calm', name: 'الهادئ', label: 'Calm', rate: 0.85, pitch: 0.95 }
 ];
 
-const VOICES = [
-  // From user image
-  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
-  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
-  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop' },
-  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' },
-  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop' },
-  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-D', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
-  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
-  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop' },
-  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Wavenet-D', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop' },
-  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop' },
-  // Additional choices
-  { id: 'majed', name: 'ماجد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop' },
-  { id: 'laila', name: 'ليلى', gender: 'female', gcpName: 'ar-XA-Wavenet-D', avatar: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?w=100&h=100&fit=crop' },
-  { id: 'sultan', name: 'سلطان', gender: 'male', gcpName: 'ar-XA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop' },
-  { id: 'amal', name: 'أمال', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop' },
-  { id: 'bassem_2', name: 'باسم', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=100&h=100&fit=crop' }
-];
-
 export const prepareSSML = (text: string) => {
   let processed = text;
   // Replace tokens safely
@@ -93,13 +73,13 @@ const ContentCreator = () => {
   const [renderProgress, setRenderProgress] = useState(0);
   const [activeScene, setActiveScene] = useState(0);
   const [activeTab, setActiveTab] = useState<'plan' | 'hooks' | 'video' | 'posts' | 'social'>('plan');
-  const [selectedVoice, setSelectedVoice] = useState(VOICES[0].id);
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState(STYLES[0].id);
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
   const [voicePitch, setVoicePitch] = useState(1.0);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false, twitter: false });
   const [isVoiceCloneModalOpen, setIsVoiceCloneModalOpen] = useState(false);
-  const [clonedVoice, setClonedVoice] = useState<any>(null);
+  const [clonedVoices, setClonedVoices] = useState<any[]>([]);
 
   const [generatedContent, setGeneratedContent] = useState<any>(() => {
     const saved = sessionStorage.getItem('paslytics_generator_content');
@@ -131,7 +111,7 @@ const ContentCreator = () => {
     sessionStorage.removeItem('paslytics_generator_content');
     
     try {
-      const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
+      const voiceName = clonedVoices.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
       const dialectPrefix = isRtl ? `[بلهجة خليجية وصوت ${voiceName} بأسلوب ${styleName}] ` : `[In Khaleeji dialect, ${voiceName} voice/dialect with ${styleName} style] `;
       const prompt = `
@@ -255,8 +235,18 @@ const ContentCreator = () => {
 
     try {
       const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
-      const voice = VOICES.find(v => v.id === selectedVoice) || VOICES[0];
+      const voice = clonedVoices.find(v => v.id === selectedVoice);
       const apiKey = (import.meta as any).env.VITE_GOOGLE_TTS_API_KEY || "AIzaSyCUYDI5GgLqY6gJUXSBqNrbdwx4dJdM-Rc";
+      
+      if (!voice) {
+        setIsSynthesizing(false);
+        const errToast = document.createElement('div');
+        errToast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 p-6 rounded-2xl border border-red-500/50 bg-red-500/20 text-red-100 font-bold tracking-widest text-[11px] md:text-xs z-[200] animate-slideDown flex items-center gap-4 max-w-sm backdrop-blur-xl shadow-2xl`;
+        errToast.innerHTML = '<span class="leading-relaxed">يرجى إضافة أو استنساخ صوت أولاً.</span>';
+        document.body.appendChild(errToast);
+        setTimeout(() => errToast.remove(), 4000);
+        return;
+      }
       
       const ssml = prepareSSML(generatedContent.hooks[index].text);
       
@@ -549,38 +539,18 @@ const ContentCreator = () => {
                 {isRtl ? 'إعدادات الصوت (المذيعين المختارة)' : 'Voiceover Master Selection'}
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-56 overflow-y-auto custom-scrollbar p-2">
-                {VOICES.map((v) => (
+                {clonedVoices.length === 0 && (
+                  <div className="col-span-full py-4 text-center border-2 border-dashed border-white/5 rounded-xl text-slate-500 text-[10px] font-bold w-full uppercase tracking-widest leading-relaxed">
+                    {isRtl ? 'لم تقم بإضافة أو صنع أي أصوات بعد' : 'No custom voices cloned yet'}
+                  </div>
+                )}
+                {clonedVoices.map((voiceItem) => (
                   <button
-                    key={v.id}
-                    onClick={() => setSelectedVoice(v.id)}
+                    key={voiceItem.id}
+                    onClick={() => setSelectedVoice(voiceItem.id)}
                     className={`
                       relative p-2 rounded-xl transition-all border group
-                      ${selectedVoice === v.id 
-                        ? 'bg-amber-500/10 border-amber-500/50 shadow-md scale-105' 
-                        : 'bg-white/5 border-white/5 hover:border-white/10'}
-                    `}
-                  >
-                    <div className="flex flex-col items-center gap-1.5">
-                       <div className="w-10 h-10 rounded-full overflow-hidden border border-transparent group-hover:border-amber-500/20 transition-all">
-                          <img src={v.avatar} alt={v.name} className="w-full h-full object-cover" />
-                       </div>
-                       <span className={`text-[9px] font-black uppercase tracking-widest ${selectedVoice === v.id ? 'text-amber-400' : 'text-slate-500'}`}>
-                          {v.name}
-                       </span>
-                    </div>
-                    {selectedVoice === v.id && (
-                      <div className="absolute top-1 right-1 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center shadow-lg">
-                        <CheckCircle2 className="w-2.5 h-2.5 text-black" />
-                      </div>
-                    )}
-                  </button>
-                ))}
-                {clonedVoice && (
-                  <button
-                    onClick={() => setSelectedVoice(clonedVoice.id)}
-                    className={`
-                      relative p-2 rounded-xl transition-all border group
-                      ${selectedVoice === clonedVoice.id 
+                      ${selectedVoice === voiceItem.id 
                         ? 'bg-amber-500/10 border-amber-500/50 shadow-md scale-105' 
                         : 'bg-white/5 border-white/5 hover:border-white/10'}
                     `}
@@ -589,17 +559,17 @@ const ContentCreator = () => {
                        <div className="w-10 h-10 rounded-full overflow-hidden border border-transparent group-hover:border-amber-500/20 transition-all bg-amber-500/20 flex items-center justify-center">
                           <Mic className="w-5 h-5 text-amber-500" />
                        </div>
-                       <span className={`text-[9px] font-black uppercase tracking-widest ${selectedVoice === clonedVoice.id ? 'text-amber-400' : 'text-slate-500'}`}>
-                          {clonedVoice.name}
+                       <span className={`text-[9px] font-black uppercase tracking-widest ${selectedVoice === voiceItem.id ? 'text-amber-400' : 'text-slate-500'}`}>
+                          {voiceItem.name}
                        </span>
                     </div>
-                    {selectedVoice === clonedVoice.id && (
+                    {selectedVoice === voiceItem.id && (
                       <div className="absolute top-1 right-1 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center shadow-lg">
                         <CheckCircle2 className="w-2.5 h-2.5 text-black" />
                       </div>
                     )}
                   </button>
-                )}
+                ))}
               </div>
               <button 
                 onClick={() => setIsVoiceCloneModalOpen(true)}
@@ -951,8 +921,12 @@ const ContentCreator = () => {
                        successToast.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${isRtl ? 'تم استنساخ الصوت بنجاح!' : 'Voice cloned successfully!'}`;
                        document.body.appendChild(successToast);
                        
-                       setClonedVoice({ id: 'cloned_1', name: isRtl ? 'صوتي المخصص' : 'Custom Voice', gcpName: 'ar-XA-Wavenet-B' });
-                       setSelectedVoice('cloned_1');
+                       const newName = prompt(isRtl ? 'أدخل اسم الصوت المخصص (مثال: صوتي 1) :' : 'Enter custom voice name:');
+                       const safeName = newName?.trim() || (isRtl ? 'صوتي المخصص' : 'Custom Voice');
+                       const newId = 'cloned_' + Date.now();
+                       
+                       setClonedVoices(prev => [...prev, { id: newId, name: safeName, gcpName: 'ar-XA-Wavenet-B' }]);
+                       setSelectedVoice(newId);
                        setIsVoiceCloneModalOpen(false);
                        
                        setTimeout(() => successToast.remove(), 3000);
