@@ -67,10 +67,10 @@ export const prepareSSML = (text: string) => {
                        .replace(/>/g, '&gt;');
                        
   // Restore SSML
-  processed = processed.replace(/___PAUSE___/g, '<break time="1s"/>')
-                       .replace(/___STEADY___/g, '<prosody rate="medium">')
-                       .replace(/___EXCITED___/g, '<prosody pitch="+2st" rate="fast">')
-                       .replace(/___BREATH___/g, '<break time="0.5s"/>');
+  processed = processed.replace(/___PAUSE___/g, '<break time="0.4s"/>')
+                       .replace(/___STEADY___/g, '<prosody rate="default">')
+                       .replace(/___EXCITED___/g, '<prosody rate="fast">')
+                       .replace(/___BREATH___/g, '<break time="0.2s"/>');
     
   const openCount = (processed.match(/<prosody/g) || []).length;
   for (let i = 0; i < openCount; i++) {
@@ -141,7 +141,7 @@ const ContentCreator = () => {
         3. سيناريو لإنشاء فيديو ترويجي إعلاني دعائي مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد. (أضف أيضاً واصفات المشاعر في الحوار/النص).
         4. منشورين اجتماعيين احترافيين (Instagram و Twitter) مع كابشن جذاب، علامات هاشتاج، ووصف للصورة (Image Prompt).
         
-        ملاحظة الهامة: يجب أن يكون المحتوى وكل النصوص والتعليق الصوتي باللهجة الخليجية فقط الدارجة والمناسبة للصوت المختار (${voiceName}). استخدم تعبيرات ومفردات خليجية لضمان إيقاع طبيعي في التعليق الصوتي. استخدم علامات الوقف الدقيقة (، . ...).
+        ملاحظة الهامة جداً: يجب أن يكون المحتوى وكل النصوص الخاصة بالتعليق الصوتي مألوفة، عامية، وبلهجة خليجية دارجة جداً (كأنها من صانع محتوى عفوي في تيك توك) وتجنب تماماً اللغة العربية الفصحى أو أسلوب نشرات الأخبار لضمان ألا يبدو التعليق الصوتي وكأنه "تقرير إخباري". استخدم أسلوب عفوي ومفردات يومية طبيعية جداً.
         
         أجب بتنسيق JSON حصراً:
         {
@@ -334,7 +334,7 @@ const ContentCreator = () => {
     
     try {
       const hookText = generatedContent.hooks[hookIndex].text;
-      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". يجب أن يكون النص باللهجة الخليجية فقط. استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Instagram", "caption": "...", "image_prompt": "..." }`;
+      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". يجب أن يكون النص باللهجة الخليجية العامية الدارجة جداً بعيداً عن الفصحى وأسلوب التقارير. استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Instagram", "caption": "...", "image_prompt": "..." }`;
       
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
