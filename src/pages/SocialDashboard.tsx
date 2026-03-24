@@ -9,8 +9,13 @@ import {
   Smartphone, 
   Layers,
   ArrowUpRight,
-  Loader2
+  Loader2,
+  Lock,
+  Globe,
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const SocialDashboard = () => {
@@ -24,6 +29,7 @@ const SocialDashboard = () => {
     { id: 'snapchat', name: 'Snapchat', icon: MessageCircle, color: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/20', connected: false, loading: false, followers: '0', engagement: '0%' },
   ]);
 
+  const [authModal, setAuthModal] = useState<{ isOpen: boolean, platform: any } | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -42,37 +48,45 @@ const SocialDashboard = () => {
     }
   }, []);
 
-  const toggleConnection = (id: string) => {
+  const requestConnection = (id: string) => {
     const platform = platforms.find(p => p.id === id);
     if (!platform?.connected) {
-      setPlatforms(platforms.map(p => p.id === id ? { ...p, loading: true } : p));
-      setTimeout(() => {
-        setPlatforms(platforms.map(p => p.id === id ? { 
-          ...p, 
-          connected: true, 
-          loading: false,
-          followers: Math.floor(Math.random() * 50) + 10 + 'K',
-          engagement: '+' + (Math.random() * 5 + 2).toFixed(1) + '%'
-        } : p));
-        
-        // Simulating data fetch for this platform
-        setPosts(prev => [
-          {
-            id: Date.now() + Math.random(),
-            type: id === 'tiktok' || id === 'snapchat' ? 'video' : 'post',
-            platform: platform?.name,
-            status: 'published',
-            date: new Date().toISOString().split('T')[0],
-            content: (isRtl ? 'تم جلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + platform?.name + ' بنجاح! 🚀',
-            views: (Math.random() * 100).toFixed(1) + 'K',
-            likes: (Math.random() * 10).toFixed(1) + 'K'
-          },
-          ...prev
-        ]);
-      }, 1500);
+      setAuthModal({ isOpen: true, platform });
     } else {
       setPlatforms(platforms.map(p => p.id === id ? { ...p, connected: false } : p));
     }
+  };
+
+  const confirmAuth = () => {
+    if (!authModal) return;
+    const { id, name } = authModal.platform;
+    setAuthModal(null);
+    
+    setPlatforms(platforms.map(p => p.id === id ? { ...p, loading: true } : p));
+    setTimeout(() => {
+      setPlatforms(platforms.map(p => p.id === id ? { 
+        ...p, 
+        connected: true, 
+        loading: false,
+        followers: Math.floor(Math.random() * 50) + 10 + 'K',
+        engagement: '+' + (Math.random() * 5 + 2).toFixed(1) + '%'
+      } : p));
+      
+      // Simulating data fetch for this platform
+      setPosts(prev => [
+        {
+          id: Date.now() + Math.random(),
+          type: id === 'tiktok' || id === 'snapchat' ? 'video' : 'post',
+          platform: name,
+          status: 'published',
+          date: new Date().toISOString().split('T')[0],
+          content: (isRtl ? 'تم جلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + name + ' بنجاح! 🚀',
+          views: (Math.random() * 100).toFixed(1) + 'K',
+          likes: (Math.random() * 10).toFixed(1) + 'K'
+        },
+        ...prev
+      ]);
+    }, 2000);
   };
 
   return (
@@ -112,7 +126,7 @@ const SocialDashboard = () => {
                 <platform.icon className={`w-6 h-6 ${platform.color}`} />
               </div>
               <button 
-                onClick={() => toggleConnection(platform.id)}
+                onClick={() => requestConnection(platform.id)}
                 disabled={platform.loading}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${platform.connected ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-slate-400 border border-white/10 hover:text-white hover:bg-white/10'}`}
               >
@@ -239,6 +253,81 @@ const SocialDashboard = () => {
           </div>
         </div>
       </div>
+
+      {authModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setAuthModal(null)} />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className={`relative w-full max-w-md bg-slate-900 border ${authModal.platform.border} rounded-3xl p-8 shadow-2xl overflow-hidden`}
+          >
+            <div className={`absolute top-0 left-0 right-0 h-2 ${authModal.platform.bg}`} />
+            
+            <div className="flex items-center gap-4 mb-6">
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${authModal.platform.bg} border ${authModal.platform.border}`}>
+                <authModal.platform.icon className={`w-7 h-7 ${authModal.platform.color}`} />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-white">{isRtl ? 'ربط الحساب' : 'Connect Account'}</h3>
+                <p className="text-sm font-bold text-slate-400">{authModal.platform.name}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <p className="text-sm text-slate-300 leading-relaxed font-medium">
+                {isRtl 
+                  ? `يطلب تطبيق PASlytics الصلاحيات التالية للوصول إلى حسابك في ${authModal.platform.name}:` 
+                  : `PASlytics is requesting the following permissions for your ${authModal.platform.name} account:`}
+              </p>
+              
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-sm text-slate-400">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>{isRtl ? 'الاطلاع على المتابعين والإحصائيات' : 'View followers and analytics'}</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-slate-400">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>{isRtl ? 'نشر المحتوى والفيديوهات مباشرة' : 'Publish content and videos directly'}</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-slate-400">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>{isRtl ? 'قراءة بيانات الحملات الإعلانية' : 'Read ad campaign data'}</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-slate-400 opacity-60">
+                  <Lock className="w-5 h-5 shrink-0" />
+                  <span>{isRtl ? 'لا يمكننا تغيير كلمة المرور أو الإعدادات الخاصة بك' : 'We cannot change your password or settings'}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-3 mb-8">
+              <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-400/90 font-medium leading-relaxed">
+                {isRtl 
+                  ? 'من خلال النقر على "منح الصلاحية وتسجيل الدخول"، فإنك توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.' 
+                  : 'By clicking "Grant Access & Login", you agree to our Terms of Service and Privacy Policy.'}
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setAuthModal(null)}
+                className="flex-1 py-3 px-4 rounded-xl font-black uppercase tracking-widest text-xs border border-white/10 hover:bg-white/5 text-slate-300 hover:text-white transition-all"
+              >
+                {isRtl ? 'إلغاء' : 'Cancel'}
+              </button>
+              <button 
+                onClick={confirmAuth}
+                className={`flex-[2] py-3 px-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 ${authModal.platform.bg} border ${authModal.platform.border} ${authModal.platform.color} hover:brightness-125 transition-all outline-none`}
+              >
+                <Globe className="w-4 h-4" />
+                {isRtl ? 'منح الصلاحية وتسجيل الدخول' : 'Grant Access & Login'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
