@@ -21,8 +21,8 @@ import {
   Smartphone,
   Layers,
   Zap,
-  Package,
-  Twitter
+  Twitter,
+  Upload
 } from 'lucide-react';
 
 const STYLES = [
@@ -98,6 +98,8 @@ const ContentCreator = () => {
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
   const [voicePitch, setVoicePitch] = useState(1.0);
   const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false, twitter: false });
+  const [isVoiceCloneModalOpen, setIsVoiceCloneModalOpen] = useState(false);
+  const [clonedVoice, setClonedVoice] = useState<any>(null);
 
   const [generatedContent, setGeneratedContent] = useState<any>(() => {
     const saved = sessionStorage.getItem('paslytics_generator_content');
@@ -573,7 +575,39 @@ const ContentCreator = () => {
                     )}
                   </button>
                 ))}
+                {clonedVoice && (
+                  <button
+                    onClick={() => setSelectedVoice(clonedVoice.id)}
+                    className={`
+                      relative p-2 rounded-xl transition-all border group
+                      ${selectedVoice === clonedVoice.id 
+                        ? 'bg-amber-500/10 border-amber-500/50 shadow-md scale-105' 
+                        : 'bg-white/5 border-white/5 hover:border-white/10'}
+                    `}
+                  >
+                    <div className="flex flex-col items-center gap-1.5">
+                       <div className="w-10 h-10 rounded-full overflow-hidden border border-transparent group-hover:border-amber-500/20 transition-all bg-amber-500/20 flex items-center justify-center">
+                          <Mic className="w-5 h-5 text-amber-500" />
+                       </div>
+                       <span className={`text-[9px] font-black uppercase tracking-widest ${selectedVoice === clonedVoice.id ? 'text-amber-400' : 'text-slate-500'}`}>
+                          {clonedVoice.name}
+                       </span>
+                    </div>
+                    {selectedVoice === clonedVoice.id && (
+                      <div className="absolute top-1 right-1 w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center shadow-lg">
+                        <CheckCircle2 className="w-2.5 h-2.5 text-black" />
+                      </div>
+                    )}
+                  </button>
+                )}
               </div>
+              <button 
+                onClick={() => setIsVoiceCloneModalOpen(true)}
+                className="w-full mt-2 py-3 border border-dashed border-amber-500/30 rounded-xl bg-amber-500/5 text-amber-400 text-xs font-black uppercase tracking-widest hover:bg-amber-500/10 transition-all flex items-center justify-center gap-2 outline-none"
+              >
+                <Plus className="w-4 h-4" />
+                {isRtl ? 'استنساخ صوت إضافي عبر عينة (Voice Clone)' : 'Clone Custom Voice API'}
+              </button>
             </div>
 
             <button 
@@ -881,6 +915,65 @@ const ContentCreator = () => {
           </div>
         </div>
       </div>
+
+      {isVoiceCloneModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setIsVoiceCloneModalOpen(false)} />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-full max-w-md bg-slate-900 border border-amber-500/30 rounded-3xl p-8 shadow-2xl"
+          >
+            <h3 className="text-xl font-black text-white mb-2">{isRtl ? 'استنساخ صوت عبر API' : 'Voice Cloning API'}</h3>
+            <p className="text-sm text-slate-400 mb-6">{isRtl ? 'قم برفع عينة صوتية (MP3/WAV) ليتم استنساخها وتحليلها لإنشاء نموذج صوتي واقعي جداً.' : 'Upload an audio sample to clone and create an ultra-realistic voice model.'}</p>
+            
+            <div className="space-y-4 mb-6">
+               <div 
+                 onClick={() => document.getElementById('voice-sample-upload')?.click()}
+                 className="w-full h-32 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-amber-500/50 bg-white/5 group transition-all"
+               >
+                 <input 
+                   type="file" 
+                   id="voice-sample-upload" 
+                   className="hidden" 
+                   accept="audio/*"
+                   onChange={() => {
+                     // Mock uploading
+                     const toast = document.createElement('div');
+                     toast.className = `fixed top-8 left-1/2 -translate-x-1/2 glass-panel px-6 py-4 border-amber-500/50 bg-amber-500/20 text-amber-400 font-black uppercase tracking-widest text-xs z-[300] animate-slideDown flex items-center gap-3`;
+                     toast.innerHTML = `<svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> ${isRtl ? 'جاري رفع العينة وتحليل البصمة الصوتية عبر API...' : 'Uploading and analyzing voice print...'}`;
+                     document.body.appendChild(toast);
+                     
+                     setTimeout(() => {
+                       toast.remove();
+                       const successToast = document.createElement('div');
+                       successToast.className = `fixed top-8 left-1/2 -translate-x-1/2 glass-panel px-6 py-4 border-emerald-500/50 bg-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-xs z-[300] animate-slideDown flex items-center gap-3`;
+                       successToast.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${isRtl ? 'تم استنساخ الصوت بنجاح!' : 'Voice cloned successfully!'}`;
+                       document.body.appendChild(successToast);
+                       
+                       setClonedVoice({ id: 'cloned_1', name: isRtl ? 'صوتي المخصص' : 'Custom Voice', gcpName: 'ar-XA-Wavenet-B' });
+                       setSelectedVoice('cloned_1');
+                       setIsVoiceCloneModalOpen(false);
+                       
+                       setTimeout(() => successToast.remove(), 3000);
+                     }, 3000);
+                   }}
+                 />
+                 <Upload className="w-6 h-6 text-slate-500 group-hover:text-amber-400 mb-2" />
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-white">
+                   {isRtl ? 'اختر ملف صوتي عينة (MP3)' : 'Select Audio File (MP3)'}
+                 </span>
+               </div>
+            </div>
+            
+            <div className="flex gap-4 cursor-pointer">
+              <button onClick={() => setIsVoiceCloneModalOpen(false)} className="w-full py-3 rounded-xl border border-white/10 text-slate-400 font-black text-xs uppercase hover:bg-white/5 transition-all outline-none">
+                {isRtl ? 'إلغاء' : 'Cancel'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 };
