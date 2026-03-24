@@ -25,27 +25,31 @@ import {
 } from 'lucide-react';
 
 const STYLES = [
-  { id: 'formal', name: 'الرسمي', label: 'Formal', rate: 0.1, pitch: 0.2 },
-  { id: 'energetic', name: 'الحماسي', label: 'Energetic', rate: 0.2, pitch: 0.1 },
-  { id: 'friendly', name: 'الودي', label: 'Friendly', rate: 0.80, pitch: 1.05 },
-  { id: 'calm', name: 'الهادئ', label: 'Calm', rate: 0.55, pitch: 0.95 }
+  { id: 'formal', name: 'الرسمي', label: 'Formal', rate: 1.0, pitch: 1.0 },
+  { id: 'energetic', name: 'الحماسي', label: 'Energetic', rate: 1.2, pitch: 1.1 },
+  { id: 'friendly', name: 'الودي', label: 'Friendly', rate: 1.0, pitch: 1.05 },
+  { id: 'calm', name: 'الهادئ', label: 'Calm', rate: 0.85, pitch: 0.95 }
 ];
 
 const VOICES = [
-  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'munaib', name: 'فهد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-XA-Wavenet-C', avatar: '...' },
-  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-XA-Wavenet-A', avatar: '...' },
-  // ... وهكذا لبقية الأسماء
+  // From user image
+  { id: 'khalid', name: 'خالد', gender: 'male', gcpName: 'ar-SA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
+  { id: 'munaib', name: 'منيب', gender: 'male', gcpName: 'ar-SA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
+  { id: 'ahmed', name: 'أحمد', gender: 'male', gcpName: 'ar-SA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop' },
+  { id: 'hany', name: 'هاني', gender: 'male', gcpName: 'ar-SA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop' },
+  { id: 'reem', name: 'ريم', gender: 'female', gcpName: 'ar-SA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop' },
+  { id: 'sara', name: 'سارة', gender: 'female', gcpName: 'ar-AE-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
+  { id: 'hadeel', name: 'هديل', gender: 'female', gcpName: 'ar-SA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
+  { id: 'faris', name: 'فارس', gender: 'male', gcpName: 'ar-SA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop' },
+  { id: 'noura', name: 'نورة', gender: 'female', gcpName: 'ar-AE-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop' },
+  { id: 'huda', name: 'هدى', gender: 'female', gcpName: 'ar-SA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop' },
+  // Additional choices
+  { id: 'majed', name: 'ماجد', gender: 'male', gcpName: 'ar-SA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop' },
+  { id: 'laila', name: 'ليلى', gender: 'female', gcpName: 'ar-AE-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?w=100&h=100&fit=crop' },
+  { id: 'sultan', name: 'سلطان', gender: 'male', gcpName: 'ar-SA-Wavenet-B', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop' },
+  { id: 'amal', name: 'أمال', gender: 'female', gcpName: 'ar-SA-Wavenet-A', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop' },
+  { id: 'bassem_2', name: 'باسم', gender: 'male', gcpName: 'ar-SA-Wavenet-C', avatar: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=100&h=100&fit=crop' }
 ];
-
-
 
 export const prepareSSML = (text: string) => {
   let processed = text;
@@ -91,7 +95,7 @@ const ContentCreator = () => {
   const [selectedStyle, setSelectedStyle] = useState(STYLES[0].id);
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
   const [voicePitch, setVoicePitch] = useState(1.0);
-  const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false });
+  const [socialLinked, setSocialLinked] = useState({ snapchat: false, tiktok: false, instagram: false, twitter: false });
 
   const [generatedContent, setGeneratedContent] = useState<any>(() => {
     const saved = sessionStorage.getItem('paslytics_generator_content');
@@ -122,35 +126,43 @@ const ContentCreator = () => {
     setGeneratedContent(null);
     sessionStorage.removeItem('paslytics_generator_content');
     
-      try {
+    try {
       const voiceName = VOICES.find(v => v.id === selectedVoice)?.name || selectedVoice;
       const styleName = STYLES.find(s => s.id === selectedStyle)?.label || selectedStyle;
-      const dialectPrefix = isRtl ? "استخدم اللهجة الخليجية البيضاء بأسلوب عفوي ومباشر" : "";
-      const prompt = `النظام: أنت خبير صناعة محتوى تسويقي محترف ومختص في السوق الخليجي. قم بإنشاء محتوى ترويجي للمنتج. 
-Product: ${description}
-Context: ${dialectPrefix}
-
-Task: Generate a marketing plan in JSON. 
-Important: Script and captions must be in Gulf dialect.
-
-     Required Output (JSON):
-      1. Content plan and strategy.
-      2. Strong Hook in Gulf Dialect (محكي خليجي).
-      3. Reel script (3 scenes).
-      4. Instagram and Twitter captions in Gulf Dialect.
-
-      Important Note: All scripts, hooks, and captions MUST be written in 100% spoken Gulf Arabic (مثال: يا هلا، وش رايكم، لا يطوفكم، خيالي).
-
-      Format strictly as JSON:
-{
-  "plan": { "audience": ["..."], "strategy": "..." },
-  "hooks": [{ "type": "Creative", "text": "..." }],
-  "video": { "script": "...", "scenes": [{ "title": "Scene 1", "action": "..." }] },
-  "posts": [{ "platform": "Instagram", "caption": "..." }]
-}`;
-
-
+      const dialectPrefix = isRtl ? `[بلهجة خليجية وصوت ${voiceName} بأسلوب ${styleName}] ` : `[In Khaleeji dialect, ${voiceName} voice/dialect with ${styleName} style] `;
+      const prompt = `
+        نظام: أنت خبير صناعة محتوى تسويقي محترف. قم بإنشاء محتوى ترويجي شامل للمنتج: "${description}"
+        ${dialectPrefix}
+        المطلوب هو توليد خطة متكاملة تشمل:
+        1. خطة محتوى (جمهور مستهدف واستراتيجية).
+        2. 2 هوك (Hook) قوي للفيديوهات. (ملاحظة: ضمن النص، أضف واصفات المشاعر والتنغيم الصوتي مثل [Excited], [Steady], [Breath], [Pause] لتوجيه محركات توليد الصوت المتقدمة).
+        3. سيناريو لإنشاء فيديو ترويجي إعلاني دعائي مقسم إلى 3 مشاهد على الأقل، مع وصف لكل مشهد. (أضف أيضاً واصفات المشاعر في الحوار/النص).
+        4. منشورين اجتماعيين احترافيين (Instagram و Twitter) مع كابشن جذاب، علامات هاشتاج، ووصف للصورة (Image Prompt).
         
+        ملاحظة الهامة: يجب أن يكون المحتوى وكل النصوص والتعليق الصوتي باللهجة الخليجية فقط الدارجة والمناسبة للصوت المختار (${voiceName}). استخدم تعبيرات ومفردات خليجية لضمان إيقاع طبيعي في التعليق الصوتي. استخدم علامات الوقف الدقيقة (، . ...).
+        
+        أجب بتنسيق JSON حصراً:
+        {
+          "plan": { "audience": ["...", "...", "..."], "strategy": "..." },
+          "hooks": [
+            { "type": "إبداعي", "text": "..." },
+            { "type": "قيمي", "text": "..." }
+          ],
+          "video": { 
+            "script": "...", 
+            "scenes": [
+              { "title": "المشهد 1", "action": "..." },
+              { "title": "المشهد 2", "action": "..." },
+              { "title": "المشهد 3", "action": "..." }
+            ]
+          },
+          "posts": [
+            { "platform": "Instagram", "caption": "...", "image_prompt": "..." },
+            { "platform": "Twitter", "caption": "...", "image_prompt": "..." }
+          ]
+        }
+      `;
+
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
       
@@ -185,7 +197,7 @@ Important: Script and captions must be in Gulf dialect.
       // Success simulation
       const toast = document.createElement('div');
       toast.className = `fixed top-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-8 py-5 border-emerald-500/50 bg-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-xs z-[200] animate-slideDown flex items-center gap-4`;
-      toast.innerHTML = `<CheckCircle2 class="w-5 h-5" /> ${isRtl ? 'تمت مزامنة جميع المرفقات بنجاح!' : 'All assets synced successfully!'}`;
+      toast.innerHTML = `<CheckCircle2 class="w-5 h-5" /> ${isRtl ? 'تم نشر المحتوى بنجاح على جميع حساباتك المرتبطة!' : 'Content successfully published to all linked accounts!'}`;
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 4000);
     }, 4500);
@@ -209,23 +221,19 @@ Important: Script and captions must be in Gulf dialect.
       const combinedPitch = style.pitch * voicePitch; // e.g. 1.0 * 1.0 = 1.0, 1.1 * 1.5 = 1.65
       const gcpPitch = (combinedPitch - 1.0) * 20; 
 
- const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    input: { ssml: ssml },
-    voice: { 
-      languageCode: 'ar-XA', 
-      name: voice.gcpName || 'ar-XA-Wavenet-B' 
-    },
-    audioConfig: {
-      audioEncoding: 'MP3',
-      speakingRate: style.rate * voiceSpeed,
-      pitch: Math.max(-20, Math.min(20, gcpPitch))
-    }
-  })
-});
-
+      const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: { ssml: ssml },
+          voice: { languageCode: 'ar-XA', name: voice.gcpName || 'ar-SA-Wavenet-B' },
+          audioConfig: { 
+            audioEncoding: 'MP3',
+            speakingRate: style.rate * voiceSpeed,
+            pitch: Math.max(-20, Math.min(20, gcpPitch)) // Clamp between -20 and 20
+          }
+        })
+      });
 
       if (!response.ok) throw new Error('GCP TTS failed. Falling back to local...');
 
@@ -248,30 +256,22 @@ Important: Script and captions must be in Gulf dialect.
       setTimeout(() => toast.remove(), 7000);
       
       // Fallback
-      setTimeout(async () => {
-    setIsSynthesizing(false);
-    setIsPlayingAudio(index);
-
-    const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
-    const rawText = generatedContent.hooks[index].text;
-    const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
-
- // 1. بدلاً من تعريف utter (الروبوت الداخلي)
-// 2. سنقوم بطلب الصوت من جوجل مباشرة
-try {
-    const audioData = await generateAudio(cleanText); // استدعاء دالة جوجل التي أصلحناها
-    if (audioData) {
-        const audio = new Audio(`data:audio/mp3;base64,${audioData}`);
-        audio.play();
+      setTimeout(() => {
+        setIsSynthesizing(false);
+        setIsPlayingAudio(index);
         
-        audio.onended = () => setIsPlayingAudio(null);
-        audio.onerror = () => setIsPlayingAudio(null);
-    }
-} catch (err) {
-    console.error("حتى الخطة البديلة فشلت:", err);
-    setIsPlayingAudio(null);
-}
-
+        const style = STYLES.find(s => s.id === selectedStyle) || STYLES[0];
+        const rawText = generatedContent.hooks[index].text;
+        const cleanText = rawText.replace(/\[.*?\]/g, '').trim();
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        utter.lang = isRtl ? 'ar-SA' : 'en-US';
+        utter.rate = style.rate * voiceSpeed;
+        utter.pitch = style.pitch * voicePitch;
+        
+        utter.onend = () => setIsPlayingAudio(null);
+        utter.onerror = () => setIsPlayingAudio(null);
+        
+        window.speechSynthesis.speak(utter);
       }, 500);
     }
   };
@@ -282,7 +282,7 @@ try {
     
     try {
       const hookText = generatedContent.hooks[hookIndex].text;
-      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Instagram", "caption": "...", "image_prompt": "..." }`;
+      const prompt = `أنت خبير تسويق. قم بإنشاء منشور اجتماعي احترافي وجذاب ومعاصر ومناسب للنشر في انستقرام وتويتر بناءً على هذا الهوك: "${hookText}". المنتج هو: "${description}". يجب أن يكون النص باللهجة الخليجية فقط. استخدم أسلوب التنغيم الصوتي (Prosody) وقم بتضمين واصفات المشاعر مثل [Excited], [Steady] في النص. أجب بتنسيق JSON: { "platform": "Instagram", "caption": "...", "image_prompt": "..." }`;
       
       const { analyzeMarketing } = await import('../lib/google-ai-service');
       const responseText = await analyzeMarketing(prompt);
@@ -332,47 +332,65 @@ try {
   return (
     <section className="space-y-12 mt-12 pb-20">
       {/* Social Connection & Batch Sync */}
-      <div className="glass-panel p-8 bg-gradient-to-r from-purple-500/10 to-amber-500/5 border-white/10 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-8 opacity-5"><Package className="w-24 h-24" /></div>
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+      <div className="glass-panel p-8 bg-gradient-to-r from-purple-500/10 to-blue-500/5 border-white/10 relative overflow-hidden group mb-8">
+        <div className="absolute top-0 right-0 p-8 opacity-5"><Layers className="w-32 h-32" /></div>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shadow-2xl">
-              <Layers className="text-white v-7 h-7" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center border border-white/10 shadow-2xl">
+              <Zap className="text-blue-400 w-8 h-8" />
             </div>
             <div className="text-center md:text-left">
-              <h3 className="text-xl font-black text-white tracking-tight uppercase">{t('one_click_publish')}</h3>
-              <p className="text-slate-400 text-xs italic">{isRtl ? 'قم بمزامنة جميع الفيديوهات والمنشورات في باقة واحدة مباشرة.' : 'Sync all videos and posts in one unified package immediately.'}</p>
+              <h3 className="text-xl font-black text-white tracking-tight uppercase">{isRtl ? 'إدارة حسابات السوشيال ميديا' : 'Social Media Management'}</h3>
+              <p className="text-slate-400 text-sm mt-1">{isRtl ? 'اربط حساباتك لمتابعة البوستات والحملات الإعلانية ونشرها بضغطة زر واحدة' : 'Link accounts to track posts and campaigns, and publish with one click'}</p>
             </div>
           </div>
           
-          <div className="flex flex-wrap items-center justify-center gap-4">
-             {['Snapchat', 'TikTok', 'Instagram'].map((p) => (
-               <button 
-                 key={p}
-                onClick={() => setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase() as keyof typeof socialLinked] }))}
-                className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-500 hover:text-white'}`}
-               >
-                 {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-                 {p}
-               </button>
-             ))}
+          <div className="flex flex-col items-end gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+               {['Snapchat', 'TikTok', 'Instagram', 'Twitter'].map((p) => (
+                 <button 
+                   key={p}
+                  onClick={() => setSocialLinked(prev => ({ ...prev, [p.toLowerCase()]: !prev[p.toLowerCase() as keyof typeof socialLinked] }))}
+                  className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'}`}
+                 >
+                   {socialLinked[p.toLowerCase() as keyof typeof socialLinked] ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                   {isRtl && p === 'Twitter' ? 'X (تويتر)' : p}
+                 </button>
+               ))}
+            </div>
              
              <button 
                onClick={handleBatchSync}
-               disabled={!hasGenerated || isSyncing}
-               className={`btn-premium px-8 py-3.5 flex items-center gap-3 relative overflow-hidden ${!hasGenerated ? 'grayscale opacity-50 cursor-not-allowed' : ''} group/sync`}
+               disabled={!hasGenerated || isSyncing || !Object.values(socialLinked).some(Boolean)}
+               className={`w-full lg:w-auto px-10 py-4 rounded-xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-widest text-xs relative overflow-hidden
+                 ${!hasGenerated || !Object.values(socialLinked).some(Boolean) 
+                   ? 'bg-white/5 border border-white/10 text-slate-500 cursor-not-allowed' 
+                   : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] border border-blue-500/50 group/sync'}`}
              >
                 {isSyncing ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {t('batch_sync')}</span>
+                  <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {isRtl ? 'جاري النشر على جميع الحسابات...' : 'Publishing to all accounts...'}</span>
                 ) : (
                   <>
-                    <Zap className="w-5 h-5 group-hover/sync:animate-bounce" />
-                    <span className="font-black uppercase tracking-widest text-xs">{t('send_package')}</span>
+                    <Zap className="w-4 h-4 group-hover/sync:animate-bounce" />
+                    <span className="relative z-10">{isRtl ? 'نشر على جميع الحسابات بضغطة زر' : 'Publish to All Linked Accounts'}</span>
                   </>
                 )}
              </button>
           </div>
         </div>
+        
+        {Object.values(socialLinked).some(Boolean) && (
+          <div className="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs font-bold text-slate-400">
+             <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{isRtl ? 'تتبع الحملات الإعلانية والبوستات نَشِط' : 'Campaign & Post Tracking Active'}</span>
+             </div>
+             <div className="flex gap-4">
+                <span className="flex items-center gap-1.5"><Rocket className="w-3.5 h-3.5 text-blue-400" /> {isRtl ? 'إحصائيات الحملات' : 'Campaign Stats'}</span>
+                <span className="flex items-center gap-1.5"><Target className="w-3.5 h-3.5 text-purple-400" /> {isRtl ? 'متابعة التفاعل' : 'Engagement Tracking'}</span>
+             </div>
+          </div>
+        )}
       </div>
 
       {/* Agency Workflow Hub */}
@@ -419,7 +437,7 @@ try {
                     reader.onload = async () => {
                       try {
                         const base64 = reader.result as string;
-                        const prompt = "حلل هذا المنتج واستخرج وصفاً تسويقياً دقيقاً له باللغة العربية البيضاء.";
+                        const prompt = "حلل هذا المنتج واستخرج وصفاً تسويقياً دقيقاً له باللهجة الخليجية فقط.";
                         const { analyzeMarketing } = await import('../lib/google-ai-service');
                         const desc = await analyzeMarketing(prompt, base64);
                         setDescription(desc.trim());
@@ -529,7 +547,7 @@ try {
                 {[
                   { id: 'plan', label: isRtl ? 'تحليل الباقة' : 'Package Analysis', icon: ClipboardList, ai: true },
                   { id: 'hooks', label: isRtl ? 'هوك ذكي (صوت)' : 'Smart Audio', icon: Mic, ai: true },
-                  { id: 'video', label: isRtl ? 'فيديو عمودي (9:16)' : 'Portrait Video', icon: Smartphone, ai: true },
+                  { id: 'video', label: isRtl ? 'إنشاء فيديو إعلاني دعائي' : 'Create Promo Video', icon: Smartphone, ai: true },
                   { id: 'posts', label: t('promotional_post'), icon: PenTool, ai: true }
                 ].map((tab) => (
                   <button
