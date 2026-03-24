@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useLogs } from '../context/LogContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   Megaphone, 
   Sparkles, 
@@ -82,6 +83,7 @@ const ContentCreator = () => {
   const { t, language } = useLanguage();
   const isRtl = language === 'ar';
   const { addLog } = useLogs();
+  const navigate = useNavigate();
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
@@ -194,13 +196,52 @@ const ContentCreator = () => {
     setIsSyncing(true);
     setTimeout(() => {
       setIsSyncing(false);
-      // Success simulation
+      
+      // Save pseudo posts to localStorage to pass to the Social Dashboard
+      const publishedPosts = [];
+      if (generatedContent.video) {
+        publishedPosts.push({
+          id: Date.now(),
+          type: 'video',
+          platform: 'All Platforms',
+          status: 'published',
+          date: new Date().toISOString().split('T')[0],
+          content: 'فيديو ترويجي 9:16: ' + (generatedContent.hooks?.[0]?.text?.substring(0, 40) + '...' || 'محتوى فيديو متميز'),
+          views: '0',
+          likes: '0'
+        });
+      }
+      
+      if (generatedContent.posts) {
+        generatedContent.posts.forEach((p: any, idx: number) => {
+          publishedPosts.push({
+            id: Date.now() + idx + 1,
+            type: 'post',
+            platform: p.platform,
+            status: 'published',
+            date: new Date().toISOString().split('T')[0],
+            content: p.caption?.substring(0, 60) + '...',
+            views: '0',
+            likes: '0'
+          });
+        });
+      }
+      
+      // Merge with existing
+      const existing = JSON.parse(localStorage.getItem('paslytics_published_posts') || '[]');
+      localStorage.setItem('paslytics_published_posts', JSON.stringify([...publishedPosts, ...existing]));
+
+      // Success simulation & Redirect
       const toast = document.createElement('div');
       toast.className = `fixed top-8 ${isRtl ? 'left-8' : 'right-8'} glass-panel px-8 py-5 border-emerald-500/50 bg-emerald-500/20 text-emerald-400 font-black uppercase tracking-widest text-xs z-[200] animate-slideDown flex items-center gap-4`;
-      toast.innerHTML = `<CheckCircle2 class="w-5 h-5" /> ${isRtl ? 'تم نشر المحتوى بنجاح على جميع حساباتك المرتبطة!' : 'Content successfully published to all linked accounts!'}`;
+      toast.innerHTML = `<CheckCircle2 class="w-5 h-5" /> ${isRtl ? 'تم النشر! جاري تحويلك لمنصة السوشيال ميديا...' : 'Published! Redirecting to Social Dashboard...'}`;
       document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
-    }, 4500);
+      
+      setTimeout(() => {
+        toast.remove();
+        navigate('/social');
+      }, 1500);
+    }, 2500);
   };
 
   const handleSynthesize = async (index: number) => {
@@ -221,12 +262,15 @@ const ContentCreator = () => {
       const combinedPitch = style.pitch * voicePitch; // e.g. 1.0 * 1.0 = 1.0, 1.1 * 1.5 = 1.65
       const gcpPitch = (combinedPitch - 1.0) * 20; 
 
+      // Get exact language code derived from GCP Voice Name
+      const langCode = voice.gcpName ? voice.gcpName.substring(0, 5) : 'ar-SA';
+      
       const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           input: { ssml: ssml },
-          voice: { languageCode: 'ar-XA', name: voice.gcpName || 'ar-SA-Wavenet-B' },
+          voice: { languageCode: langCode, name: voice.gcpName || 'ar-SA-Wavenet-B' },
           audioConfig: { 
             audioEncoding: 'MP3',
             speakingRate: style.rate * voiceSpeed,
@@ -267,6 +311,14 @@ const ContentCreator = () => {
         utter.lang = isRtl ? 'ar-SA' : 'en-US';
         utter.rate = style.rate * voiceSpeed;
         utter.pitch = style.pitch * voicePitch;
+        
+        // Try to select a high-quality Arabic voice available locally
+        const availableVoices = window.speechSynthesis.getVoices();
+        const arabicVoice = availableVoices.find(v => v.lang.startsWith('ar') && (v.name.includes("Maged") || v.name.includes("Tarik") || v.name.includes("Laila"))) 
+                           || availableVoices.find(v => v.lang.startsWith('ar'));
+        if (arabicVoice) {
+          utter.voice = arabicVoice;
+        }
         
         utter.onend = () => setIsPlayingAudio(null);
         utter.onerror = () => setIsPlayingAudio(null);
