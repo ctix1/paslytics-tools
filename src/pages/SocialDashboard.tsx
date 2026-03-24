@@ -8,7 +8,8 @@ import {
   Twitter, 
   Smartphone, 
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  Loader2
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -17,10 +18,10 @@ const SocialDashboard = () => {
   const isRtl = language === 'ar';
   
   const [platforms, setPlatforms] = useState([
-    { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'text-pink-500', bg: 'bg-pink-500/10', border: 'border-pink-500/20', connected: true },
-    { id: 'twitter', name: 'X (Twitter)', icon: Twitter, color: 'text-slate-200', bg: 'bg-slate-200/10', border: 'border-slate-200/20', connected: true },
-    { id: 'tiktok', name: 'TikTok', icon: Smartphone, color: 'text-cyan-400', bg: 'bg-cyan-400/10', border: 'border-cyan-400/20', connected: false },
-    { id: 'snapchat', name: 'Snapchat', icon: MessageCircle, color: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/20', connected: false },
+    { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'text-pink-500', bg: 'bg-pink-500/10', border: 'border-pink-500/20', connected: true, loading: false, followers: '12.5K', engagement: '+4.2%' },
+    { id: 'twitter', name: 'X (Twitter)', icon: Twitter, color: 'text-slate-200', bg: 'bg-slate-200/10', border: 'border-slate-200/20', connected: true, loading: false, followers: '8.1K', engagement: '+2.1%' },
+    { id: 'tiktok', name: 'TikTok', icon: Smartphone, color: 'text-cyan-400', bg: 'bg-cyan-400/10', border: 'border-cyan-400/20', connected: false, loading: false, followers: '0', engagement: '0%' },
+    { id: 'snapchat', name: 'Snapchat', icon: MessageCircle, color: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/20', connected: false, loading: false, followers: '0', engagement: '0%' },
   ]);
 
   const [posts, setPosts] = useState<any[]>([]);
@@ -42,7 +43,36 @@ const SocialDashboard = () => {
   }, []);
 
   const toggleConnection = (id: string) => {
-    setPlatforms(platforms.map(p => p.id === id ? { ...p, connected: !p.connected } : p));
+    const platform = platforms.find(p => p.id === id);
+    if (!platform?.connected) {
+      setPlatforms(platforms.map(p => p.id === id ? { ...p, loading: true } : p));
+      setTimeout(() => {
+        setPlatforms(platforms.map(p => p.id === id ? { 
+          ...p, 
+          connected: true, 
+          loading: false,
+          followers: Math.floor(Math.random() * 50) + 10 + 'K',
+          engagement: '+' + (Math.random() * 5 + 2).toFixed(1) + '%'
+        } : p));
+        
+        // Simulating data fetch for this platform
+        setPosts(prev => [
+          {
+            id: Date.now() + Math.random(),
+            type: id === 'tiktok' || id === 'snapchat' ? 'video' : 'post',
+            platform: platform?.name,
+            status: 'published',
+            date: new Date().toISOString().split('T')[0],
+            content: (isRtl ? 'تم جلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + platform?.name + ' بنجاح! 🚀',
+            views: (Math.random() * 100).toFixed(1) + 'K',
+            likes: (Math.random() * 10).toFixed(1) + 'K'
+          },
+          ...prev
+        ]);
+      }, 1500);
+    } else {
+      setPlatforms(platforms.map(p => p.id === id ? { ...p, connected: false } : p));
+    }
   };
 
   return (
@@ -83,9 +113,11 @@ const SocialDashboard = () => {
               </div>
               <button 
                 onClick={() => toggleConnection(platform.id)}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${platform.connected ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-slate-400 border border-white/10 hover:text-white'}`}
+                disabled={platform.loading}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${platform.connected ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-slate-400 border border-white/10 hover:text-white hover:bg-white/10'}`}
               >
-                {platform.connected ? (isRtl ? 'متصل' : 'Connected') : (isRtl ? 'ربط' : 'Connect')}
+                {platform.loading && <Loader2 className="w-3 h-3 animate-spin" />}
+                {platform.loading ? (isRtl ? 'جاري الربط...' : 'Connecting...') : platform.connected ? (isRtl ? 'متصل' : 'Connected') : (isRtl ? 'ربط' : 'Connect')}
               </button>
             </div>
             <div>
@@ -94,11 +126,11 @@ const SocialDashboard = () => {
                 <div className="mt-4 flex flex-col gap-2 border-t border-white/5 pt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-slate-500 font-bold">{isRtl ? 'المتابعين' : 'Followers'}</span>
-                    <span className="text-sm text-white font-black">12.5K</span>
+                    <span className="text-sm text-white font-black">{platform.followers}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-slate-500 font-bold">{isRtl ? 'التفاعل' : 'Engagement'}</span>
-                    <span className="text-sm text-emerald-400 font-black">+4.2%</span>
+                    <span className="text-sm text-emerald-400 font-black">{platform.engagement}</span>
                   </div>
                 </div>
               ) : (
