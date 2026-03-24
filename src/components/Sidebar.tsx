@@ -14,11 +14,12 @@ import {
   Sparkles,
   CreditCard,
   FileEdit,
-  Zap
+  Zap,
+  Share2
 } from 'lucide-react';
 
 const Sidebar = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { profile, signOut } = useAuth();
   const location = useLocation();
 
@@ -26,6 +27,7 @@ const Sidebar = () => {
     { icon: Home, label: t('nav_home'), path: '/' },
     { icon: LayoutDashboard, label: t('nav_dashboard'), path: '/dashboard' },
     { icon: FileEdit, label: t('nav_content_builder'), path: '/content-builder' },
+    { icon: Share2, label: language === 'ar' ? 'السوشيال ميديا' : 'Social Media', path: '/social' },
     { icon: Zap, label: t('nav_product_calculator'), path: '/calculator' },
     { icon: ClipboardList, label: t('nav_logs'), path: '/logs' },
     { icon: Users, label: t('nav_user_management'), path: '/management', adminOnly: true },
