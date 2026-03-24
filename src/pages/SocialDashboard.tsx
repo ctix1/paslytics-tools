@@ -60,10 +60,28 @@ const SocialDashboard = () => {
   const confirmAuth = () => {
     if (!authModal) return;
     const { id, name } = authModal.platform;
-    setAuthModal(null);
     
+    // Determine the actual OAuth URL for the selected platform
+    let authUrl = '';
+    if (id === 'twitter') authUrl = 'https://twitter.com/i/flow/login';
+    else if (id === 'instagram') authUrl = 'https://www.instagram.com/accounts/login/';
+    else if (id === 'tiktok') authUrl = 'https://www.tiktok.com/login';
+    else if (id === 'snapchat') authUrl = 'https://accounts.snapchat.com/';
+    
+    // Simulate real OAuth redirection by opening a small popup window
+    const popup = window.open(authUrl, `Connect ${name}`, 'width=500,height=600,left=300,top=100');
+    
+    setAuthModal(null);
     setPlatforms(platforms.map(p => p.id === id ? { ...p, loading: true } : p));
+    
+    // Simulate the time it takes for the user to login and approve the app
     setTimeout(() => {
+      // Close the popup window automatically after login simulation
+      if (popup && (!popup.closed)) {
+        popup.close();
+      }
+      
+      // Update the UI to reflect successful connection and data fetch
       setPlatforms(platforms.map(p => p.id === id ? { 
         ...p, 
         connected: true, 
@@ -72,7 +90,7 @@ const SocialDashboard = () => {
         engagement: '+' + (Math.random() * 5 + 2).toFixed(1) + '%'
       } : p));
       
-      // Simulating data fetch for this platform
+      // Add a simulated post showing it merged into our app
       setPosts(prev => [
         {
           id: Date.now() + Math.random(),
@@ -80,13 +98,13 @@ const SocialDashboard = () => {
           platform: name,
           status: 'published',
           date: new Date().toISOString().split('T')[0],
-          content: (isRtl ? 'تم جلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + name + ' بنجاح! 🚀',
+          content: (isRtl ? 'تم الربط وجلب هذا المنشور من حسابك في ' : 'Data synced from your account in ') + name + ' بنجاح! 🚀',
           views: (Math.random() * 100).toFixed(1) + 'K',
           likes: (Math.random() * 10).toFixed(1) + 'K'
         },
         ...prev
       ]);
-    }, 2000);
+    }, 4000);
   };
 
   return (
