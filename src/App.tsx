@@ -7,7 +7,6 @@ import Plan from './pages/Plan';
 import AboutPage from './pages/AboutPage';
 import Checkout from './pages/Checkout';
 import DashboardLayout from './components/DashboardLayout';
-import Sidebar from './components/Sidebar';
 import ErrorBoundary from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import SystemLogs from './pages/SystemLogs';
@@ -17,6 +16,7 @@ import PaymentSettings from './pages/PaymentSettings';
 import ContentManager from './pages/ContentManager';
 import ContentBuilderPage from './pages/ContentBuilderPage';
 import ProductCalculatorPage from './pages/ProductCalculatorPage';
+import SocialDashboard from './pages/SocialDashboard';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import { ContentProvider } from './context/ContentContext';
@@ -98,6 +98,7 @@ function App() {
                       <Route path="/dashboard" element={<Dashboard />} />
 
                       <Route path="/content-builder" element={<ContentBuilderPage />} />
+                      <Route path="/social" element={<SocialDashboard />} />
                       <Route path="/calculator" element={<ProductCalculatorPage />} />
                       <Route path="/logs" element={<SystemLogs />} />
                       <Route path="/settings" element={<Profile />} />
